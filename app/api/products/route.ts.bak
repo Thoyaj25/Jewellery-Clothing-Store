@@ -1,0 +1,49 @@
+import { NextRequest, NextResponse } from "next/server";
+import sql from "@/src/lib/db";
+import { getToken } from "next-auth/jwt";
+import { recordAudit } from "@/src/lib/audit";
+import { logError } from "@/src/lib/logger";
+
+export async function GET(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+
+    const q = url.searchParams.get("q");
+    const category = url.searchParams.get("category");
+    const min = url.searchParams.get("min");
+    const max = url.searchParams.get("max");
+
+    const filters = [sql`TRUE`];
+    if (q) {
+      filters.push(sql`name ILIKE ${`%${q}%`}`);
+    }
+
+    if (category) {
+      filters.push(sql`category = ${category}`);
+    }
+
+    if (min) {
+      filters.push(sql`price >= ${Number(min)}`);
+    }
+
+    if (max) {
+      filters.push(sql`price <= ${Number(max)}`);
+    }
+
+    const products = await sql`
+      SELECT id, name, category, price, image, description
+      FROM products
+      WHERE ${sql.join(filters, sql` AND `)}
+      ORDER BY id
+    `;
+
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error("DATABASE ERROR:", error);
+
+    return NextResponse.json(
+      { error: String(error) },
+      { status: 500 }
+    );
+  }
+}

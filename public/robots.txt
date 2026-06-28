@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jewellery-clothing-store.vercel.app/sitemap.xml
