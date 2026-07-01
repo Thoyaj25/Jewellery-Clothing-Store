@@ -1,5 +1,5 @@
 ```markdown
-# Ultimate Collections – Production E-Commerce Platform
+#   Ultimate Collections – Production E-Commerce Platform
 
 A full-stack, production-ready e-commerce application for showcasing jewellery and clothing products. The project is built with **Next.js**, **TypeScript**, **Tailwind CSS**, **PostgreSQL (Neon)**, and deployed on **Vercel**. It demonstrates modern web development practices, database integration, authentication, and deployment workflows.
 
