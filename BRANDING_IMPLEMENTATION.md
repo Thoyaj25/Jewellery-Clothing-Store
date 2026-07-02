@@ -31,10 +31,10 @@
   - ✅ Enhanced keywords
 
 ### 5. ✅ Image Generation Script
-- **File:** `scripts/generate-branding-assets.js`
+- **File:** `scripts/generate-branding-assets.cjs`
 - **Purpose:** Automatically convert SVG files to PNG
 - **Requires:** `npm install --save-dev sharp`
-- **Usage:** `node scripts/generate-branding-assets.js`
+- **Usage:** `node scripts/generate-branding-assets.cjs`
 
 ---
 
@@ -62,7 +62,7 @@ jewellery-clothing-store/
 │   │   └── CartProvider.tsx        ✅ Updated with updateQuantity
 │   └── ...
 ├── scripts/
-│   └── generate-branding-assets.js ✅ Image converter
+│   └── generate-branding-assets.cjs ✅ Image converter
 ├── BRANDING_SETUP_GUIDE.md         ✅ Detailed guide
 └── ...
 ```
@@ -88,7 +88,7 @@ jewellery-clothing-store/
 npm install --save-dev sharp
 
 # Run the generation script
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 ```
 
 **Option C: Using ImageMagick (CLI) - 3 minutes**
@@ -297,7 +297,7 @@ rm -rf .next && npm run dev
 
 # Generate PNG files (requires Sharp)
 npm install --save-dev sharp
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 
 # Build for production
 npm run build

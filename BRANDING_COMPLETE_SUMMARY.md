@@ -27,7 +27,7 @@ I've successfully implemented a complete branding asset package for your Ultimat
 - Ready to convert to PNG
 
 ### 3. Generation Script ✅
-**File:** `scripts/generate-branding-assets.js`
+**File:** `scripts/generate-branding-assets.cjs`
 - Automatically converts SVG → PNG
 - Creates all 4 required icons:
   - opengraph-image.png (1200×630)
@@ -108,7 +108,7 @@ Quick 10-minute action plan:
 ### Automated Option: Use Script (5 min)
 ```bash
 npm install --save-dev sharp
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 ```
 
 ### CLI Option: ImageMagick (3 min)
@@ -139,7 +139,7 @@ jewellery-clothing-store/
 │       └── FloatingWhatsApp.tsx    ✅ Contact button
 │
 ├── scripts/
-│   └── generate-branding-assets.js ✅ Image converter
+│   └── generate-branding-assets.cjs ✅ Image converter
 │
 ├── BRANDING_SETUP_GUIDE.md         ✅ Detailed guide
 ├── BRANDING_IMPLEMENTATION.md      ✅ Implementation report
@@ -296,7 +296,7 @@ All assets have been:
 **🟡 ALTERNATIVE: Use Automation Script**
 ```bash
 npm install --save-dev sharp
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 ```
 - Creates all 4 icons automatically
 - Takes ~5 minutes

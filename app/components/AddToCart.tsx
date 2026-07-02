@@ -2,7 +2,7 @@
 
 import { useCart } from "../context/CartProvider";
 
-export default function AddToCart({ product }: { product: { id: string; name: string; price: number; image?: string } }) {
+export default function AddToCart({ product }: { product: { id: string | number; name: string; price: number; image?: string } }) {
   const { addItem } = useCart();
 
   return (

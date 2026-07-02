@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCart } from "../context/CartProvider";
 
 interface CartItemProps {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
   image?: string;

@@ -14,7 +14,7 @@ export async function ensureAuditTable() {
   `;
 }
 
-export async function recordAudit({ admin, action, productId, payload, ip }: { admin?: string; action: string; productId?: number | null; payload?: any; ip?: string; }) {
+export async function recordAudit({ admin, action, productId, payload, ip }: { admin?: string; action: string; productId?: number | null; payload?: unknown; ip?: string; }) {
   try {
     await ensureAuditTable();
 
@@ -22,7 +22,7 @@ export async function recordAudit({ admin, action, productId, payload, ip }: { a
       INSERT INTO admin_audit (admin, action, product_id, payload, ip)
       VALUES (${admin ?? null}, ${action}, ${productId ?? null}, ${payload ? JSON.stringify(payload) : null}, ${ip ?? null})
     `;
-  } catch (err) {
+  } catch (err: unknown) {
     // Do not throw if audit fails - logging should be best-effort
     console.error("Audit record failed:", err);
   }

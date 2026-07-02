@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type CartItem = {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
   image?: string;
@@ -13,8 +13,8 @@ type CartItem = {
 type CartContextValue = {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  removeItem: (id: string | number) => void;
+  updateQuantity: (id: string | number, quantity: number) => void;
   clear: () => void;
   totalCount: number;
   totalPrice: number;
@@ -53,7 +53,7 @@ export function CartProvider({
   useEffect(() => {
     try {
       localStorage.setItem("cart:v1", JSON.stringify(items));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to save cart:", error);
     }
   }, [items]);
@@ -64,12 +64,12 @@ export function CartProvider({
   ) => {
     setItems((prev) => {
       const existing = prev.find(
-        (p) => p.id === item.id
+        (p) => String(p.id) === String(item.id)
       );
 
       if (existing) {
         return prev.map((p) =>
-          p.id === item.id
+          String(p.id) === String(item.id)
             ? {
                 ...p,
                 quantity: p.quantity + qty,
@@ -82,14 +82,14 @@ export function CartProvider({
     });
   };
 
-  const removeItem = (id: string) => {
+  const removeItem = (id: string | number) => {
     setItems((prev) =>
-      prev.filter((p) => p.id !== id)
+      prev.filter((p) => String(p.id) !== String(id))
     );
   };
 
   const updateQuantity = (
-    id: string,
+    id: string | number,
     quantity: number
   ) => {
     if (quantity <= 0) {
@@ -99,7 +99,7 @@ export function CartProvider({
 
     setItems((prev) =>
       prev.map((p) =>
-        p.id === id
+        String(p.id) === String(id)
           ? { ...p, quantity }
           : p
       )

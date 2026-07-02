@@ -8,7 +8,7 @@ export default function OrderButtons({
   whatsappNumber,
   instagramHandle,
 }: {
-  product: { id: string; name: string; price: number };
+  product: { id: string | number; name: string; price: number };
   whatsappNumber?: string;
   instagramHandle?: string;
 }) {
@@ -28,7 +28,7 @@ export default function OrderButtons({
     }
 
     // include the product page item if it's not in cart
-    const inCart = items.some((it) => it.id === product.id);
+    const inCart = items.some((it) => String(it.id) === String(product.id));
     if (!inCart) {
       lines.push(`- ${product.name} (ID: ${product.id}) x 1 — ₹${product.price.toLocaleString("en-IN")}`);
     }

@@ -9,7 +9,7 @@ export default function ContactPage() {
           </h1>
 
           <p className="text-zinc-400 text-lg">
-            We'd love to hear from you. Reach out for enquiries, orders, or
+            We&apos;d love to hear from you. Reach out for enquiries, orders, or
             product information.
           </p>
         </div>

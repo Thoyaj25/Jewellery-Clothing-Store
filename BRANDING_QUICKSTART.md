@@ -36,7 +36,7 @@ Done! ✅ Files are converted.
 npm install --save-dev sharp
 
 # Run the generation script
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 ```
 
 The script will create:
@@ -110,7 +110,7 @@ git push
 | app/twitter-image.png | PNG | ~120 KB | Twitter card |
 | app/icon.png | PNG | ~60 KB | Backup favicon |
 | app/apple-icon.png | PNG | ~20 KB | iOS bookmark icon |
-| scripts/generate-branding-assets.js | JS | - | Auto-converter script |
+| scripts/generate-branding-assets.cjs | JS | - | Auto-converter script |
 
 ---
 

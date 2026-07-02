@@ -4,13 +4,7 @@ import Link from "next/link";
 import { useCart } from "../context/CartProvider";
 import Image from "next/image";
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  badge?: string;
-};
+import type { Product } from "@/src/types/product";
 
 export default function ProductCard({
   product,

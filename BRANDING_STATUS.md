@@ -44,7 +44,7 @@
    └─ Enhanced SEO keywords
    └─ Proper locale (en_IN)
 
-✅ scripts/generate-branding-assets.js
+✅ scripts/generate-branding-assets.cjs
    └─ SVG to PNG converter
    └─ Creates 4 icon variants
    └─ Automated image generation
@@ -117,7 +117,7 @@
 
 ### In `scripts/` directory:
 ```
-✅ generate-branding-assets.js   (ready) Image converter
+✅ generate-branding-assets.cjs   (ready) Image converter
 ```
 
 ### Documentation:
@@ -148,7 +148,7 @@
 **Creates all 4 icons automatically**
 ```bash
 npm install --save-dev sharp
-node scripts/generate-branding-assets.js
+node scripts/generate-branding-assets.cjs
 ```
 
 ### 🔵 OPTION 3: CLI TOOL (3 min)
@@ -246,7 +246,7 @@ Overall Progress: 70%
 **Commands:**
 - Test: `npm run dev`
 - Build: `npm run build`
-- Convert: `node scripts/generate-branding-assets.js`
+- Convert: `node scripts/generate-branding-assets.cjs`
 - Deploy: `git push origin main`
 
 ---

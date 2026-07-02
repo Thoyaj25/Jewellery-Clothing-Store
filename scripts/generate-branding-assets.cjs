@@ -6,7 +6,7 @@
  * This script converts SVG branding files to PNG format.
  * 
  * Usage:
- *   node scripts/generate-branding-assets.js
+ *   node scripts/generate-branding-assets.cjs
  * 
  * Requirements:
  *   npm install sharp

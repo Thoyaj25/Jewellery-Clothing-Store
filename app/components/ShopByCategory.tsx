@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export default function ShopByCategory() {
   const images = [
     "/products/jewellery/gold-necklace.jpeg",
@@ -25,9 +28,11 @@ export default function ShopByCategory() {
               key={index}
               className="overflow-hidden rounded-xl border border-amber-600/20"
             >
-              <img
+              <Image
                 src={image}
                 alt={`Category ${index + 1}`}
+                width={400}
+                height={256}
                 className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -35,12 +40,12 @@ export default function ShopByCategory() {
         </div>
 
         <div className="text-center mt-8">
-          <a
+          <Link
             href="/jewellery"
             className="inline-block bg-gradient-to-r from-amber-500 to-yellow-400 text-black px-8 py-3 rounded font-medium"
           >
             Explore Collections →
-          </a>
+          </Link>
         </div>
       </div>
     </section>

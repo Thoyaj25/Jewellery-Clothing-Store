@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import sql from "@/src/lib/db";
-import { ensureAuditTable } from "@/src/lib/audit";
 
 export async function GET(req: Request) {
   try {
-    await ensureAuditTable();
-
     const url = new URL(req.url);
 
     const page = Math.max(
@@ -100,8 +97,11 @@ export async function GET(req: Request) {
     console.error("AUDIT GET ERROR:", err);
 
     return NextResponse.json(
-      { error: String(err) },
-      { status: 500 }
+      {
+        error: "DB unavailable",
+        code: "DB_UNAVAILABLE",
+      },
+      { status: 503 }
     );
   }
 }

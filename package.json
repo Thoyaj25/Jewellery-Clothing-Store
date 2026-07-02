@@ -6,6 +6,7 @@
     "dev": "next dev --port 3006",
     "build": "next build",
     "start": "next start --port 3006",
+    "seed": "node scripts/seed-products.mjs",
     "lint": "eslint"
   },
   "dependencies": {

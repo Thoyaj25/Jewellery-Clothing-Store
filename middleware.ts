@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import type { JWT } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -14,9 +15,9 @@ export async function middleware(req: NextRequest) {
   // Allow GET on /api/products
   if (protectApi && req.method === "GET") return NextResponse.next();
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const token = (await getToken({ req, secret: process.env.NEXTAUTH_SECRET })) as JWT | null;
 
-  if (token && (token as any).isAdmin) {
+  if (token?.isAdmin) {
     return NextResponse.next();
   }
 

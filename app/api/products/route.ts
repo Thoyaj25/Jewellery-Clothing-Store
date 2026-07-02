@@ -5,10 +5,15 @@ export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
 
-    const q = url.searchParams.get("q");
-    const category = url.searchParams.get("category");
-    const min = url.searchParams.get("min");
-    const max = url.searchParams.get("max");
+    const q = url.searchParams.get("q")?.trim();
+    const category = url.searchParams.get("category")?.trim();
+    const minParam = url.searchParams.get("min")?.trim();
+    const maxParam = url.searchParams.get("max")?.trim();
+
+    const minValue = minParam ? Number(minParam) : null;
+    const maxValue = maxParam ? Number(maxParam) : null;
+    const hasMin = minValue !== null && !Number.isNaN(minValue);
+    const hasMax = maxValue !== null && !Number.isNaN(maxValue);
 
     let products;
 
@@ -26,18 +31,18 @@ export async function GET(req: NextRequest) {
         WHERE category = ${category}
         ORDER BY id
       `;
-    } else if (min) {
+    } else if (hasMin) {
       products = await sql`
         SELECT id, name, category, price, image, description
         FROM products
-        WHERE price >= ${Number(min)}
+        WHERE price >= ${minValue}
         ORDER BY id
       `;
-    } else if (max) {
+    } else if (hasMax) {
       products = await sql`
         SELECT id, name, category, price, image, description
         FROM products
-        WHERE price <= ${Number(max)}
+        WHERE price <= ${maxValue}
         ORDER BY id
       `;
     } else {
@@ -53,8 +58,11 @@ export async function GET(req: NextRequest) {
     console.error("PRODUCTS GET ERROR:", error);
 
     return NextResponse.json(
-      { error: String(error) },
-      { status: 500 }
+      {
+        error: "Database unavailable",
+        code: "DB_UNAVAILABLE",
+      },
+      { status: 503 }
     );
   }
 }
