@@ -6,27 +6,46 @@ import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
 
 export default function CartView() {
-  const { items, clear, totalPrice, totalCount } = useCart();
+  const {
+    items,
+    clear,
+    totalPrice,
+    totalCount,
+    mounted,
+  } = useCart();
+
+  // Prevent hydration mismatch while loading localStorage
+  if (!mounted) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <p className="text-zinc-400 text-lg">Loading cart...</p>
+      </div>
+    );
+  }
 
   // Calculate shipping
   const TAX_RATE = 0.1; // 10%
   const FREE_SHIPPING_THRESHOLD = 500;
-  const SHIPPING_COST = totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 50;
+  const SHIPPING_COST =
+    totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 50;
 
   if (items.length === 0) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🛒</div>
+
           <h2 className="text-2xl font-bold text-white mb-2">
             Your cart is empty
           </h2>
+
           <p className="text-zinc-400 mb-6">
             Explore our collection and add some items!
           </p>
+
           <Link
-            href="/shop"
-            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors"
+            href="/products"
+            className="inline-block rounded-lg bg-green-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-green-700"
           >
             Start Shopping
           </Link>
@@ -39,20 +58,20 @@ export default function CartView() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="mb-2 text-3xl font-bold text-white">
           Shopping Cart
         </h1>
+
         <p className="text-zinc-400">
           {totalCount} item{totalCount !== 1 ? "s" : ""} in your cart
         </p>
       </div>
 
-      {/* Main Content - Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items - Left Side (2/3 width) */}
+      {/* Main Content */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {/* Cart Items */}
         <div className="lg:col-span-2">
-          <div className="bg-zinc-900/50 rounded-2xl p-6 border border-zinc-800">
-            {/* Items List */}
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
             <div className="space-y-6">
               {items.map((item) => (
                 <CartItem
@@ -66,17 +85,18 @@ export default function CartView() {
               ))}
             </div>
 
-            {/* Cart Actions */}
-            <div className="mt-8 pt-6 border-t border-zinc-700 flex justify-between">
+            {/* Actions */}
+            <div className="mt-8 flex justify-between border-t border-zinc-700 pt-6">
               <button
-                onClick={() => clear()}
-                className="text-red-500 hover:text-red-400 font-medium transition-colors"
+                onClick={clear}
+                className="font-medium text-red-500 transition-colors hover:text-red-400"
               >
                 Clear Cart
               </button>
+
               <Link
-                href="/shop"
-                className="text-green-500 hover:text-green-400 font-medium transition-colors"
+                href="/products"
+                className="font-medium text-green-500 transition-colors hover:text-green-400"
               >
                 Continue Shopping
               </Link>
@@ -84,7 +104,7 @@ export default function CartView() {
           </div>
         </div>
 
-        {/* Order Summary - Right Side (1/3 width) */}
+        {/* Summary */}
         <div className="lg:col-span-1">
           <CartSummary
             subtotal={totalPrice}

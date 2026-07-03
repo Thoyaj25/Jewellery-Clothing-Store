@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import sql from "@/src/lib/db";
+import { getProducts } from "@/src/services/productService";
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,42 +15,27 @@ export async function GET(req: NextRequest) {
     const hasMin = minValue !== null && !Number.isNaN(minValue);
     const hasMax = maxValue !== null && !Number.isNaN(maxValue);
 
-    let products;
+    let products = await getProducts();
 
     if (q) {
-      products = await sql`
-        SELECT id, name, category, price, image, description
-        FROM products
-        WHERE name ILIKE ${`%${q}%`}
-        ORDER BY id
-      `;
-    } else if (category) {
-      products = await sql`
-        SELECT id, name, category, price, image, description
-        FROM products
-        WHERE category = ${category}
-        ORDER BY id
-      `;
-    } else if (hasMin) {
-      products = await sql`
-        SELECT id, name, category, price, image, description
-        FROM products
-        WHERE price >= ${minValue}
-        ORDER BY id
-      `;
-    } else if (hasMax) {
-      products = await sql`
-        SELECT id, name, category, price, image, description
-        FROM products
-        WHERE price <= ${maxValue}
-        ORDER BY id
-      `;
-    } else {
-      products = await sql`
-        SELECT id, name, category, price, image, description
-        FROM products
-        ORDER BY id
-      `;
+      const normalizedQuery = q.toLowerCase();
+      products = products.filter((product) =>
+        product.name.toLowerCase().includes(normalizedQuery)
+      );
+    }
+
+    if (category) {
+      products = products.filter(
+        (product) => product.category === category
+      );
+    }
+
+    if (hasMin) {
+      products = products.filter((product) => product.price >= minValue);
+    }
+
+    if (hasMax) {
+      products = products.filter((product) => product.price <= maxValue);
     }
 
     return NextResponse.json(products);
@@ -59,8 +44,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Database unavailable",
-        code: "DB_UNAVAILABLE",
+        error: "Products service unavailable",
+        code: "SERVICE_UNAVAILABLE",
       },
       { status: 503 }
     );

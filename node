@@ -1,0 +1,14 @@
+import postgres from "postgres";
+
+const sql = postgres(
+  'postgresql://neondb_owner:YOUR_PASSWORD@ep-square-sky-atu055e1-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require'
+);
+
+try {
+  const result = await sql`SELECT NOW()`;
+  console.log(result);
+} catch (e) {
+  console.error(e);
+} finally {
+  await sql.end();
+}

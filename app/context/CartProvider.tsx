@@ -1,6 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type CartItem = {
   id: string | number;
@@ -18,6 +23,7 @@ type CartContextValue = {
   clear: () => void;
   totalCount: number;
   totalPrice: number;
+  mounted: boolean;
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
@@ -37,26 +43,37 @@ export function CartProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
+  // Always start with an empty cart on both server and client
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [mounted, setMounted] = useState(false);
 
-    try {
-      const raw = localStorage.getItem("cart:v1");
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  });
-
+  // Load cart from localStorage AFTER hydration
   useEffect(() => {
     try {
+      const raw = localStorage.getItem("cart:v1");
+
+      if (raw) {
+        setItems(JSON.parse(raw));
+      }
+    } catch (error) {
+      console.error("Failed to load cart:", error);
+    } finally {
+      setMounted(true);
+    }
+  }, []);
+
+  // Save cart only after it has been loaded
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+
+    try {
       localStorage.setItem("cart:v1", JSON.stringify(items));
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Failed to save cart:", error);
     }
-  }, [items]);
+  }, [items, mounted]);
 
   const addItem = (
     item: Omit<CartItem, "quantity">,
@@ -130,6 +147,7 @@ export function CartProvider({
         clear,
         totalCount,
         totalPrice,
+        mounted,
       }}
     >
       {children}

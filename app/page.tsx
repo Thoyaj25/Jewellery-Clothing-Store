@@ -1,4 +1,4 @@
-import sql from "@/src/lib/db";
+import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
 import ProductGrid, { type Product } from "./components/ProductGrid";
 import FloatingInstagram from "./components/FloatingInstagram";
@@ -8,18 +8,28 @@ import SpotifySection from "./components/SpotifySection";
 import ShopByCategory from "./components/ShopByCategory";
 import WhyChooseUs from "./components/WhyChooseUs";
 
+export const dynamic = "force-static";
+const PRIORITY_PRODUCT_NAME = "Designer Clutch";
+
+function prioritizeProductOrder(products: Product[]) {
+  const index = products.findIndex(
+    (product) => product.name === PRIORITY_PRODUCT_NAME
+  );
+
+  if (index <= 0) {
+    return products;
+  }
+
+  const prioritizedProduct = products[index];
+  return [
+    prioritizedProduct,
+    ...products.slice(0, index),
+    ...products.slice(index + 1),
+  ];
+}
+
 export default async function Home() {
-  const products = (await sql`
-    SELECT
-      id,
-      name,
-      category,
-      price,
-      image,
-      description
-    FROM products
-    ORDER BY id DESC
-  `) as unknown as Product[];
+  const products = prioritizeProductOrder(await getProducts());
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --port 3006",
     "seed": "node scripts/seed-products.mjs",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "16.2.9",
@@ -23,8 +24,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
-    "tailwindcss": "^4",
     "lightningcss-linux-x64-gnu": "1.32.0",
+    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

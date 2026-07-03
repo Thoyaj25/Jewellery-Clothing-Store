@@ -1,4 +1,4 @@
-import sql from "@/src/lib/db";
+import { getProducts } from "@/src/lib/getProducts";
 import ProductCard from "../components/ProductCard";
 
 type Product = {
@@ -10,21 +10,11 @@ type Product = {
   description: string | null;
 };
 
-export const dynamic = "force-dynamic";
-
 export default async function JewelleryPage() {
-  const jewellery = (await sql`
-    SELECT
-      id,
-      name,
-      category,
-      price,
-      image,
-      description
-    FROM products
-    WHERE category = 'Jewellery'
-    ORDER BY id DESC
-  `) as unknown as Product[];
+  const products = await getProducts();
+  const jewellery = products.filter(
+    (product) => product.category === "Jewellery"
+  );
 
   return (
     <div className="bg-gray-50 min-h-screen">
