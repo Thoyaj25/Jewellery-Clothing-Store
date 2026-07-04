@@ -1,0 +1,23 @@
+import postgres from "postgres";
+import net from "node:net";
+
+const sql = postgres(process.env.DATABASE_URL, {
+  ssl: "require",
+  socket({ host, port }) {
+    return net.createConnection({
+      host,
+      port,
+      family: 4,
+    });
+  },
+});
+
+try {
+  const result = await sql`SELECT NOW() AS now`;
+  console.log("SUCCESS");
+  console.log(result);
+} catch (err) {
+  console.error(err);
+} finally {
+  await sql.end();
+}

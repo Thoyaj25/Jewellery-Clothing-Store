@@ -43,23 +43,28 @@ export function CartProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // Always start with an empty cart on both server and client
-  const [items, setItems] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  // Load cart from localStorage AFTER hydration
-  useEffect(() => {
-    try {
+  // Initialize state lazily to avoid hydration mismatch and React 19 ESLint errors
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
       const raw = localStorage.getItem("cart:v1");
-
-      if (raw) {
-        setItems(JSON.parse(raw));
+      try {
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) {
+        console.error("Failed to load cart:", error);
       }
-    } catch (error) {
-      console.error("Failed to load cart:", error);
-    } finally {
-      setMounted(true);
     }
+    return [];
+  });
+
+  // Sync mounted state after initial render
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, []);
 
   // Save cart only after it has been loaded

@@ -2,6 +2,9 @@ import AdminDashboard from "@/app/components/AdminDashboard";
 import { getProducts } from "@/src/lib/getProducts";
 import type { Product } from "@/src/types/product";
 
+/**
+ * Represents a single audit log entry from the database.
+ */
 type AuditEntry = {
   id: number;
   admin?: string | null;
@@ -12,18 +15,11 @@ type AuditEntry = {
   created_at: string;
 };
 
-type AuditRow = {
-  id: number;
-  admin: string | null;
-  action: string;
-  product_id: number | null;
-  payload: unknown;
-  ip: string | null;
-  created_at: Date | string;
-};
-
 export default async function AdminPage() {
+  // Fetch initial data for the dashboard
   const initialProducts: Product[] = await getProducts();
+  
+  // Initialize state for audit logs
   const initialAudits: AuditEntry[] = [];
   const initialAuditTotal = 0;
   const auditPage = 1;

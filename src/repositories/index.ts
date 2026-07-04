@@ -1,4 +1,4 @@
 import { mockProductRepository } from "./mockProductRepository";
-import type { ProductRepository } from "./productRepository";
 
-export const productRepo: ProductRepository = mockProductRepository;
+// Export the concrete implementation to be used throughout the application
+export const productRepo = mockProductRepository;
