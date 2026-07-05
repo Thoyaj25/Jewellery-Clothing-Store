@@ -1,4 +1,9 @@
-import AdminDashboard from "@/app/components/AdminDashboard";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "@/src/lib/auth";
+import AdminDashboard from "./components/AdminDashboard";
+import DashboardCards from "./components/DashboardCards";
 import { getProducts } from "@/src/lib/getProducts";
 import type { Product } from "@/src/types/product";
 
@@ -16,28 +21,31 @@ type AuditEntry = {
 };
 
 export default async function AdminPage() {
-  // Fetch initial data for the dashboard
+  // Server-side authentication check
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.isAdmin) {
+    redirect("/api/auth/signin?callbackUrl=/admin");
+  }
+
+  // Fetch initial data
   const initialProducts: Product[] = await getProducts();
-  
-  // Initialize state for audit logs
+
+  // Audit placeholders
   const initialAudits: AuditEntry[] = [];
   const initialAuditTotal = 0;
   const auditPage = 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <h1 className="text-3xl font-light mb-6">
-          Admin Dashboard
-        </h1>
+    <>
+      <DashboardCards products={initialProducts} />
 
-        <AdminDashboard
-          initialProducts={initialProducts}
-          initialAudits={initialAudits}
-          initialAuditPage={auditPage}
-          initialAuditTotal={initialAuditTotal}
-        />
-      </div>
-    </div>
+      <AdminDashboard
+        initialProducts={initialProducts}
+        initialAudits={initialAudits}
+        initialAuditPage={auditPage}
+        initialAuditTotal={initialAuditTotal}
+      />
+    </>
   );
 }

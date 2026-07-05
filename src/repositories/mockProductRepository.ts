@@ -87,4 +87,19 @@ export const mockProductRepository: ProductRepository = {
 
     return true;
   },
+
+  async deleteProducts(ids: number[]): Promise<number> {
+    const before = mockData.length;
+
+    const idSet = new Set(ids);
+
+    const remaining = mockData.filter(
+      (product) => !idSet.has(product.id)
+    );
+
+    mockData.length = 0;
+    mockData.push(...remaining);
+
+    return before - remaining.length;
+  },
 };

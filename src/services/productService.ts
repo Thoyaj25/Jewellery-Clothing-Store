@@ -25,3 +25,9 @@ export async function updateProduct(
 export async function deleteProduct(id: number) {
   return productRepo.deleteProduct(id);
 }
+
+export async function deleteProducts(
+  ids: number[]
+): Promise<number> {
+  return productRepo.deleteProducts(ids);
+}

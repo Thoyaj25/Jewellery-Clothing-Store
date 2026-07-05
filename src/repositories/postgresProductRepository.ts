@@ -103,4 +103,14 @@ export const postgresProductRepository: ProductRepository = {
 
     return rows.length > 0;
   },
+
+  async deleteProducts(ids: number[]): Promise<number> {
+    const rows = await sql`
+      DELETE FROM products
+      WHERE id = ANY(${ids})
+      RETURNING id;
+    `;
+
+    return rows.length;
+  },
 };
