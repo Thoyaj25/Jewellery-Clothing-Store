@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProducts } from "@/src/services/productService";
+import { getProducts, createProduct } from "@/src/services/productService";
+import { requireAdmin } from "@/src/lib/requireAdmin";
+
+interface ProductBody {
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  description: string | null;
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -19,6 +28,7 @@ export async function GET(req: NextRequest) {
 
     if (q) {
       const normalizedQuery = q.toLowerCase();
+
       products = products.filter((product) =>
         product.name.toLowerCase().includes(normalizedQuery)
       );
@@ -48,6 +58,75 @@ export async function GET(req: NextRequest) {
         code: "SERVICE_UNAVAILABLE",
       },
       { status: 503 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const auth = await requireAdmin();
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  try {
+    const body = (await req.json()) as ProductBody;
+
+    const name = body.name?.trim();
+    const category = body.category?.trim();
+    const image = body.image?.trim();
+    const description =
+      typeof body.description === "string"
+        ? body.description.trim()
+        : null;
+
+    const price = Number(body.price);
+
+    if (!name || name.length < 2) {
+      return NextResponse.json(
+        { error: "Product name is required." },
+        { status: 400 }
+      );
+    }
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Product category is required." },
+        { status: 400 }
+      );
+    }
+
+    if (!Number.isFinite(price) || price < 0) {
+      return NextResponse.json(
+        { error: "Product price must be a valid non-negative number." },
+        { status: 400 }
+      );
+    }
+
+    if (!image) {
+      return NextResponse.json(
+        { error: "Product image URL is required." },
+        { status: 400 }
+      );
+    }
+
+    const product = await createProduct({
+      name,
+      category,
+      price,
+      image,
+      description: description || null,
+    });
+
+    return NextResponse.json(product, { status: 201 });
+  } catch (error) {
+    console.error("PRODUCTS POST ERROR:", error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to create product.",
+      },
+      { status: 500 }
     );
   }
 }
