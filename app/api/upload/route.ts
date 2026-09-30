@@ -1,5 +1,7 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { requireAdmin } from "@/src/lib/requireAdmin";
 
 export async function POST(request: NextRequest) {
@@ -37,14 +39,30 @@ export async function POST(request: NextRequest) {
     }
 
     const filename = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    const storageName = `${Date.now()}-${filename}`;
 
-    const blob = await put(`products/${Date.now()}-${filename}`, file, {
-      access: "public",
-    });
+    try {
+      const blob = await put(`products/${storageName}`, file, {
+        access: "public",
+      });
 
-    return NextResponse.json({
-      url: blob.url,
-    });
+      return NextResponse.json({
+        url: blob.url,
+      });
+    } catch (blobError) {
+      console.warn("Vercel Blob upload failed, falling back to local storage:", blobError);
+
+      const uploadsDir = join(process.cwd(), "public", "uploads");
+      await mkdir(uploadsDir, { recursive: true });
+
+      const bytes = Buffer.from(await file.arrayBuffer());
+      const localFile = join(uploadsDir, storageName);
+      await writeFile(localFile, bytes);
+
+      return NextResponse.json({
+        url: `/uploads/${storageName}`,
+      });
+    }
   } catch (error) {
     console.error("IMAGE UPLOAD ERROR:", error);
 

@@ -34,6 +34,7 @@ function normalizeStaticProduct(
     image: product.image,
     description: product.description ?? "",
     badge: product.badge,
+    isVisible: true,
   };
 }
 
@@ -44,6 +45,10 @@ const mockData: Product[] = prioritizeProductOrder(
 export const mockProductRepository: ProductRepository = {
   async getProducts() {
     return mockData;
+  },
+
+  async getVisibleProducts() {
+    return mockData.filter((product) => product.isVisible !== false);
   },
 
   async getProductById(id) {

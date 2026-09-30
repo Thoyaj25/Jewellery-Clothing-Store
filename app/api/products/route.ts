@@ -8,6 +8,7 @@ interface ProductBody {
   price: number;
   image: string;
   description: string | null;
+  isVisible?: boolean;
 }
 
 export async function GET(req: NextRequest) {
@@ -116,6 +117,7 @@ export async function POST(req: NextRequest) {
       price,
       image,
       description: description || null,
+      isVisible: typeof body.isVisible === "boolean" ? body.isVisible : true,
     });
 
     return NextResponse.json(product, { status: 201 });

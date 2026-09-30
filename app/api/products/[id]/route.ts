@@ -8,11 +8,12 @@ import { logError } from "@/src/lib/logger";
 import { requireAdmin } from "@/src/lib/requireAdmin";
 
 interface ProductBody {
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  description: string | null;
+  name?: string;
+  category?: string;
+  price?: number;
+  image?: string;
+  description?: string | null;
+  isVisible?: boolean;
 }
 
 function formatError(error: unknown) {
@@ -87,7 +88,14 @@ export async function PUT(
 
     const body: ProductBody = await req.json();
 
-    const product = await updateProduct(id, body);
+    const product = await updateProduct(id, {
+      name: body.name ?? "",
+      category: body.category ?? "",
+      price: body.price ?? 0,
+      image: body.image ?? "",
+      description: body.description ?? null,
+      isVisible: typeof body.isVisible === "boolean" ? body.isVisible : undefined,
+    });
 
     if (!product) {
       return NextResponse.json(

@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { Product } from "@/src/types/product";
 import { useState, useMemo } from "react";
 // 🧱 STEP 17.4 — Fix the import using the correct alias path
-import { deleteProducts } from "../services/adminApi"; 
+import { deleteProducts, toggleProductVisibility } from "../services/adminApi";
 import { toast } from "react-toastify";
 
 type Props = {
@@ -54,10 +54,10 @@ export default function InventoryTable({
 
   const handleBulkDelete = async () => {
     if (selected.size === 0) return;
-    
+
     setIsBulkDeleting(true);
     const toastId = toast.loading(`Deleting ${selected.size} items...`);
-    
+
     try {
       await deleteProducts(Array.from(selected));
       toast.update(toastId, { render: "Items deleted", type: "success", isLoading: false, autoClose: 2000 });
@@ -67,6 +67,29 @@ export default function InventoryTable({
       toast.update(toastId, { render: "Bulk delete failed", type: "error", isLoading: false, autoClose: 3000 });
     } finally {
       setIsBulkDeleting(false);
+    }
+  };
+
+  const handleVisibilityToggle = async (product: Product) => {
+    const nextVisibility = !(product.isVisible ?? true);
+    const toastId = toast.loading(nextVisibility ? "Showing product on site..." : "Hiding product from site...");
+
+    try {
+      await toggleProductVisibility(product.id, nextVisibility);
+      toast.update(toastId, {
+        render: nextVisibility ? "Product is now visible" : "Product is hidden",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      onRefresh?.();
+    } catch (err) {
+      toast.update(toastId, {
+        render: "Visibility update failed",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
@@ -154,6 +177,12 @@ export default function InventoryTable({
                 <td className="p-3 text-right text-amber-500 font-medium">₹{product.price}</td>
                 <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => handleVisibilityToggle(product)}
+                      className={`px-3 py-1 text-xs rounded ${product.isVisible === false ? "bg-amber-600 hover:bg-amber-500" : "bg-emerald-600 hover:bg-emerald-500"}`}
+                    >
+                      {product.isVisible === false ? "Show" : "Hide"}
+                    </button>
                     <button onClick={() => onEdit(product)} className="px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500">Edit</button>
                     <button onClick={() => onDelete(product.id)} className="px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500">Delete</button>
                   </div>

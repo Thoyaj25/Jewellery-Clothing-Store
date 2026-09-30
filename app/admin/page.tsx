@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/lib/auth";
 import AdminDashboard from "./components/AdminDashboard";
 import DashboardCards from "./components/DashboardCards";
-import { getProducts } from "@/src/lib/getProducts";
+import { getProducts } from "@/src/services/productService";
 import type { Product } from "@/src/types/product";
 
 /**

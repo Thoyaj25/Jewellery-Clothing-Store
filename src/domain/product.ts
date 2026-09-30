@@ -6,4 +6,5 @@ export type Product = {
   image: string;
   description: string | null;
   badge?: string;
+  isVisible?: boolean;
 };
