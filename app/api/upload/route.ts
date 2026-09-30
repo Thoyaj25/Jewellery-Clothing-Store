@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
 
     const blob = await put(`products/${Date.now()}-${filename}`, file, {
       access: "public",
+      storeId: "store_KEmYk4cIwQUzn8zN",
     });
 
     return NextResponse.json({

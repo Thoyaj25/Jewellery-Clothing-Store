@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
     // public/ images are supported by default. Keep optimization enabled for production.
     // Set `unoptimized: true` if you plan to use a static export or external image host.
     unoptimized: false,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "kemyk4ciwquzn8zn.public.blob.vercel-storage.com",
+      },
+    ],
   },
   async redirects() {
     return [
