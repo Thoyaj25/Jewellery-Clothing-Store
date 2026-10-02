@@ -77,7 +77,6 @@ export default function AdminDashboard({
       <InventoryTable
         products={products.length ? products : initialProducts}
         onEdit={startEditing}
-        onRefresh={loadProducts} // Passing loadProducts as the refresh handler
       />
 
       {/* AUDIT LOG */}
