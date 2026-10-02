@@ -50,7 +50,9 @@ export default function AuditLogPanel({
 
       <div className="flex gap-2 items-center">
         <button onClick={onPrev}>Prev</button>
-        <div>{page}</div>
+        <div>
+          Page {page} · {total} total
+        </div>
         <button onClick={onNext}>Next</button>
       </div>
     </div>

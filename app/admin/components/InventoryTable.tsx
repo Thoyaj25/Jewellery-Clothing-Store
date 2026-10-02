@@ -38,7 +38,13 @@ export default function InventoryTable({
 
   const toggleSelect = (id: number | string) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+
     setSelected(next);
   };
 
@@ -64,6 +70,7 @@ export default function InventoryTable({
       clearSelection();
       onRefresh?.();
     } catch (err) {
+      console.error("Bulk delete failed:", err);
       toast.update(toastId, { render: "Bulk delete failed", type: "error", isLoading: false, autoClose: 3000 });
     } finally {
       setIsBulkDeleting(false);
@@ -84,6 +91,7 @@ export default function InventoryTable({
       });
       onRefresh?.();
     } catch (err) {
+      console.error("Visibility update failed:", err);
       toast.update(toastId, {
         render: "Visibility update failed",
         type: "error",

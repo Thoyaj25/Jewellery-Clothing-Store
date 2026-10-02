@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent, useEffect, type ChangeEvent } from "react";
+import Image from "next/image";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import type { Product } from "@/src/types/product";
 
 type Props = {
@@ -27,33 +28,34 @@ const getEmptyForm = (): FormState => ({
   isVisible: true,
 });
 
+const getFormFromProduct = (product: Product | null): FormState => {
+  if (!product) {
+    return getEmptyForm();
+  }
+
+  return {
+    name: product.name,
+    category: product.category,
+    price: product.price.toString(),
+    image: product.image,
+    description: product.description ?? "",
+    isVisible: product.isVisible ?? true,
+  };
+};
+
 export default function ProductFormPanel({
   editing,
   onSuccess,
   onCancelEdit,
 }: Props) {
-  const [form, setForm] = useState<FormState>(getEmptyForm());
+  const [form, setForm] = useState<FormState>(
+    () => getFormFromProduct(editing)
+  );
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
 
-  useEffect(() => {
-    if (editing) {
-      setForm({
-        name: editing.name,
-        category: editing.category,
-        price: editing.price.toString(),
-        image: editing.image,
-        description: editing.description ?? "",
-        isVisible: editing.isVisible ?? true,
-      });
-      setPreview(editing.image);
-    } else {
-      setForm(getEmptyForm());
-      setPreview("");
-    }
-  }, [editing]);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -225,9 +227,12 @@ export default function ProductFormPanel({
 
           {preview && (
             <div className="mt-2">
-              <img
+              <Image
                 src={preview}
                 alt="Product preview"
+                width={160}
+                height={160}
+                unoptimized
                 className="h-40 w-40 rounded object-cover border border-zinc-700"
               />
             </div>

@@ -43,7 +43,11 @@ export default function AdminDashboard({
     removeProduct,
     startEditing,
     cancelEditing,
-  } = useAdminData();
+  } = useAdminData({
+    initialProducts,
+    initialAudits,
+    initialAuditTotal,
+  });
 
   const safePage = auditPage || initialAuditPage || 1;
 
@@ -61,6 +65,7 @@ export default function AdminDashboard({
     <div className="space-y-8">
       {/* PRODUCT FORM */}
       <ProductFormPanel
+        key={editingProduct?.id ?? "new"}
         onSuccess={() => {
           loadProducts();
           cancelEditing();

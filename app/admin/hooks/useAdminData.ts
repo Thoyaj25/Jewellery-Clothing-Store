@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { Product } from "@/src/types/product";
 import { toast } from "react-toastify";
 
@@ -107,16 +107,6 @@ export function useAdminData({
     }
   }, []);
 
-  /* =========================
-     INIT
-  ========================= */
-
-  useEffect(() => {
-    // 📍 STEP 13.4: Polished hydration trigger
-    // If we have no data, we fetch; otherwise, we trust the props hydration
-    if (initialProducts.length === 0) loadProducts();
-    if (initialAudits.length === 0) loadAudits(1);
-  }, [loadProducts, loadAudits, initialProducts.length, initialAudits.length]);
 
   return {
     products,
