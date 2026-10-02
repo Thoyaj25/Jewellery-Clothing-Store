@@ -2,11 +2,9 @@
 
 import { useCallback, useState } from "react";
 import type { Product } from "@/src/types/product";
-import { toast } from "react-toastify";
 
 import {
   fetchProducts,
-  deleteProduct,
   fetchAudits,
   type AuditEntry,
 } from "../services/adminApi";
@@ -56,24 +54,6 @@ export function useAdminData({
     }
   }, []);
 
-  // 📍 STEP 13.3: Improved Delete UX (Optimistic Update)
-  const removeProduct = useCallback(async (id: number | string) => {
-    // 1. Snapshot current state for rollback
-    const previousProducts = [...products];
-
-    // 2. Perform optimistic update
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-
-    try {
-      await deleteProduct(id);
-      return true;
-    } catch (err) {
-      // 3. Revert on failure
-      setProducts(previousProducts);
-      toast.error("Failed to delete product");
-      throw err;
-    }
-  }, [products]);
 
   /* =========================
      EDIT STATE
@@ -118,7 +98,6 @@ export function useAdminData({
     auditTotal,
     auditLimit,
     loadProducts,
-    removeProduct,
     loadAudits,
     startEditing,
     cancelEditing,

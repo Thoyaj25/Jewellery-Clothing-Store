@@ -4,14 +4,13 @@ import Image from "next/image";
 import type { Product } from "@/src/types/product";
 import { useState, useMemo } from "react";
 // 🧱 STEP 17.4 — Fix the import using the correct alias path
-import { deleteProducts, toggleProductVisibility } from "../services/adminApi";
+import { toggleProductVisibility } from "../services/adminApi";
 import { toast } from "react-toastify";
 
 type Props = {
   products: Product[];
   loading?: boolean;
   onEdit: (product: Product) => void;
-  onDelete: (id: number | string) => void;
   onRefresh?: () => void;
 };
 
@@ -19,12 +18,10 @@ export default function InventoryTable({
   products,
   loading = false,
   onEdit,
-  onDelete,
   onRefresh,
 }: Props) {
   const [selected, setSelected] = useState<Set<number | string>>(new Set());
   const [filterCategory, setFilterCategory] = useState<string>("All");
-  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const categories = useMemo(() => {
     const unique = Array.from(new Set(products.map((p) => p.category)));
@@ -57,25 +54,6 @@ export default function InventoryTable({
   };
 
   const clearSelection = () => setSelected(new Set());
-
-  const handleBulkDelete = async () => {
-    if (selected.size === 0) return;
-
-    setIsBulkDeleting(true);
-    const toastId = toast.loading(`Deleting ${selected.size} items...`);
-
-    try {
-      await deleteProducts(Array.from(selected));
-      toast.update(toastId, { render: "Items deleted", type: "success", isLoading: false, autoClose: 2000 });
-      clearSelection();
-      onRefresh?.();
-    } catch (err) {
-      console.error("Bulk delete failed:", err);
-      toast.update(toastId, { render: "Bulk delete failed", type: "error", isLoading: false, autoClose: 3000 });
-    } finally {
-      setIsBulkDeleting(false);
-    }
-  };
 
   const handleVisibilityToggle = async (product: Product) => {
     const nextVisibility = !(product.isVisible ?? true);
@@ -129,15 +107,6 @@ export default function InventoryTable({
             {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
           </select>
 
-          {selected.size > 0 && (
-            <button
-              onClick={handleBulkDelete}
-              disabled={isBulkDeleting}
-              className="text-xs px-3 py-1 bg-red-600 rounded hover:bg-red-500 disabled:opacity-50"
-            >
-              Delete {selected.size} Selected
-            </button>
-          )}
         </div>
 
         <div className="flex items-center gap-4">
@@ -192,7 +161,6 @@ export default function InventoryTable({
                       {product.isVisible === false ? "Show" : "Hide"}
                     </button>
                     <button onClick={() => onEdit(product)} className="px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500">Edit</button>
-                    <button onClick={() => onDelete(product.id)} className="px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500">Delete</button>
                   </div>
                 </td>
               </tr>

@@ -40,7 +40,6 @@ export default function AdminDashboard({
     editingProduct,
     loadAudits,
     loadProducts,
-    removeProduct,
     startEditing,
     cancelEditing,
   } = useAdminData({
@@ -78,7 +77,6 @@ export default function AdminDashboard({
       <InventoryTable
         products={products.length ? products : initialProducts}
         onEdit={startEditing}
-        onDelete={removeProduct}
         onRefresh={loadProducts} // Passing loadProducts as the refresh handler
       />
 

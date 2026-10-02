@@ -88,13 +88,28 @@ export async function PUT(
 
     const body: ProductBody = await req.json();
 
+    const existingProduct = await getProductById(id);
+
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
     const product = await updateProduct(id, {
-      name: body.name ?? "",
-      category: body.category ?? "",
-      price: body.price ?? 0,
-      image: body.image ?? "",
-      description: body.description ?? null,
-      isVisible: typeof body.isVisible === "boolean" ? body.isVisible : undefined,
+      name: body.name ?? existingProduct.name,
+      category: body.category ?? existingProduct.category,
+      price: body.price ?? existingProduct.price,
+      image: body.image ?? existingProduct.image,
+      description:
+        body.description !== undefined
+          ? body.description
+          : existingProduct.description,
+      isVisible:
+        typeof body.isVisible === "boolean"
+          ? body.isVisible
+          : existingProduct.isVisible,
     });
 
     if (!product) {
