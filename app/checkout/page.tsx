@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useCart } from "../context/CartProvider";
 
-const TAX_RATE = 0.1;
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_COST = 50;
 
@@ -50,10 +49,9 @@ export default function CheckoutPage() {
     );
   }
 
-  const tax = totalPrice * TAX_RATE;
   const shippingCost =
     totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-  const total = totalPrice + tax + shippingCost;
+  const total = totalPrice + shippingCost;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -88,10 +86,6 @@ export default function CheckoutPage() {
     lines.push(
       "",
       `Subtotal: ₹${totalPrice.toLocaleString("en-IN")}`,
-      `Tax (10%): ₹${tax.toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`,
       `Shipping: ${
         shippingCost === 0
           ? "FREE"
@@ -241,17 +235,6 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-zinc-300">
                 <span>Subtotal</span>
                 <span>₹{totalPrice.toLocaleString("en-IN")}</span>
-              </div>
-
-              <div className="flex justify-between text-zinc-300">
-                <span>Tax (10%)</span>
-                <span>
-                  ₹
-                  {tax.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
               </div>
 
               <div className="flex justify-between text-zinc-300">

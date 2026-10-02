@@ -4,19 +4,16 @@ import Link from "next/link";
 
 interface CartSummaryProps {
   subtotal: number;
-  taxRate?: number;
   shippingCost: number;
   itemCount: number;
 }
 
 export default function CartSummary({
   subtotal,
-  taxRate = 0.1,
   shippingCost,
   itemCount,
 }: CartSummaryProps) {
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax + shippingCost;
+  const total = subtotal + shippingCost;
 
   return (
     <div className="sticky top-6 rounded-2xl border border-zinc-700 bg-zinc-800 p-6">
@@ -28,17 +25,6 @@ export default function CartSummary({
         <div className="flex justify-between text-zinc-300">
           <span>Subtotal ({itemCount} items)</span>
           <span>₹{subtotal.toLocaleString("en-IN")}</span>
-        </div>
-
-        <div className="flex justify-between text-zinc-300">
-          <span>Tax (10%)</span>
-          <span>
-            ₹
-            {tax.toLocaleString("en-IN", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </span>
         </div>
 
         <div className="flex justify-between text-zinc-300">
