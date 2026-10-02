@@ -34,6 +34,7 @@ export default function AdminDashboard({
   const {
     products,
     audits,
+    updateProduct,
     loadingAudits,
     auditPage,
     auditTotal,
@@ -77,6 +78,9 @@ export default function AdminDashboard({
       <InventoryTable
         products={products.length ? products : initialProducts}
         onEdit={startEditing}
+        onVisibilityChange={(id, isVisible) => {
+          updateProduct(id, { isVisible });
+        }}
       />
 
       {/* AUDIT LOG */}

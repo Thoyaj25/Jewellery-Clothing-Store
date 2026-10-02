@@ -59,6 +59,14 @@ export function useAdminData({
      EDIT STATE
   ========================= */
 
+  const updateProduct = useCallback((id: number | string, changes: Partial<Product>) => {
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === id ? { ...product, ...changes } : product
+      )
+    );
+  }, []);
+
   const startEditing = useCallback((product: Product) => setEditingProduct(product), []);
   const cancelEditing = useCallback(() => setEditingProduct(null), []);
 
@@ -98,6 +106,7 @@ export function useAdminData({
     auditTotal,
     auditLimit,
     loadProducts,
+    updateProduct,
     loadAudits,
     startEditing,
     cancelEditing,

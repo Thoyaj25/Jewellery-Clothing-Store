@@ -11,18 +11,17 @@ type Props = {
   products: Product[];
   loading?: boolean;
   onEdit: (product: Product) => void;
+  onVisibilityChange: (id: number | string, isVisible: boolean) => void;
 };
 
 export default function InventoryTable({
   products,
   loading = false,
   onEdit,
+  onVisibilityChange,
 }: Props) {
   const [selected, setSelected] = useState<Set<number | string>>(new Set());
   const [filterCategory, setFilterCategory] = useState<string>("All");
-  const [visibilityOverrides, setVisibilityOverrides] = useState<
-    Map<number | string, boolean>
-  >(new Map());
 
   const categories = useMemo(() => {
     const unique = Array.from(new Set(products.map((p) => p.category)));
@@ -57,8 +56,8 @@ export default function InventoryTable({
   const clearSelection = () => setSelected(new Set());
 
   const handleVisibilityToggle = async (product: Product) => {
-    const currentVisibility =
-      visibilityOverrides.get(product.id) ?? product.isVisible ?? true;
+    console.log("[VISIBILITY CLICK]", product.id, product.name, product.isVisible);
+    const currentVisibility = product.isVisible ?? true;
     const nextVisibility = !currentVisibility;
     const toastId = toast.loading(nextVisibility ? "Showing product on site..." : "Hiding product from site...");
 
@@ -68,11 +67,7 @@ export default function InventoryTable({
         nextVisibility
       );
 
-      setVisibilityOverrides((prev) => {
-        const next = new Map(prev);
-        next.set(product.id, updatedProduct.isVisible);
-        return next;
-      });
+      onVisibilityChange(product.id, updatedProduct.isVisible);
       toast.update(toastId, {
         render: nextVisibility ? "Product is now visible" : "Product is hidden",
         type: "success",
@@ -167,9 +162,9 @@ export default function InventoryTable({
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => handleVisibilityToggle(product)}
-                      className={`px-3 py-1 text-xs rounded ${(visibilityOverrides.get(product.id) ?? product.isVisible ?? true) === false ? "bg-amber-600 hover:bg-amber-500" : "bg-emerald-600 hover:bg-emerald-500"}`}
+                      className={`px-3 py-1 text-xs rounded ${(product.isVisible ?? true) === false ? "bg-amber-600 hover:bg-amber-500" : "bg-emerald-600 hover:bg-emerald-500"}`}
                     >
-                      {(visibilityOverrides.get(product.id) ?? product.isVisible ?? true) === false ? "Show" : "Hide"}
+                      {(product.isVisible ?? true) === false ? "Show" : "Hide"}
                     </button>
                     <button onClick={() => onEdit(product)} className="px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500">Edit</button>
                   </div>
