@@ -76,7 +76,7 @@ export default function AdminDashboard({
 
       {/* PRODUCT GRID - 🧱 STEP 18: Wire onRefresh */}
       <InventoryTable
-        products={products.length ? products : initialProducts}
+        products={products}
         onEdit={startEditing}
         onVisibilityChange={(id, isVisible) => {
           updateProduct(id, { isVisible });
