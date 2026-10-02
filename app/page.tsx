@@ -7,6 +7,7 @@ import Testimonials from "./components/Testimonials";
 import SpotifySection from "./components/SpotifySection";
 import ShopByCategory from "./components/ShopByCategory";
 import WhyChooseUs from "./components/WhyChooseUs";
+import WebsiteQRCode from "./components/WebsiteQRCode";
 
 export const dynamic = "force-dynamic";
 const PRIORITY_PRODUCT_NAME = "Designer Clutch";
@@ -85,6 +86,8 @@ export default async function Home() {
         <ShopByCategory />
 
         <SpotifySection />
+
+        <WebsiteQRCode />
       </main>
 
       <FloatingWhatsApp />
