@@ -5,9 +5,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const connectionUrl = new URL(process.env.DATABASE_URL);
-const endpoint = connectionUrl.hostname
-  .split(".")[0]
-  .replace(/-pooler$/, "");
+const endpoint = connectionUrl.hostname.split(".")[0];
 
 const pool = new Pool({
   host: connectionUrl.hostname,
