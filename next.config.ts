@@ -2,10 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // public/ images are supported by default. Keep optimization enabled for production.
-    // Set `unoptimized: true` if you plan to use a static export or external image host.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
     unoptimized: false,
   },
+
   async redirects() {
     return [
       {

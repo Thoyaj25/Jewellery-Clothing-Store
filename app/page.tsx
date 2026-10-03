@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
 import ProductGrid, { type Product } from "./components/ProductGrid";
@@ -79,6 +80,54 @@ export default async function Home() {
         </section>
 
         <WhyChooseUs />
+
+        <section
+          id="founder"
+          className="border-t border-amber-600/20 pt-16 md:pt-24 mt-16 md:mt-24 mb-20"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+            <div className="relative mx-auto w-full max-w-md">
+              <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-amber-500/20 via-transparent to-amber-700/10 blur-xl" />
+
+              <div className="relative overflow-hidden rounded-3xl border border-amber-600/30 bg-black">
+                <Image
+                  src="/images/founder/durga-prasad-founder.png"
+                  alt="Durga Prasad - Founder and Creator of Ultimate Collections"
+                  width={1024}
+                  height={1536}
+                  className="h-auto w-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="text-center md:text-left">
+              <p className="mb-3 text-sm uppercase tracking-[0.3em] text-amber-400">
+                The Creator Behind Ultimate Collections
+              </p>
+
+              <h2 className="mb-6 text-3xl font-light sm:text-4xl md:text-5xl">
+                Meet the Founder
+              </h2>
+
+              <p className="mb-5 text-lg leading-8 text-gray-300">
+                Welcome to Ultimate Collections — a fashion destination
+                created with a passion for elegant jewellery, sarees,
+                clothing, and accessories.
+              </p>
+
+              <p className="mb-8 leading-7 text-gray-400">
+                I&apos;m Durga Prasad, the creator behind Ultimate Collections.
+                The vision is to bring together timeless Indian fashion and
+                modern online shopping in one beautiful experience.
+              </p>
+
+              <div className="inline-flex items-center gap-3 rounded-full border border-amber-600/30 px-5 py-3 text-sm text-amber-300">
+                <span className="text-lg">✦</span>
+                <span>Ultimate Collections</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <Testimonials />
 

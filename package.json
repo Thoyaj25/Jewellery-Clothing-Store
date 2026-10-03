@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
+    "cloudinary": "^2.11.0",
     "next": "16.2.9",
     "next-auth": "^4.24.14",
     "react": "19.2.4",

@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
         const adminUser = process.env.ADMIN_USER;
         const adminPass = process.env.ADMIN_PASS;
 
+
         if (!adminUser || !adminPass) {
           throw new Error(
             "ADMIN_USER and ADMIN_PASS environment variables are not configured."
