@@ -1,7 +1,5 @@
-import net from "node:net";
+import dns from "node:dns";
 import { Pool } from "pg";
-
-net.setDefaultAutoSelectFamily(false);
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not defined");
@@ -10,23 +8,42 @@ if (!process.env.DATABASE_URL) {
 const connectionUrl = new URL(process.env.DATABASE_URL);
 const endpoint = connectionUrl.hostname.split(".")[0];
 
-const pool = new Pool({
-  host: connectionUrl.hostname,
-  port: Number(connectionUrl.port || 5432),
-  database: connectionUrl.pathname.replace(/^\//, ""),
-  user: decodeURIComponent(connectionUrl.username),
-  password: decodeURIComponent(connectionUrl.password),
-  ssl: { rejectUnauthorized: false },
-  options: `endpoint=${endpoint}`,
-  max: 5,
-  idleTimeoutMillis: 20000,
-  connectionTimeoutMillis: 30000,
-});
+let poolPromise: Promise<Pool> | undefined;
 
-export const query = <T extends Record<string, unknown> = Record<string, unknown>>(
+function getPool(): Promise<Pool> {
+  if (!poolPromise) {
+    poolPromise = dns.promises.resolve4(connectionUrl.hostname).then((addresses) => {
+      if (!addresses.length) {
+        throw new Error(`No IPv4 address found for ${connectionUrl.hostname}`);
+      }
+
+      return new Pool({
+        host: addresses[0],
+        port: Number(connectionUrl.port || 5432),
+        database: connectionUrl.pathname.replace(/^\//, ""),
+        user: decodeURIComponent(connectionUrl.username),
+        password: decodeURIComponent(connectionUrl.password),
+        ssl: { rejectUnauthorized: false },
+        options: `endpoint=${endpoint}`,
+        max: 5,
+        idleTimeoutMillis: 20000,
+        connectionTimeoutMillis: 30000,
+      });
+    });
+  }
+
+  return poolPromise;
+}
+
+export const query = async <
+  T extends Record<string, unknown> = Record<string, unknown>
+>(
   text: string,
   params: unknown[] = []
-) => pool.query<T>(text, params);
+) => {
+  const pool = await getPool();
+  return pool.query<T>(text, params);
+};
 
 async function ensureProductsTable() {
   try {
@@ -54,5 +71,3 @@ async function ensureProductsTable() {
 }
 
 void ensureProductsTable();
-
-export default pool;
