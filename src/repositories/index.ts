@@ -1,4 +1,3 @@
-import { mockProductRepository } from "./mockProductRepository";
+import { postgresProductRepository } from "./postgresProductRepository";
 
-// Export the concrete implementation to be used throughout the application
-export const productRepo = mockProductRepository;
+export const productRepo = postgresProductRepository;

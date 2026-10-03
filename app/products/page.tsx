@@ -1,7 +1,7 @@
 import ProductGrid from "@/app/components/ProductGrid";
 import { getProducts } from "@/src/lib/getProducts";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 const PRIORITY_PRODUCT_NAME = "Designer Clutch";
 
 function prioritizeProductOrder(products: Awaited<ReturnType<typeof getProducts>>) {

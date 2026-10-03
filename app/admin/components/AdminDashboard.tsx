@@ -34,16 +34,20 @@ export default function AdminDashboard({
   const {
     products,
     audits,
+    updateProduct,
     loadingAudits,
     auditPage,
     auditTotal,
     editingProduct,
     loadAudits,
     loadProducts,
-    removeProduct,
     startEditing,
     cancelEditing,
-  } = useAdminData();
+  } = useAdminData({
+    initialProducts,
+    initialAudits,
+    initialAuditTotal,
+  });
 
   const safePage = auditPage || initialAuditPage || 1;
 
@@ -61,6 +65,7 @@ export default function AdminDashboard({
     <div className="space-y-8">
       {/* PRODUCT FORM */}
       <ProductFormPanel
+        key={editingProduct?.id ?? "new"}
         onSuccess={() => {
           loadProducts();
           cancelEditing();
@@ -71,10 +76,11 @@ export default function AdminDashboard({
 
       {/* PRODUCT GRID - 🧱 STEP 18: Wire onRefresh */}
       <InventoryTable
-        products={products.length ? products : initialProducts}
+        products={products}
         onEdit={startEditing}
-        onDelete={removeProduct}
-        onRefresh={loadProducts} // Passing loadProducts as the refresh handler
+        onVisibilityChange={(id, isVisible) => {
+          updateProduct(id, { isVisible });
+        }}
       />
 
       {/* AUDIT LOG */}

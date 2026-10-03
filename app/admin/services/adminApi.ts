@@ -21,6 +21,21 @@ export async function deleteProduct(id: number | string) {
   if (!res.ok) throw new Error("Failed to delete product");
 }
 
+export async function toggleProductVisibility(id: number | string, isVisible: boolean) {
+  const res = await fetch(`/api/products/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isVisible }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to update product visibility");
+  }
+
+  return res.json();
+}
+
 // 🧱 STEP 17.3 — Add the frontend service for bulk delete
 export async function deleteProducts(ids: (number | string)[]) {
   const res = await fetch("/api/products/bulk-delete", {

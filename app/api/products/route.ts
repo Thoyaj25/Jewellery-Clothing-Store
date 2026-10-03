@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createProduct,
-  getProducts,
-} from "@/src/services/productService";
+import { getProducts, createProduct } from "@/src/services/productService";
+import { requireAdmin } from "@/src/lib/requireAdmin";
+
+interface ProductBody {
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  description: string | null;
+  isVisible?: boolean;
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +22,6 @@ export async function GET(req: NextRequest) {
 
     const minValue = minParam ? Number(minParam) : null;
     const maxValue = maxParam ? Number(maxParam) : null;
-
     const hasMin = minValue !== null && !Number.isNaN(minValue);
     const hasMax = maxValue !== null && !Number.isNaN(maxValue);
 
@@ -58,32 +64,49 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireAdmin();
+
+  if (!auth.ok) {
+    return auth.response;
+  }
+
   try {
-    const body = await req.json();
+    const body = (await req.json()) as ProductBody;
 
-    const name = String(body.name ?? "").trim();
-    const category = String(body.category ?? "").trim();
+    const name = body.name?.trim();
+    const category = body.category?.trim();
+    const image = body.image?.trim();
+    const description =
+      typeof body.description === "string"
+        ? body.description.trim()
+        : null;
+
     const price = Number(body.price);
-    const image = String(body.image ?? "").trim();
-    const description = String(body.description ?? "").trim();
 
-    if (name.length < 2) {
+    if (!name || name.length < 2) {
       return NextResponse.json(
-        { error: "Product name is required" },
+        { error: "Product name is required." },
         { status: 400 }
       );
     }
 
     if (!category) {
       return NextResponse.json(
-        { error: "Category is required" },
+        { error: "Product category is required." },
         { status: 400 }
       );
     }
 
-    if (Number.isNaN(price) || price < 0) {
+    if (!Number.isFinite(price) || price < 0) {
       return NextResponse.json(
-        { error: "Invalid price" },
+        { error: "Product price must be a valid non-negative number." },
+        { status: 400 }
+      );
+    }
+
+    if (!image) {
+      return NextResponse.json(
+        { error: "Product image URL is required." },
         { status: 400 }
       );
     }
@@ -93,7 +116,8 @@ export async function POST(req: NextRequest) {
       category,
       price,
       image,
-      description,
+      description: description || null,
+      isVisible: typeof body.isVisible === "boolean" ? body.isVisible : true,
     });
 
     return NextResponse.json(product, { status: 201 });
@@ -102,8 +126,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Failed to create product",
-        code: "CREATE_PRODUCT_FAILED",
+        error: "Failed to create product.",
       },
       { status: 500 }
     );

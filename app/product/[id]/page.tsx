@@ -5,15 +5,8 @@ import { getProducts } from "@/src/lib/getProducts";
 import AddToCart from "@/app/components/AddToCart";
 import OrderButtons from "@/app/components/OrderButtons";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-
-  return products.map((product) => ({
-    id: product.id.toString(),
-  }));
-}
 
 type Props = {
   params: Promise<{

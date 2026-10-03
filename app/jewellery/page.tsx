@@ -2,6 +2,8 @@ import { getProducts } from "@/src/lib/getProducts";
 import ProductCard from "../components/ProductCard";
 import type { Product } from "@/src/types/product";
 
+export const dynamic = "force-dynamic";
+
 export default async function JewelleryPage() {
   const allProducts = await getProducts();
   const jewellery = allProducts.filter(

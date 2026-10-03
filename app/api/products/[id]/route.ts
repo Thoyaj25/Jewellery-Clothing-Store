@@ -8,11 +8,12 @@ import { logError } from "@/src/lib/logger";
 import { requireAdmin } from "@/src/lib/requireAdmin";
 
 interface ProductBody {
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  description: string | null;
+  name?: string;
+  category?: string;
+  price?: number;
+  image?: string;
+  description?: string | null;
+  isVisible?: boolean;
 }
 
 function formatError(error: unknown) {
@@ -87,7 +88,29 @@ export async function PUT(
 
     const body: ProductBody = await req.json();
 
-    const product = await updateProduct(id, body);
+    const existingProduct = await getProductById(id);
+
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    const product = await updateProduct(id, {
+      name: body.name ?? existingProduct.name,
+      category: body.category ?? existingProduct.category,
+      price: body.price ?? existingProduct.price,
+      image: body.image ?? existingProduct.image,
+      description:
+        body.description !== undefined
+          ? body.description
+          : existingProduct.description,
+      isVisible:
+        typeof body.isVisible === "boolean"
+          ? body.isVisible
+          : existingProduct.isVisible,
+    });
 
     if (!product) {
       return NextResponse.json(

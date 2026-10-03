@@ -1,12 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import type { Product } from "@/src/types/product";
-import { toast } from "react-toastify";
 
 import {
   fetchProducts,
-  deleteProduct,
   fetchAudits,
   type AuditEntry,
 } from "../services/adminApi";
@@ -22,15 +20,15 @@ type UseAdminDataProps = {
   initialAuditTotal?: number;
 };
 
-export function useAdminData({ 
-  initialProducts = [], 
+export function useAdminData({
+  initialProducts = [],
   initialAudits = [],
-  initialAuditTotal = 0 
+  initialAuditTotal = 0
 }: UseAdminDataProps = {}) {
-  
+
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [audits, setAudits] = useState<AuditEntry[]>(initialAudits);
-  
+
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [loadingAudits, setLoadingAudits] = useState(false);
@@ -56,28 +54,18 @@ export function useAdminData({
     }
   }, []);
 
-  // 📍 STEP 13.3: Improved Delete UX (Optimistic Update)
-  const removeProduct = useCallback(async (id: number | string) => {
-    // 1. Snapshot current state for rollback
-    const previousProducts = [...products];
-
-    // 2. Perform optimistic update
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-
-    try {
-      await deleteProduct(id);
-      return true;
-    } catch (err) {
-      // 3. Revert on failure
-      setProducts(previousProducts);
-      toast.error("Failed to delete product");
-      throw err;
-    }
-  }, [products]);
 
   /* =========================
      EDIT STATE
   ========================= */
+
+  const updateProduct = useCallback((id: number | string, changes: Partial<Product>) => {
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === id ? { ...product, ...changes } : product
+      )
+    );
+  }, []);
 
   const startEditing = useCallback((product: Product) => setEditingProduct(product), []);
   const cancelEditing = useCallback(() => setEditingProduct(null), []);
@@ -107,16 +95,6 @@ export function useAdminData({
     }
   }, []);
 
-  /* =========================
-     INIT
-  ========================= */
-
-  useEffect(() => {
-    // 📍 STEP 13.4: Polished hydration trigger
-    // If we have no data, we fetch; otherwise, we trust the props hydration
-    if (initialProducts.length === 0) loadProducts();
-    if (initialAudits.length === 0) loadAudits(1);
-  }, [loadProducts, loadAudits, initialProducts.length, initialAudits.length]);
 
   return {
     products,
@@ -128,7 +106,7 @@ export function useAdminData({
     auditTotal,
     auditLimit,
     loadProducts,
-    removeProduct,
+    updateProduct,
     loadAudits,
     startEditing,
     cancelEditing,

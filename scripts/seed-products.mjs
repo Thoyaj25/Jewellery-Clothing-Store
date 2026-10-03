@@ -1,9 +1,17 @@
 import fs from "node:fs";
 import path from "node:path";
-import postgres from "postgres";
+import { Client } from "pg";
 
-const envPath = path.resolve(process.cwd(), ".env.production.local");
-if (!process.env.DATABASE_URL && fs.existsSync(envPath)) {
+const envPaths = [
+  path.resolve(process.cwd(), ".env.local"),
+  path.resolve(process.cwd(), ".env.production.local"),
+];
+
+for (const envPath of envPaths) {
+  if (process.env.DATABASE_URL || !fs.existsSync(envPath)) {
+    continue;
+  }
+
   const envContents = fs.readFileSync(envPath, "utf8");
   for (const line of envContents.split(/\r?\n/)) {
     const trimmed = line.trim();
@@ -25,17 +33,33 @@ if (!connectionString) {
   throw new Error("Missing DATABASE_URL environment variable");
 }
 
-const useSsl =
-  process.env.NODE_ENV === "production" ||
-  connectionString.includes("sslmode=require");
+const url = new URL(connectionString);
+const endpoint = url.hostname.split(".")[0].replace(/-pooler$/, "");
 
-const sql = postgres(connectionString, {
-  ssl: useSsl ? "require" : undefined,
-  connect_timeout: 30,
-  max: 1,
-  idle_timeout: 20,
-  prepare: false,
+const sql = new Client({
+  host: "3.220.135.142",
+  port: Number(url.port || 5432),
+  database: url.pathname.replace(/^\//, ""),
+  user: decodeURIComponent(url.username),
+  password: decodeURIComponent(url.password),
+  ssl: { rejectUnauthorized: false },
+  options: `endpoint=${endpoint}`,
 });
+
+await sql.connect();
+
+await sql.query(`
+  CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    price NUMERIC(12, 2) NOT NULL CHECK (price >= 0),
+    image TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+`);
 
 const products = [
   {
@@ -186,29 +210,25 @@ async function main() {
 
   try {
     for (const product of products) {
-      const existing = await sql`
-        SELECT id
-        FROM products
-        WHERE name = ${product.name}
-          AND category = ${product.category}
-          AND price = ${product.price}
-      `;
+      const existing = await sql.query(
+        `SELECT id
+         FROM products
+         WHERE name = $1
+           AND category = $2
+           AND price = $3`,
+        [product.name, product.category, product.price]
+      );
 
-      if (existing.length > 0) {
+      if (existing.rows.length > 0) {
         skipped.push(product.name);
         continue;
       }
 
-      await sql`
-        INSERT INTO products (name, category, price, image, description)
-        VALUES (
-          ${product.name},
-          ${product.category},
-          ${product.price},
-          ${product.image},
-          ${product.description}
-        )
-      `;
+      await sql.query(
+        `INSERT INTO products (name, category, price, image, description)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [product.name, product.category, product.price, product.image, product.description]
+      );
       inserted.push(product.name);
     }
 
@@ -221,7 +241,7 @@ async function main() {
     console.error("Failed to seed products:", error);
     process.exit(1);
   } finally {
-    await sql.end({ timeout: 5 });
+    await sql.end();
   }
 }
 

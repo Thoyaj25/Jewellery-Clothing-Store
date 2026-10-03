@@ -5,6 +5,10 @@ export async function getProducts() {
   return productRepo.getProducts();
 }
 
+export async function getVisibleProducts() {
+  return productRepo.getVisibleProducts();
+}
+
 export async function getProductById(id: number) {
   return productRepo.getProductById(id);
 }

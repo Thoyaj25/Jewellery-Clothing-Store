@@ -24,7 +24,6 @@ export default function CartView() {
   }
 
   // Calculate shipping
-  const TAX_RATE = 0.1; // 10%
   const FREE_SHIPPING_THRESHOLD = 500;
   const SHIPPING_COST =
     totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 50;
@@ -108,7 +107,6 @@ export default function CartView() {
         <div className="lg:col-span-1">
           <CartSummary
             subtotal={totalPrice}
-            taxRate={TAX_RATE}
             shippingCost={SHIPPING_COST}
             itemCount={totalCount}
           />

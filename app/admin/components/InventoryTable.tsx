@@ -4,27 +4,24 @@ import Image from "next/image";
 import type { Product } from "@/src/types/product";
 import { useState, useMemo } from "react";
 // 🧱 STEP 17.4 — Fix the import using the correct alias path
-import { deleteProducts } from "../services/adminApi"; 
+import { toggleProductVisibility } from "../services/adminApi";
 import { toast } from "react-toastify";
 
 type Props = {
   products: Product[];
   loading?: boolean;
   onEdit: (product: Product) => void;
-  onDelete: (id: number | string) => void;
-  onRefresh?: () => void;
+  onVisibilityChange: (id: number | string, isVisible: boolean) => void;
 };
 
 export default function InventoryTable({
   products,
   loading = false,
   onEdit,
-  onDelete,
-  onRefresh,
+  onVisibilityChange,
 }: Props) {
   const [selected, setSelected] = useState<Set<number | string>>(new Set());
   const [filterCategory, setFilterCategory] = useState<string>("All");
-  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const categories = useMemo(() => {
     const unique = Array.from(new Set(products.map((p) => p.category)));
@@ -38,7 +35,13 @@ export default function InventoryTable({
 
   const toggleSelect = (id: number | string) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+
     setSelected(next);
   };
 
@@ -52,21 +55,33 @@ export default function InventoryTable({
 
   const clearSelection = () => setSelected(new Set());
 
-  const handleBulkDelete = async () => {
-    if (selected.size === 0) return;
-    
-    setIsBulkDeleting(true);
-    const toastId = toast.loading(`Deleting ${selected.size} items...`);
-    
+  const handleVisibilityToggle = async (product: Product) => {
+    console.log("[VISIBILITY CLICK]", product.id, product.name, product.isVisible);
+    const currentVisibility = product.isVisible ?? true;
+    const nextVisibility = !currentVisibility;
+    const toastId = toast.loading(nextVisibility ? "Showing product on site..." : "Hiding product from site...");
+
     try {
-      await deleteProducts(Array.from(selected));
-      toast.update(toastId, { render: "Items deleted", type: "success", isLoading: false, autoClose: 2000 });
-      clearSelection();
-      onRefresh?.();
+      const updatedProduct = await toggleProductVisibility(
+        product.id,
+        nextVisibility
+      );
+
+      onVisibilityChange(product.id, updatedProduct.isVisible);
+      toast.update(toastId, {
+        render: nextVisibility ? "Product is now visible" : "Product is hidden",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
     } catch (err) {
-      toast.update(toastId, { render: "Bulk delete failed", type: "error", isLoading: false, autoClose: 3000 });
-    } finally {
-      setIsBulkDeleting(false);
+      console.error("Visibility update failed:", err);
+      toast.update(toastId, {
+        render: "Visibility update failed",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
@@ -98,15 +113,6 @@ export default function InventoryTable({
             {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
           </select>
 
-          {selected.size > 0 && (
-            <button
-              onClick={handleBulkDelete}
-              disabled={isBulkDeleting}
-              className="text-xs px-3 py-1 bg-red-600 rounded hover:bg-red-500 disabled:opacity-50"
-            >
-              Delete {selected.size} Selected
-            </button>
-          )}
         </div>
 
         <div className="flex items-center gap-4">
@@ -154,8 +160,13 @@ export default function InventoryTable({
                 <td className="p-3 text-right text-amber-500 font-medium">₹{product.price}</td>
                 <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => handleVisibilityToggle(product)}
+                      className={`px-3 py-1 text-xs rounded ${(product.isVisible ?? true) === false ? "bg-amber-600 hover:bg-amber-500" : "bg-emerald-600 hover:bg-emerald-500"}`}
+                    >
+                      {(product.isVisible ?? true) === false ? "Show" : "Hide"}
+                    </button>
                     <button onClick={() => onEdit(product)} className="px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500">Edit</button>
-                    <button onClick={() => onDelete(product.id)} className="px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500">Delete</button>
                   </div>
                 </td>
               </tr>
