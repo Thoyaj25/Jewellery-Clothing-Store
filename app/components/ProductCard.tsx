@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "../context/CartProvider";
+import { useWishlist } from "../context/WishlistProvider";
 import Image from "next/image";
 
 import type { Product } from "@/src/types/product";
@@ -16,6 +17,9 @@ export default function ProductCard({
   instagramHandle?: string;
 }) {
   const { addItem } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
+
+  const wishlisted = isWishlisted(product.id);
 
   return (
     <div className="group relative flex flex-col h-full bg-black/40 rounded-lg border border-amber-600/20 overflow-hidden hover:border-amber-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-600/10">
@@ -38,7 +42,29 @@ export default function ProductCard({
         )}
       </Link>
 
-      {/* Product Info */}
+      {/* Wishlist */}
+        <button
+          type="button"
+          aria-label={
+            wishlisted
+              ? `Remove ${product.name} from wishlist`
+              : `Add ${product.name} to wishlist`
+          }
+          aria-pressed={wishlisted}
+          onClick={() =>
+            toggleWishlist({
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+            })
+          }
+          className="absolute top-3 left-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/70 border border-amber-600/30 text-xl text-amber-500 backdrop-blur-sm hover:bg-amber-600 hover:text-black transition-all duration-200"
+        >
+          {wishlisted ? "♥" : "♡"}
+        </button>
+
+        {/* Product Info */}
       <div className="p-3 md:p-4 flex flex-col flex-1">
         <Link href={`/product/${product.id}`} className="block">
           <h3 className="text-white font-light text-base md:text-lg tracking-tight hover:text-amber-600 transition-colors mb-2 line-clamp-2 min-h-[3rem]">
