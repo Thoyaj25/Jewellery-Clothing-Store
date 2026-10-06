@@ -110,6 +110,7 @@ export default function Header() {
           <nav className="md:hidden mt-4 pb-4 flex flex-col gap-3 border-t border-amber-600/20 pt-4">
             <Link
               href="/"
+              onClick={() => setMobileMenuOpen(false)}
               className="text-white hover:text-amber-600 transition text-sm font-light"
             >
               Home
@@ -117,13 +118,49 @@ export default function Header() {
 
             <Link
               href="/jewellery"
+              onClick={() => setMobileMenuOpen(false)}
               className="text-white hover:text-amber-600 transition text-sm font-light"
             >
               Jewellery
             </Link>
 
             <Link
+              href="/products"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              <span>Collections</span>
+            </Link>
+
+            <Link
+              href="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              <span>Wishlist</span>
+              {wishlistMounted && wishlistCount > 0 && (
+                <span className="rounded-full bg-amber-600 px-2 py-0.5 text-xs font-bold text-black">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              <span>Cart</span>
+              {mounted && totalCount > 0 && (
+                <span className="rounded-full bg-amber-600 px-2 py-0.5 text-xs font-bold text-black">
+                  {totalCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
               href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
               className="text-white hover:text-amber-600 transition text-sm font-light"
             >
               Contact
