@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartProvider";
+import { useWishlist } from "../context/WishlistProvider";
 
 export default function Header() {
   const { totalCount } = useCart();
+  const { totalCount: wishlistCount, mounted: wishlistMounted } = useWishlist();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -64,8 +66,19 @@ export default function Header() {
           {/* Right Icons */}
           <div className="flex items-center gap-4">
             {/* Wishlist */}
-            <button onClick={() => router.push("/products")} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-amber-600/10 transition">
+            <button
+              type="button"
+              onClick={() => router.push("/wishlist")}
+              aria-label="Open wishlist"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-amber-600/10 transition relative"
+            >
               <span className="text-xl">♡</span>
+
+              {wishlistMounted && wishlistCount > 0 && (
+                <span className="absolute top-0 right-0 bg-amber-600 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {wishlistCount}
+                </span>
+              )}
             </button>
 
             {/* Cart */}
