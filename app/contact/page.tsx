@@ -1,3 +1,5 @@
+import ContactEnquiryForm from "@/app/components/ContactEnquiryForm";
+
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black py-16 px-6">
@@ -106,67 +108,7 @@ export default function ContactPage() {
               Send an Enquiry
             </h2>
 
-            <form
-              action="https://formsubmit.co/durgapj.badri@gmail.com"
-              method="POST"
-              className="space-y-5"
-            >
-              <input
-                type="hidden"
-                name="_captcha"
-                value="false"
-              />
-
-              <input
-                type="hidden"
-                name="_subject"
-                value="New Enquiry from Ultimate Collections"
-              />
-
-              <input
-                type="hidden"
-                name="_next"
-                value="https://ultimate-collections-store.vercel.app/contact"
-              />
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                required
-                className="w-full bg-black/40 border border-zinc-700 rounded-xl p-4 text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-              />
-
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                required
-                className="w-full bg-black/40 border border-zinc-700 rounded-xl p-4 text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-              />
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Address (Optional)"
-                className="w-full bg-black/40 border border-zinc-700 rounded-xl p-4 text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-              />
-
-              <textarea
-                name="message"
-                placeholder="Tell us what you're looking for..."
-                rows={6}
-                required
-                className="w-full bg-black/40 border border-zinc-700 rounded-xl p-4 text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-              />
-
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-black py-4 rounded-xl font-semibold hover:from-amber-500 hover:to-amber-400 transition duration-300 shadow-lg hover:shadow-amber-600/30"
-              >
-                Send Enquiry
-              </button>
-            </form>
+            <ContactEnquiryForm />
           </div>
         </div>
 
