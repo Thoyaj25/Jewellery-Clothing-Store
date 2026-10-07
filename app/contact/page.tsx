@@ -126,7 +126,7 @@ export default function ContactPage() {
               <input
                 type="hidden"
                 name="_next"
-                value="https://jewellery-clothing-store-2gop24zdn.vercel.app/contact"
+                value="https://ultimate-collections-store.vercel.app/contact"
               />
 
               <input
