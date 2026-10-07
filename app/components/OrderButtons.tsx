@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useCart } from "@/app/context/CartProvider";
+import { InstagramIcon, WhatsAppIcon } from "@/app/components/SocialIcons";
 
 export default function OrderButtons({
   product,
@@ -48,13 +49,16 @@ export default function OrderButtons({
   };
 
   return (
-    <div className="space-y-2 mt-4">
+    <div className="mt-4 flex items-center gap-4">
       {whatsappNumber && (
         <button
+          type="button"
           onClick={openWhatsApp}
-          className="w-full px-4 py-3 bg-emerald-500 text-black font-semibold rounded-lg hover:bg-emerald-400"
+          aria-label="Order via WhatsApp"
+          title="Order via WhatsApp"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md transition-transform hover:scale-110"
         >
-          Order via WhatsApp
+          <WhatsAppIcon className="h-7 w-7" />
         </button>
       )}
 
@@ -63,9 +67,11 @@ export default function OrderButtons({
           href={`https://instagram.com/${instagramHandle}`}
           target="_blank"
           rel="noreferrer"
-          className="block w-full text-center px-4 py-3 border border-pink-400 text-white bg-gradient-to-r from-pink-500 to-pink-400 rounded-lg"
+          aria-label="Message on Instagram"
+          title="Message on Instagram"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-purple-600 via-pink-500 to-orange-400 text-white shadow-md transition-transform hover:scale-110"
         >
-          Message on Instagram
+          <InstagramIcon className="h-7 w-7" />
         </a>
       )}
     </div>

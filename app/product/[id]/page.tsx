@@ -86,6 +86,8 @@ export default async function ProductById({ params }: Props) {
                 name: product.name,
                 price: Number(product.price),
               }}
+              whatsappNumber={process.env.NEXT_PUBLIC_CONTACT_WHATSAPP}
+              instagramHandle={process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE}
             />
           </div>
         </div>
