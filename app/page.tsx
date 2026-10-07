@@ -4,6 +4,7 @@ import Hero from "./components/Hero";
 import ProductGrid, { type Product } from "./components/ProductGrid";
 import FloatingInstagram from "./components/FloatingInstagram";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import FloatingFacebook from "./components/FloatingFacebook";
 import Testimonials from "./components/Testimonials";
 import SpotifySection from "./components/SpotifySection";
 import ShopByCategory from "./components/ShopByCategory";
@@ -142,6 +143,7 @@ export default async function Home() {
       <FloatingWhatsApp />
 
       <FloatingInstagram />
+      <FloatingFacebook />
     </div>
   );
 }
