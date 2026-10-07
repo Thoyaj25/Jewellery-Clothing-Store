@@ -19,6 +19,7 @@ export default function ProductGrid({
 }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [sort, setSort] = useState("default");
 
 
   const categories = [
@@ -48,6 +49,18 @@ export default function ProductGrid({
 
     return matchesSearch && matchesCategory;
 
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sort === "price-low") {
+      return a.price - b.price;
+    }
+
+    if (sort === "price-high") {
+      return b.price - a.price;
+    }
+
+    return 0;
   });
 
 
@@ -110,9 +123,26 @@ export default function ProductGrid({
 
 
 
+        {/* Sorting */}
+        <div className="mb-10 flex justify-end">
+          <label className="flex items-center gap-3 text-sm text-gray-400">
+            <span>Sort by</span>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="bg-black/60 border border-amber-600/30 rounded-full px-4 py-2 text-white focus:outline-none focus:border-amber-600"
+            >
+              <option value="default">Default</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </label>
+        </div>
+
+
       {/* Products */}
       {
-        filteredProducts.length === 0 ?
+        sortedProducts.length === 0 ?
 
         (
 
@@ -143,7 +173,7 @@ export default function ProductGrid({
           ">
 
             {
-              filteredProducts.map((product) => (
+              sortedProducts.map((product) => (
 
                 <ProductCard
                   key={product.id}
