@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getProducts } from "@/src/lib/getProducts";
 import AddToCart from "@/app/components/AddToCart";
 import OrderButtons from "@/app/components/OrderButtons";
+import WishlistButton from "@/app/components/WishlistButton";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +63,15 @@ export default async function ProductById({ params }: Props) {
 
           <div className="mt-8 flex flex-wrap gap-4">
             <AddToCart
+              product={{
+                id: product.id,
+                name: product.name,
+                price: Number(product.price),
+                image: product.image,
+              }}
+            />
+
+            <WishlistButton
               product={{
                 id: product.id,
                 name: product.name,
