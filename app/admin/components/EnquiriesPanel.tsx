@@ -2,14 +2,23 @@
 
 import type { Enquiry } from "../services/adminApi";
 
+type EnquiryStatus = "new" | "contacted" | "completed";
+
 type Props = {
   enquiries: Enquiry[];
   loading?: boolean;
+  updatingId?: number | null;
+  onStatusChange?: (
+    id: number,
+    status: EnquiryStatus
+  ) => void;
 };
 
 export default function EnquiriesPanel({
   enquiries,
   loading = false,
+  updatingId = null,
+  onStatusChange,
 }: Props) {
   return (
     <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6">
@@ -80,9 +89,28 @@ export default function EnquiriesPanel({
                   </td>
 
                   <td className="px-4 py-4">
-                    <span className="inline-flex rounded-full bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400">
-                      {enquiry.status}
-                    </span>
+                    <select
+                      value={enquiry.status}
+                      disabled={
+                        !onStatusChange ||
+                        updatingId === enquiry.id
+                      }
+                      onChange={(event) => {
+                        onStatusChange?.(
+                          enquiry.id,
+                          event.target.value as EnquiryStatus
+                        );
+                      }}
+                      className="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs font-medium text-amber-400 outline-none transition focus:border-amber-500 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <option value="new">New</option>
+                      <option value="contacted">
+                        Contacted
+                      </option>
+                      <option value="completed">
+                        Completed
+                      </option>
+                    </select>
                   </td>
 
                   <td className="px-4 py-4 text-zinc-400">

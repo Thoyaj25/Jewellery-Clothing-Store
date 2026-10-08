@@ -101,3 +101,29 @@ export async function fetchEnquiries(params?: {
 
   return res.json();
 }
+
+export async function updateEnquiryStatus(
+  id: number,
+  status: "new" | "contacted" | "completed"
+) {
+  const res = await fetch("/api/admin/enquiries", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+      status,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      data.error || "Failed to update enquiry status"
+    );
+  }
+
+  return data;
+}

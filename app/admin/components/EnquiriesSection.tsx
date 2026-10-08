@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import EnquiriesPanel from "./EnquiriesPanel";
 import {
   fetchEnquiries,
+  updateEnquiryStatus,
   type Enquiry,
 } from "../services/adminApi";
 
@@ -12,6 +13,7 @@ export default function EnquiriesSection() {
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -53,6 +55,31 @@ export default function EnquiriesSection() {
     };
   }, []);
 
+  async function handleStatusChange(
+    id: number,
+    status: "new" | "contacted" | "completed"
+  ) {
+    try {
+      setUpdatingId(id);
+      setError("");
+
+      const data = await updateEnquiryStatus(id, status);
+
+      setEnquiries((current) =>
+        current.map((enquiry) =>
+          enquiry.id === id
+            ? (data.enquiry as Enquiry)
+            : enquiry
+        )
+      );
+    } catch (err) {
+      console.error("Failed to update enquiry status:", err);
+      setError("Unable to update enquiry status.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   if (error) {
     return (
       <section className="rounded-2xl border border-red-900/50 bg-red-950/20 p-6">
@@ -67,6 +94,8 @@ export default function EnquiriesSection() {
     <EnquiriesPanel
       enquiries={enquiries}
       loading={loading}
+      updatingId={updatingId}
+      onStatusChange={handleStatusChange}
     />
   );
 }
