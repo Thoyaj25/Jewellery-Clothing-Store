@@ -10,6 +10,16 @@ export type AuditEntry = {
   created_at: string;
 };
 
+export type Enquiry = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+};
+
 export async function fetchProducts(): Promise<Product[]> {
   const res = await fetch("/api/products");
   if (!res.ok) throw new Error("Failed to fetch products");
@@ -70,6 +80,24 @@ export async function fetchAudits(params: {
 
   const res = await fetch(`/api/admin/audit?${q.toString()}`);
   if (!res.ok) throw new Error("Failed to fetch audits");
+
+  return res.json();
+}
+
+export async function fetchEnquiries(params?: {
+  page?: number;
+  limit?: number;
+}) {
+  const q = new URLSearchParams();
+
+  q.set("page", String(params?.page ?? 1));
+  q.set("limit", String(params?.limit ?? 20));
+
+  const res = await fetch(`/api/admin/enquiries?${q.toString()}`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch enquiries");
+  }
 
   return res.json();
 }

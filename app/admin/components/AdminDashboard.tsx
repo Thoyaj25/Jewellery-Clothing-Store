@@ -2,6 +2,7 @@
 
 import ProductFormPanel from "./ProductFormPanel";
 import InventoryTable from "./InventoryTable";
+import EnquiriesSection from "./EnquiriesSection";
 import AuditLogPanel from "./AuditLogPanel";
 
 import { useAdminData } from "../hooks/useAdminData";
@@ -82,6 +83,9 @@ export default function AdminDashboard({
           updateProduct(id, { isVisible });
         }}
       />
+
+      {/* CUSTOMER ENQUIRIES */}
+      <EnquiriesSection />
 
       {/* AUDIT LOG */}
       <AuditLogPanel
