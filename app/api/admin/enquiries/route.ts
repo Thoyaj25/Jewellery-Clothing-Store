@@ -43,7 +43,62 @@ export async function GET(request: Request) {
       )
     );
 
+    if (
+      !Number.isSafeInteger(page) ||
+      !Number.isSafeInteger(limit) ||
+      !Number.isSafeInteger((page - 1) * limit)
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Invalid pagination parameters." },
+        { status: 400 }
+      );
+    }
+
     const offset = (page - 1) * limit;
+
+    const search = (url.searchParams.get("search") || "").trim();
+    const status = (url.searchParams.get("status") || "").trim().toLowerCase();
+
+    if (search.length > 100) {
+      return NextResponse.json(
+        { success: false, error: "Search is too long." },
+        { status: 400 }
+      );
+    }
+
+    if (status && !["new", "contacted", "completed"].includes(status)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid enquiry status filter." },
+        { status: 400 }
+      );
+    }
+
+    const filters: string[] = [];
+    const params: unknown[] = [];
+
+    if (search) {
+      const escapedSearch = search.replace(
+        /[\\%_]/g,
+        (character) => String.fromCharCode(92) + character
+      );
+
+      params.push(`%${escapedSearch}%`);
+
+      filters.push(
+        `(name ILIKE $${params.length} OR ` +
+        `phone ILIKE $${params.length} OR ` +
+        `email ILIKE $${params.length})`
+      );
+    }
+
+    if (status) {
+      params.push(status);
+      filters.push(`status = $${params.length}`);
+    }
+
+    const whereClause = filters.length
+      ? `WHERE ${filters.join(" AND ")}`
+      : "";
 
     const [enquiriesResult, totalResult] = await Promise.all([
       query<EnquiryRow>(
@@ -57,18 +112,21 @@ export async function GET(request: Request) {
             status,
             created_at
           FROM enquiries
-          ORDER BY created_at DESC
-          LIMIT $1
-          OFFSET $2
+          ${whereClause}
+          ORDER BY created_at DESC, id DESC
+          LIMIT $${params.length + 1}
+          OFFSET $${params.length + 2}
         `,
-        [limit, offset]
+        [...params, limit, offset]
       ),
 
       query<{ total: string }>(
         `
           SELECT COUNT(*)::text AS total
           FROM enquiries
-        `
+          ${whereClause}
+        `,
+        params
       ),
     ]);
 

@@ -6,6 +6,13 @@ type EnquiryStatus = "new" | "contacted" | "completed";
 
 type Props = {
   enquiries: Enquiry[];
+  page?: number;
+  total?: number;
+  onPageChange?: (page: number) => void;
+  search?: string;
+  statusFilter?: EnquiryStatus | "";
+  onSearchChange?: (value: string) => void;
+  onStatusFilterChange?: (value: EnquiryStatus | "") => void;
   loading?: boolean;
   updatingId?: number | null;
   onStatusChange?: (
@@ -16,6 +23,13 @@ type Props = {
 
 export default function EnquiriesPanel({
   enquiries,
+  page = 1,
+  total = 0,
+  onPageChange,
+  search = "",
+  statusFilter = "",
+  onSearchChange,
+  onStatusFilterChange,
   loading = false,
   updatingId = null,
   onStatusChange,
@@ -30,6 +44,35 @@ export default function EnquiriesPanel({
         <p className="mt-1 text-sm text-zinc-400">
           View enquiries submitted through the contact form.
         </p>
+      </div>
+
+      <div className="mb-6 grid gap-3 md:grid-cols-2">
+        <input
+          type="search"
+          aria-label="Search customer enquiries"
+          placeholder="Search name, phone or email..."
+          value={search}
+          onChange={(event) => onSearchChange?.(event.target.value)}
+          disabled={!onSearchChange}
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none focus:border-amber-500 disabled:opacity-60"
+        />
+
+        <select
+          aria-label="Filter enquiries by status"
+          value={statusFilter}
+          onChange={(event) =>
+            onStatusFilterChange?.(
+              event.target.value as EnquiryStatus | ""
+            )
+          }
+          disabled={!onStatusFilterChange}
+          className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-amber-400 outline-none focus:border-amber-500 disabled:opacity-60"
+        >
+          <option value="">All statuses</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="completed">Completed</option>
+        </select>
       </div>
 
       {loading ? (
@@ -122,6 +165,37 @@ export default function EnquiriesPanel({
           </table>
         </div>
       )}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-4">
+        <p className="text-sm text-zinc-400">
+          Page {page} of {Math.max(1, Math.ceil(total / 20))}
+          {" · "}
+          {total} total enquiries
+        </p>
+
+        <div className="flex gap-2">
+          <button
+            type="button"
+            disabled={loading || page <= 1 || !onPageChange}
+            onClick={() => onPageChange?.(page - 1)}
+            className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Previous
+          </button>
+
+          <button
+            type="button"
+            disabled={
+              loading ||
+              page >= Math.max(1, Math.ceil(total / 20)) ||
+              !onPageChange
+            }
+            onClick={() => onPageChange?.(page + 1)}
+            className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </section>
   );
 }

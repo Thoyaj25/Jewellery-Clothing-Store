@@ -87,11 +87,21 @@ export async function fetchAudits(params: {
 export async function fetchEnquiries(params?: {
   page?: number;
   limit?: number;
+  search?: string;
+  status?: "new" | "contacted" | "completed" | "";
 }) {
   const q = new URLSearchParams();
 
   q.set("page", String(params?.page ?? 1));
   q.set("limit", String(params?.limit ?? 20));
+
+  if (params?.search?.trim()) {
+    q.set("search", params.search.trim());
+  }
+
+  if (params?.status) {
+    q.set("status", params.status);
+  }
 
   const res = await fetch(`/api/admin/enquiries?${q.toString()}`);
 
