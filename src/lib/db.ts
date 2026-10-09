@@ -44,30 +44,3 @@ export const query = async <
   const pool = await getPool();
   return pool.query<T>(text, params);
 };
-
-async function ensureProductsTable() {
-  try {
-    await query(`
-      CREATE TABLE IF NOT EXISTS products (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        category TEXT NOT NULL,
-        price NUMERIC(12, 2) NOT NULL CHECK (price >= 0),
-        image TEXT NOT NULL,
-        description TEXT,
-        is_visible BOOLEAN NOT NULL DEFAULT TRUE,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      );
-    `);
-
-    await query(`
-      ALTER TABLE products
-      ADD COLUMN IF NOT EXISTS is_visible BOOLEAN NOT NULL DEFAULT TRUE;
-    `);
-  } catch (error) {
-    console.error("Failed to initialize products table:", error);
-  }
-}
-
-void ensureProductsTable();
