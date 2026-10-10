@@ -21,8 +21,26 @@ export default function Footer() {
         </p>
 
         <p className="text-gray-500 text-sm">
-          ✉️ durgapj.badri@gmail.com
+          ✉️ prasadpj509@gmail.com
         </p>
+
+        <nav
+          aria-label="Store policies"
+          className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm"
+        >
+          <a href="/shipping-policy" className="text-gray-400 hover:text-amber-400">
+            Shipping & Delivery
+          </a>
+          <a href="/returns-refunds" className="text-gray-400 hover:text-amber-400">
+            Returns & Refunds
+          </a>
+          <a href="/privacy-policy" className="text-gray-400 hover:text-amber-400">
+            Privacy Policy
+          </a>
+          <a href="/terms-conditions" className="text-gray-400 hover:text-amber-400">
+            Terms & Conditions
+          </a>
+        </nav>
 
         <div className="mt-6 text-gray-600 text-xs">
           © {new Date().getFullYear()} Ultimate Collections.

@@ -24,9 +24,9 @@ export default function CartView() {
   }
 
   // Calculate shipping
-  const FREE_SHIPPING_THRESHOLD = 500;
+  const FREE_SHIPPING_THRESHOLD = 2000;
   const SHIPPING_COST =
-    totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 50;
+    totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : 100;
 
   if (items.length === 0) {
     return (

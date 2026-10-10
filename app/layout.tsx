@@ -5,6 +5,7 @@ import "./globals.css";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ShoppingAssistant from "./components/ShoppingAssistant";
 import { CartProvider } from "./context/CartProvider";
 import { WishlistProvider } from "./context/WishlistProvider";
 
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   ],
 
   metadataBase: new URL(
-    "https://jewellery-clothing-store.vercel.app"
+    "https://ultimate-collections-store.vercel.app"
   ),
 
   icons: {
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     title: "Ultimate Collections - Premium Jewellery & Fashion",
     description:
       "Discover premium jewellery, sarees, handbags, kurtis and fashion collections for every occasion.",
-    url: "https://jewellery-clothing-store.vercel.app",
+    url: "https://ultimate-collections-store.vercel.app",
     siteName: "Ultimate Collections",
     locale: "en_IN",
     type: "website",
@@ -95,6 +96,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <ShoppingAssistant />
           </WishlistProvider>
         </CartProvider>
       </body>

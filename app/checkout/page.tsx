@@ -4,8 +4,8 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useCart } from "../context/CartProvider";
 
-const FREE_SHIPPING_THRESHOLD = 500;
-const SHIPPING_COST = 50;
+const FREE_SHIPPING_THRESHOLD = 2000;
+const SHIPPING_COST = 100;
 
 export default function CheckoutPage() {
   const { items, totalPrice, mounted } = useCart();

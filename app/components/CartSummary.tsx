@@ -42,13 +42,13 @@ export default function CartSummary({
         </span>
       </div>
 
-      {subtotal < 500 && (
+      {subtotal < 2000 && (
         <div className="mb-6 rounded-lg border border-blue-700 bg-blue-900/30 p-3">
           <p className="text-sm text-blue-300">
-            🎉 Free shipping on orders above ₹500
+            🎉 Free shipping on orders of ₹2,000 or more
           </p>
           <p className="mt-1 text-xs text-blue-400">
-            Add ₹{(500 - subtotal).toLocaleString("en-IN")} more to unlock
+            Add ₹{(2000 - subtotal).toLocaleString("en-IN")} more to unlock
             free shipping
           </p>
         </div>
