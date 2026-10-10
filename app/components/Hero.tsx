@@ -35,20 +35,20 @@ export default function Hero() {
         {/* Top Badges */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8 flex-wrap">
           <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
-            ✨ ORDERS ABOVE ₹999
+            ✨ LUXURY STYLES, DELIVERED TO YOU
           </div>
           <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
             ✦ HANDCRAFTED JEWELLERY
           </div>
           <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
-            ✦ AUTHENTIC
+            ✦ QUALITY YOU CAN TRUST
           </div>
         </div>
 
         {/* Featured Badge */}
         <div className="mb-6 inline-block">
           <span className="px-6 py-2 border border-amber-500/50 rounded-full text-sm text-amber-500 font-light tracking-widest">
-            ✦ NEW COLLECTION 2026
+            ✦ TIMELESS ELEGANCE
           </span>
         </div>
 
