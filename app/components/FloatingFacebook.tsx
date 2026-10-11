@@ -13,7 +13,7 @@ export default function FloatingFacebook() {
       style={{
         position: "fixed",
         right: "1.5rem",
-        bottom: "11rem",
+        bottom: "13rem",
         zIndex: 60,
         width: "3.5rem",
         height: "3.5rem",

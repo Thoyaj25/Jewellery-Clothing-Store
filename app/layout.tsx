@@ -6,6 +6,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ShoppingAssistant from "./components/ShoppingAssistant";
+import StoreToastContainer from "./components/StoreToastContainer";
 import { CartProvider } from "./context/CartProvider";
 import { WishlistProvider } from "./context/WishlistProvider";
 
@@ -97,6 +98,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
             <ShoppingAssistant />
+            <StoreToastContainer />
           </WishlistProvider>
         </CartProvider>
       </body>
