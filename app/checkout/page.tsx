@@ -138,7 +138,8 @@ export default function CheckoutPage() {
                     id="customerName"
                     type="text"
                     value={customerName}
-                    onChange={(event) => setCustomerName(event.target.value)}
+                    onChange={(event) => setCustomerName(event.target.value.slice(0, 40))}
+                    maxLength={40}
                     required
                     autoComplete="name"
                     className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-green-500"
@@ -158,11 +159,14 @@ export default function CheckoutPage() {
                     id="mobile"
                     type="tel"
                     value={mobile}
-                    onChange={(event) => setMobile(event.target.value)}
+                    onChange={(event) =>
+                      setMobile(event.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
                     required
-                    autoComplete="tel"
+                    autoComplete="tel-national"
                     inputMode="numeric"
-                    pattern="[0-9]{10}"
+                    pattern="[6-9][0-9]{9}"
+                    title="Enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9"
                     maxLength={10}
                     className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-green-500"
                     placeholder="10-digit mobile number"
@@ -180,13 +184,19 @@ export default function CheckoutPage() {
                   <textarea
                     id="address"
                     value={address}
-                    onChange={(event) => setAddress(event.target.value)}
+                    onChange={(event) =>
+                      setAddress(event.target.value.slice(0, 200))
+                    }
+                    maxLength={200}
                     required
                     rows={5}
                     autoComplete="street-address"
                     className="w-full resize-y rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-green-500"
                     placeholder="Enter your complete delivery address"
                   />
+                  <p className="mt-2 text-right text-xs text-zinc-400">
+                    {address.length}/200 characters
+                  </p>
                 </div>
               </div>
             </section>

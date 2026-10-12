@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useCart } from "../context/CartProvider";
 import { useWishlist } from "../context/WishlistProvider";
 import Image from "next/image";
+import { ShoppingCart } from "lucide-react";
+import { toast } from "react-toastify";
 
 import type { Product } from "@/src/types/product";
 
@@ -51,15 +53,27 @@ export default function ProductCard({
               : `Add ${product.name} to wishlist`
           }
           aria-pressed={wishlisted}
-          onClick={() =>
+          onClick={() => {
             toggleWishlist({
               id: product.id,
               name: product.name,
               price: product.price,
               image: product.image,
-            })
-          }
-          className="absolute top-3 left-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/70 border border-amber-600/30 text-xl text-amber-500 backdrop-blur-sm hover:bg-amber-600 hover:text-black transition-all duration-200"
+            });
+
+            if (wishlisted) {
+              toast.info(`${product.name} removed from wishlist.`, {
+                containerId: "store",
+                toastId: `wishlist-${product.id}`,
+              });
+            } else {
+              toast.success(`${product.name} added to wishlist!`, {
+                containerId: "store",
+                toastId: `wishlist-${product.id}`,
+              });
+            }
+          }}
+          className="absolute top-3 left-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/70 border-0 text-xl text-amber-500 backdrop-blur-sm hover:bg-amber-600 hover:text-black transition-all duration-200"
         >
           {wishlisted ? "♥" : "♡"}
         </button>
@@ -82,17 +96,25 @@ export default function ProductCard({
         {/* Action Buttons */}
         <div className="space-y-2 mt-auto">
           <button
-            onClick={() =>
+            type="button"
+            aria-label={`Add ${product.name} to cart`}
+            title="Add to Cart"
+            onClick={() => {
               addItem({
                 id: product.id,
                 name: product.name,
                 price: product.price,
                 image: product.image,
-              })
-            }
+              });
+
+              toast.success(`${product.name} added to cart!`, {
+                containerId: "store",
+                toastId: `cart-${product.id}`,
+              });
+            }}
             className="w-full px-4 py-3 md:py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-amber-600/30 text-sm"
           >
-            Add to Cart
+            <ShoppingCart className="mx-auto h-5 w-5" aria-hidden="true" />
           </button>
           <Link
             href={`/product/${product.id}`}

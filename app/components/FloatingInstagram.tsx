@@ -9,7 +9,7 @@ export default function FloatingInstagram() {
       target="_blank"
       rel="noopener noreferrer"
       className="
-        fixed bottom-28 right-6
+        fixed bottom-24 right-5 sm:bottom-28 sm:right-7
         z-50
         w-14 h-14
         rounded-full

@@ -47,7 +47,11 @@ export default function ShoppingAssistant() {
   const [selected, setSelected] = useState<number | null>(null);
 
   return (
-    <div className="fixed bottom-5 left-4 z-40 sm:bottom-6 sm:left-6">
+    <div
+      className={`fixed bottom-5 left-4 sm:bottom-6 sm:left-6 ${
+        open ? "z-[70]" : "z-40"
+      }`}
+    >
       {open && (
         <section
           aria-label="ULTIMA Shopping Assistant"
