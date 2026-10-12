@@ -7,6 +7,9 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ShoppingAssistant from "./components/ShoppingAssistant";
 import StoreToastContainer from "./components/StoreToastContainer";
+import FloatingFacebook from "./components/FloatingFacebook";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import FloatingInstagram from "./components/FloatingInstagram";
 import { CartProvider } from "./context/CartProvider";
 import { WishlistProvider } from "./context/WishlistProvider";
 
@@ -98,6 +101,9 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
             <ShoppingAssistant />
+            <FloatingFacebook />
+            <FloatingWhatsApp />
+            <FloatingInstagram />
             <StoreToastContainer />
           </WishlistProvider>
         </CartProvider>
