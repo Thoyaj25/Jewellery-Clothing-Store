@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useCart } from "@/app/context/CartProvider";
-import { InstagramIcon, WhatsAppIcon } from "@/app/components/SocialIcons";
+import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "@/app/components/SocialIcons";
 
 export default function OrderButtons({
   product,
@@ -74,6 +74,17 @@ export default function OrderButtons({
           <InstagramIcon className="h-7 w-7" />
         </a>
       )}
+
+      <a
+        href="https://www.facebook.com/durgapj.badri9974"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Visit Ultimate Collections on Facebook"
+        title="Facebook"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-md transition-transform hover:scale-110"
+      >
+        <FacebookIcon className="h-7 w-7" />
+      </a>
     </div>
   );
 }

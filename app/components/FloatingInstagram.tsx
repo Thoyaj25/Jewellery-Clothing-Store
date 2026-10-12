@@ -1,15 +1,19 @@
 "use client";
 
 import { InstagramIcon } from "@/app/components/SocialIcons";
+import { usePathname } from "next/navigation";
 
 export default function FloatingInstagram() {
+  const pathname = usePathname();
+  if (/^\/product\/[^/]+\/?$/.test(pathname)) return null;
+
   return (
     <a
       href="https://instagram.com/durgapj.badri"
       target="_blank"
       rel="noopener noreferrer"
       className="
-        fixed bottom-24 right-5 sm:bottom-28 sm:right-7
+        fixed bottom-[100px] right-4 sm:right-6
         z-50
         w-14 h-14
         rounded-full

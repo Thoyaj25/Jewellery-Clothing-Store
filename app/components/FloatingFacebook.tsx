@@ -1,8 +1,16 @@
 "use client";
 
 import { FacebookIcon } from "@/app/components/SocialIcons";
+import { usePathname } from "next/navigation";
 
 export default function FloatingFacebook() {
+  const pathname = usePathname();
+
+  // Product details pages already include Facebook in OrderButtons.
+  if (/^\/product\/[^/]+\/?$/.test(pathname)) {
+    return null;
+  }
+
   return (
     <a
       href="https://www.facebook.com/durgapj.badri9974"
@@ -12,8 +20,8 @@ export default function FloatingFacebook() {
       title="Facebook"
       style={{
         position: "fixed",
-        right: "1.5rem",
-        bottom: "13rem",
+        right: "1rem",
+        bottom: "11rem",
         zIndex: 60,
         width: "3.5rem",
         height: "3.5rem",
@@ -25,7 +33,7 @@ export default function FloatingFacebook() {
         justifyContent: "center",
         boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)",
       }}
-      className="transition-transform hover:scale-110"
+      className="sm:!right-6 transition-transform hover:scale-110"
     >
       <FacebookIcon className="h-7 w-7" />
     </a>
