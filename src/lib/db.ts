@@ -44,3 +44,34 @@ export const query = async <
   const pool = await getPool();
   return pool.query<T>(text, params);
 };
+
+/**
+ * Execute multiple database operations in one transaction.
+ * All operations commit together or roll back together.
+ */
+export async function withTransaction<T>(
+  callback: (client: import("pg").PoolClient) => Promise<T>
+): Promise<T> {
+  const pool = await getPool();
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const result = await callback(client);
+
+    await client.query("COMMIT");
+
+    return result;
+  } catch (error) {
+    try {
+      await client.query("ROLLBACK");
+    } catch (rollbackError) {
+      console.error("Transaction rollback failed:", rollbackError);
+    }
+
+    throw error;
+  } finally {
+    client.release();
+  }
+}
