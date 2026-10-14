@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
@@ -12,7 +12,15 @@ export default function CheckoutPage() {
 
   const [customerName, setCustomerName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [whatsappRetryUrl, setWhatsappRetryUrl] = useState<string | null>(null);
+  const submissionKeyRef = useRef<string | null>(null);
+  const submissionFingerprintRef = useRef<string | null>(null);
 
   if (!mounted) {
     return (
@@ -53,54 +61,118 @@ export default function CheckoutPage() {
     totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = totalPrice + shippingCost;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isSubmitting) return;
 
     const whatsappNumber = process.env.NEXT_PUBLIC_CONTACT_WHATSAPP;
 
     if (!whatsappNumber) {
-      window.alert(
-        "WhatsApp ordering is currently unavailable. Please contact Ultimate Collections directly."
-      );
+      window.alert("WhatsApp ordering is currently unavailable.");
       return;
     }
 
-    const lines = [
-      "Hello, I would like to place an order from Ultimate Collections.",
-      "",
-      `Customer Name: ${customerName}`,
-      `Mobile: ${mobile}`,
-      `Delivery Address: ${address}`,
-      "",
-      "Order Items:",
-    ];
+    const orderItems = items.map((item) => ({
+      productId: Number(item.id),
+      quantity: item.quantity,
+    }));
 
-    items.forEach((item) => {
-      lines.push(
-        `- ${item.name} (ID: ${item.id}) x ${item.quantity} — ₹${(
-          item.price * item.quantity
-        ).toLocaleString("en-IN")}`
-      );
+    if (orderItems.some((item) => !Number.isSafeInteger(item.productId) || item.productId <= 0)) {
+      window.alert("Your cart contains an invalid product. Please review your cart.");
+      return;
+    }
+
+    const submissionFingerprint = JSON.stringify({
+      customerName: customerName.trim(),
+      mobile: mobile.trim(),
+      customerEmail: customerEmail.trim(),
+      address: address.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      pincode: pincode.trim(),
+      items: [...orderItems].sort((a, b) => a.productId - b.productId),
     });
 
-    lines.push(
-      "",
-      `Subtotal: ₹${totalPrice.toLocaleString("en-IN")}`,
-      `Shipping: ${
-        shippingCost === 0
-          ? "FREE"
-          : `₹${shippingCost.toLocaleString("en-IN")}`
-      }`,
-      `Total: ₹${total.toLocaleString("en-IN")}`,
-      "",
-      "Payment will be arranged separately. Please confirm availability and delivery details."
-    );
+    if (
+      !submissionKeyRef.current ||
+      submissionFingerprintRef.current !== submissionFingerprint
+    ) {
+      submissionKeyRef.current = crypto.randomUUID();
+      submissionFingerprintRef.current = submissionFingerprint;
+    }
 
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-      lines.join("\n")
-    )}`;
+    setIsSubmitting(true);
 
-    window.open(url, "_blank");
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          submissionKey: submissionKeyRef.current,
+          customerName,
+          customerMobile: mobile,
+          customerEmail,
+          deliveryAddress: address,
+          deliveryCity: city,
+          deliveryState: state,
+          deliveryPincode: pincode,
+          items: orderItems,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Unable to save your order.");
+      }
+
+      const { orderReference, totalAmount } = result.order;
+
+      const lines = [
+        "Hello, I have submitted an order to Ultimate Collections.",
+        "",
+        `Order Reference: ${orderReference}`,
+        `Customer Name: ${customerName}`,
+        `Mobile: ${mobile}`,
+        ...(customerEmail ? [`Email: ${customerEmail}`] : []),
+        `Delivery Address: ${address}`,
+        `City: ${city}`,
+        `State: ${state}`,
+        `PIN Code: ${pincode}`,
+        "",
+        "Order Items:",
+      ];
+
+      items.forEach((item) => {
+        lines.push(`- ${item.name} (ID: ${item.id}) x ${item.quantity}`);
+      });
+
+      lines.push(
+        "",
+        `Order Total: ₹${Number(totalAmount).toLocaleString("en-IN")}`,
+        "",
+        "My order is awaiting confirmation. Please advise on payment and delivery."
+      );
+
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\\n"))}`;
+
+      setWhatsappRetryUrl(url);
+
+      const popup = window.open(url, "_blank", "noopener,noreferrer");
+
+      if (!popup) {
+        window.alert(
+          `Order ${orderReference} was saved successfully. Use the Continue to WhatsApp link below if WhatsApp did not open.`
+        );
+      }
+    } catch (error) {
+      window.alert(
+        error instanceof Error ? error.message : "Unable to submit your order."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -175,6 +247,27 @@ export default function CheckoutPage() {
 
                 <div>
                   <label
+                    htmlFor="customerEmail"
+                    className="mb-2 block text-sm font-medium text-zinc-300"
+                  >
+                    Email Address (Optional)
+                  </label>
+                  <input
+                    id="customerEmail"
+                    type="email"
+                    value={customerEmail}
+                    onChange={(event) =>
+                      setCustomerEmail(event.target.value.slice(0, 254))
+                    }
+                    maxLength={254}
+                    autoComplete="email"
+                    placeholder="Enter your email address"
+                    className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none transition-colors placeholder:text-zinc-600 focus:border-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label
                     htmlFor="address"
                     className="mb-2 block text-sm font-medium text-zinc-300"
                   >
@@ -197,6 +290,62 @@ export default function CheckoutPage() {
                   <p className="mt-2 text-right text-xs text-zinc-400">
                     {address.length}/200 characters
                   </p>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="city" className="mb-2 block text-sm font-medium text-zinc-300">
+                      City
+                    </label>
+                    <input
+                      id="city"
+                      value={city}
+                      onChange={(event) => setCity(event.target.value.slice(0, 100))}
+                      required
+                      maxLength={100}
+                      autoComplete="address-level2"
+                      placeholder="Enter city"
+                      className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-green-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="state" className="mb-2 block text-sm font-medium text-zinc-300">
+                      State
+                    </label>
+                    <input
+                      id="state"
+                      value={state}
+                      onChange={(event) => setState(event.target.value.slice(0, 100))}
+                      required
+                      maxLength={100}
+                      autoComplete="address-level1"
+                      placeholder="Enter state"
+                      className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-green-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="pincode" className="mb-2 block text-sm font-medium text-zinc-300">
+                    PIN Code
+                  </label>
+                  <input
+                    id="pincode"
+                    type="text"
+                    inputMode="numeric"
+                    value={pincode}
+                    onChange={(event) =>
+                      setPincode(event.target.value.replace(/\\D/g, "").slice(0, 6))
+                    }
+                    required
+                    maxLength={6}
+                    pattern="[1-9][0-9]{5}"
+                    title="Enter a valid 6-digit Indian PIN code"
+                    autoComplete="postal-code"
+                    placeholder="6-digit PIN code"
+                    className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-green-500"
+                  />
                 </div>
               </div>
             </section>
@@ -269,10 +418,22 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-green-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-green-700"
+              disabled={isSubmitting}
+              className="w-full rounded-lg bg-green-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Place Order via WhatsApp
+              {isSubmitting ? "Saving your order..." : "Place Order via WhatsApp"}
             </button>
+
+            {whatsappRetryUrl && (
+              <a
+                href={whatsappRetryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 block rounded-lg border border-green-500 px-4 py-3 text-center font-semibold text-green-400 hover:bg-green-950"
+              >
+                Continue to WhatsApp
+              </a>
+            )}
 
             <p className="mt-4 text-center text-xs leading-relaxed text-zinc-500">
               Your order details will be sent to Ultimate Collections on
