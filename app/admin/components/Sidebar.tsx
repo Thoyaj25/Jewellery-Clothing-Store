@@ -12,9 +12,9 @@ const menuItems = [
   },
   {
     name: "Orders",
-    href: "",
+    href: "/admin/orders",
     icon: "📋",
-    enabled: false,
+    enabled: true,
   },
   {
     name: "Analytics",
