@@ -60,6 +60,15 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (username !== adminUser || password !== adminPass) {
+          if (process.env.VERCEL_ENV === "preview") {
+            console.warn("PREVIEW_AUTH_DIAGNOSTIC", {
+              usernameMatches: username === adminUser,
+              passwordMatches: password === adminPass,
+              adminUserConfigured: Boolean(adminUser),
+              adminPassConfigured: Boolean(adminPass),
+            });
+          }
+
           return null;
         }
 
