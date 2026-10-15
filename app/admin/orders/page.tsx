@@ -86,7 +86,87 @@ export default async function AdminOrdersPage() {
               No customer orders found.
             </p>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile and tablet order cards */}
+              <div className="space-y-4 p-3 sm:p-4 lg:hidden">
+                {orders.map((order) => (
+                  <article
+                    key={order.id}
+                    className="min-w-0 space-y-4 rounded-xl border border-zinc-700 bg-zinc-950 p-4"
+                  >
+                    <div className="space-y-2">
+                      <p className="break-all font-semibold text-green-400">
+                        {order.order_reference}
+                      </p>
+                      <p className="break-words font-medium">
+                        {order.customer_name}
+                      </p>
+                      <p className="text-sm text-zinc-400">
+                        {order.customer_mobile}
+                      </p>
+                      <p className="text-lg font-semibold text-amber-400">
+                        ₹{Number(order.total_amount).toLocaleString("en-IN")}
+                      </p>
+                      <p className="text-sm text-zinc-400">
+                        {new Date(order.created_at).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "Asia/Kolkata",
+                        })}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 text-sm">
+                      <span className="rounded-full border border-amber-600/50 px-3 py-1 text-amber-400">
+                        {order.status}
+                      </span>
+                      <span className="rounded-full border border-zinc-600 px-3 py-1 text-zinc-300">
+                        Payment: {order.payment_status}
+                      </span>
+                    </div>
+
+                    <div className="min-w-0 space-y-4 border-t border-zinc-800 pt-4">
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-zinc-300">Order Actions</h3>
+                        <OrderActions orderId={order.id} status={order.status} />
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-zinc-300">Payment Actions</h3>
+                        <PaymentActions
+                          orderId={order.id}
+                          orderStatus={order.status}
+                          paymentStatus={order.payment_status}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-zinc-300">Courier Tracking</h3>
+                        <ShipmentActions
+                          orderId={order.id}
+                          orderStatus={order.status}
+                          courierName={order.courier_name}
+                          trackingNumber={order.tracking_number}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-zinc-300">WhatsApp Notifications</h3>
+                        <NotificationActions
+                          orderId={order.id}
+                          notificationCount={order.notification_count}
+                          orderStatus={order.status}
+                          paymentStatus={order.payment_status}
+                        />
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {/* Existing desktop table */}
+              <div className="hidden w-full min-w-0 overflow-x-auto overscroll-x-contain lg:block">
               <table className="w-full text-left text-sm">
                 <thead className="bg-zinc-800 text-zinc-300">
                   <tr>
@@ -170,6 +250,7 @@ export default async function AdminOrdersPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </section>
       </div>
