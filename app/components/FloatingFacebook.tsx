@@ -33,7 +33,7 @@ export default function FloatingFacebook() {
         justifyContent: "center",
         boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)",
       }}
-      className="sm:!right-6 transition-transform hover:scale-110"
+      className="!hidden sm:!flex sm:!right-6 transition-transform hover:scale-110"
     >
       <FacebookIcon className="h-7 w-7" />
     </a>
