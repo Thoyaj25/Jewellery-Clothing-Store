@@ -30,9 +30,9 @@ const questions = [
   },
   {
     label: "📍 Track My Order",
-    answer: "Live order tracking is not yet available. Contact our support team with your order details for delivery updates.",
-    href: "/contact",
-    action: "Contact Support",
+    answer: "Check your latest order status using your order reference and registered mobile number.",
+    href: "/track-order",
+    action: "Track My Order",
   },
   {
     label: "💬 Customer Support",
