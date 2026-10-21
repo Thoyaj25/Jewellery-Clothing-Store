@@ -23,7 +23,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-black via-amber-950/5 to-black">
+    <section className="relative min-h-[60vh] md:min-h-[75vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-black via-amber-950/5 to-black">
       {/* Background Image Overlay */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-600/30 rounded-full blur-3xl animate-pulse"></div>
@@ -32,25 +32,10 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        {/* Top Badges */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8 flex-wrap">
-          <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
-            ✨ LUXURY STYLES, DELIVERED TO YOU
-          </div>
-          <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
-            ✦ HANDCRAFTED JEWELLERY
-          </div>
-          <div className="px-4 py-2 border border-amber-600/50 rounded-full text-sm text-amber-600 font-light">
-            ✦ QUALITY YOU CAN TRUST
-          </div>
-        </div>
-
-        {/* Featured Badge */}
-        <div className="mb-6 inline-block">
-          <span className="px-6 py-2 border border-amber-500/50 rounded-full text-sm text-amber-500 font-light tracking-widest">
-            ✦ TIMELESS ELEGANCE
-          </span>
-        </div>
+        {/* Promotional label */}
+        <p className="mb-6 text-xs font-medium uppercase tracking-[0.2em] text-amber-400 sm:text-sm">
+          ✦ Timeless Indian Fashion
+        </p>
 
         {/* Main Heading */}
         <h1 className="mb-6">

@@ -1,0 +1,191 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import Link from "next/link";
+
+type TrackingResult = {
+  orderReference: string;
+  status: string;
+  paymentStatus: string;
+  courierName: string | null;
+  trackingNumber: string | null;
+};
+
+export default function TrackOrderPage() {
+  const [orderReference, setOrderReference] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [order, setOrder] = useState<TrackingResult | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (loading) return;
+
+    setLoading(true);
+    setError("");
+    setOrder(null);
+
+    try {
+      const response = await fetch("/api/orders/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({
+          orderReference: orderReference.trim(),
+          mobile: mobile.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setError(
+          response.status === 429
+            ? "Too many attempts. Please wait a minute and try again."
+            : data.error || "Unable to retrieve your order."
+        );
+        return;
+      }
+
+      setOrder(data.order);
+    } catch {
+      setError("Unable to connect. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-black px-4 py-16 text-white">
+      <div className="mx-auto max-w-xl">
+        <Link
+          href="/"
+          className="text-sm text-amber-400 hover:text-amber-300"
+        >
+          ← Back to Home
+        </Link>
+
+        <div className="mt-8 text-center">
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-400">
+            Ultimate Collections
+          </p>
+          <h1 className="mt-4 text-3xl font-light sm:text-4xl">
+            Track Your Order
+          </h1>
+          <p className="mt-4 text-sm leading-6 text-gray-400">
+            Enter your order reference and the mobile number used
+            at checkout to view your latest order status.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-10 space-y-6 rounded-2xl border border-amber-600/30 bg-zinc-950 p-6 shadow-xl sm:p-8"
+        >
+          <div>
+            <label
+              htmlFor="orderReference"
+              className="mb-2 block text-sm text-gray-200"
+            >
+              Order Reference
+            </label>
+            <input
+              id="orderReference"
+              required
+              maxLength={32}
+              autoComplete="off"
+              placeholder="UC-2026-0001"
+              value={orderReference}
+              onChange={(event) => setOrderReference(event.target.value)}
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="mobile"
+              className="mb-2 block text-sm text-gray-200"
+            >
+              Registered Mobile Number
+            </label>
+            <input
+              id="mobile"
+              type="tel"
+              required
+              inputMode="numeric"
+              autoComplete="tel"
+              maxLength={13}
+              placeholder="Enter your mobile number"
+              value={mobile}
+              onChange={(event) => setMobile(event.target.value)}
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-white outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-amber-500 px-5 py-3 font-semibold text-black transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loading ? "Checking Order..." : "Track My Order"}
+          </button>
+        </form>
+
+        {error && (
+          <p
+            role="alert"
+            className="mt-6 rounded-lg border border-red-800 bg-red-950/40 p-4 text-sm text-red-300"
+          >
+            {error}
+          </p>
+        )}
+
+        {order && (
+          <section
+            aria-live="polite"
+            className="mt-8 space-y-4 rounded-2xl border border-amber-600/30 bg-zinc-950 p-6"
+          >
+            <h2 className="text-xl font-semibold text-amber-300">
+              Order Details
+            </h2>
+
+            <div className="space-y-3 text-sm">
+              <p>
+                <span className="text-gray-400">Reference: </span>
+                {order.orderReference}
+              </p>
+              <p>
+                <span className="text-gray-400">Order Status: </span>
+                {order.status}
+              </p>
+              <p>
+                <span className="text-gray-400">Payment Status: </span>
+                {order.paymentStatus}
+              </p>
+              {order.courierName && (
+                <p>
+                  <span className="text-gray-400">Courier: </span>
+                  {order.courierName}
+                </p>
+              )}
+              {order.trackingNumber && (
+                <p>
+                  <span className="text-gray-400">Tracking Number: </span>
+                  {order.trackingNumber}
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
+        <p className="mt-8 text-center text-sm text-gray-400">
+          Need help?{" "}
+          <Link href="/contact" className="text-amber-400 underline">
+            Contact Support
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}

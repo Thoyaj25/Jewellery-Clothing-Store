@@ -24,11 +24,9 @@ export default function ProductGrid({
 
   const categories = [
     "All",
-    "Jewellery",
-    "Handbags",
-    "Sarees",
-    "Kurtis",
-    "Kids Wear",
+    ...Array.from(
+      new Set(products.map((product) => product.category))
+    ).sort(),
   ];
 
 
