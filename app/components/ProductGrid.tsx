@@ -66,33 +66,34 @@ export default function ProductGrid({
     <>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="mb-6 flex flex-col gap-2 sm:max-w-md">
+        <label
+          htmlFor="collection-category"
+          className="text-sm font-medium text-amber-400"
+        >
+          Browse Collections
+        </label>
 
-        {categories.map((cat) => (
-
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`
-              px-4 md:px-6 py-2
-              rounded-full
-              text-sm md:text-base
-              transition-all
-              border
-              ${
-                category === cat
-                  ? "bg-amber-600 text-black border-amber-600"
-                  : "text-white border-amber-600/30 hover:border-amber-600"
-              }
-            `}
-          >
-            {cat}
-          </button>
-
-        ))}
-
+        <select
+          id="collection-category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="
+            w-full rounded-lg
+            border border-amber-600/50
+            bg-zinc-950 px-4 py-3
+            text-white
+            focus:outline-none
+            focus:ring-2 focus:ring-amber-500
+          "
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat === "All" ? "All Collections" : cat}
+            </option>
+          ))}
+        </select>
       </div>
-
 
 
       {/* Search */}

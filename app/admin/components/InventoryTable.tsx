@@ -14,6 +14,32 @@ type Props = {
   onVisibilityChange: (id: number | string, isVisible: boolean) => void;
 };
 
+function StockStatus({ quantity }: { quantity?: number | null }) {
+  const unconfigured = quantity == null;
+
+  const label = unconfigured
+    ? "Not configured"
+    : quantity === 0
+      ? "Out of stock"
+      : quantity <= 5
+        ? `Low stock (${quantity})`
+        : `In stock (${quantity})`;
+
+  const style = unconfigured
+    ? "bg-zinc-800 text-zinc-300"
+    : quantity === 0
+      ? "bg-red-950 text-red-300"
+      : quantity <= 5
+        ? "bg-amber-950 text-amber-300"
+        : "bg-emerald-950 text-emerald-300";
+
+  return (
+    <span className={`inline-block whitespace-nowrap rounded-full px-2 py-1 text-xs ${style}`}>
+      {label}
+    </span>
+  );
+}
+
 export default function InventoryTable({
   products,
   loading = false,
@@ -97,12 +123,13 @@ export default function InventoryTable({
       </td>
       <td className="p-3"><div className="h-3 w-16 bg-zinc-800 rounded"></div></td>
       <td className="p-3 text-right"><div className="h-3 w-12 bg-zinc-800 rounded ml-auto"></div></td>
+      <td className="p-3"><div className="h-5 w-24 bg-zinc-800 rounded"></div></td>
       <td className="p-3 text-right"><div className="h-7 w-20 bg-zinc-800 rounded ml-auto"></div></td>
     </tr>
   );
 
   return (
-    <div className="w-full rounded-lg border border-zinc-800 overflow-hidden">
+    <div className="w-full rounded-lg border border-zinc-800 overflow-x-auto">
       <div className="flex items-center justify-between p-3 bg-zinc-900 border-b border-zinc-800">
         <div className="flex items-center gap-4">
           <select
@@ -135,6 +162,7 @@ export default function InventoryTable({
             <th className="p-3">Product</th>
             <th className="p-3">Category</th>
             <th className="p-3 text-right">Price</th>
+            <th className="p-3">Stock Status</th>
             <th className="p-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -158,6 +186,9 @@ export default function InventoryTable({
                 </td>
                 <td className="p-3 text-zinc-400">{product.category}</td>
                 <td className="p-3 text-right text-amber-500 font-medium">₹{product.price}</td>
+                <td className="p-3">
+                  <StockStatus quantity={product.stockQuantity} />
+                </td>
                 <td className="p-3 text-right">
                   <div className="flex justify-end gap-2">
                     <button

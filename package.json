@@ -15,7 +15,7 @@
     "@vercel/blob": "^2.8.0",
     "cloudinary": "^2.11.0",
     "lucide-react": "^1.55.0",
-    "next": "16.4.0",
+    "next": "16.4.3",
     "next-auth": "^4.24.14",
     "pg": "^8.23.1",
     "postgres": "^3.4.9",
@@ -36,5 +36,9 @@
     "lightningcss-linux-x64-gnu": "1.32.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "undici": "6.29.1",
+    "zod": "4.6.6"
   }
 }

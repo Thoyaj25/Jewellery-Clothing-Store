@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProducts, createProduct } from "@/src/services/productService";
 import { requireAdmin } from "@/src/lib/requireAdmin";
+import { validateStockQuantity } from "@/src/lib/validateStockQuantity";
 
 interface ProductBody {
   name: string;
@@ -9,6 +10,7 @@ interface ProductBody {
   image: string;
   description: string | null;
   isVisible?: boolean;
+  stockQuantity?: number | null;
 }
 
 export async function GET(req: NextRequest) {
@@ -83,6 +85,17 @@ export async function POST(req: NextRequest) {
 
     const price = Number(body.price);
 
+    let stockQuantity: number | null = null;
+
+    try {
+      stockQuantity = validateStockQuantity(body.stockQuantity ?? null);
+    } catch {
+      return NextResponse.json(
+        { error: "Stock quantity must be null or a non-negative whole number." },
+        { status: 400 }
+      );
+    }
+
     if (!name || name.length < 2) {
       return NextResponse.json(
         { error: "Product name is required." },
@@ -118,6 +131,7 @@ export async function POST(req: NextRequest) {
       image,
       description: description || null,
       isVisible: typeof body.isVisible === "boolean" ? body.isVisible : true,
+      stockQuantity,
     });
 
     return NextResponse.json(product, { status: 201 });

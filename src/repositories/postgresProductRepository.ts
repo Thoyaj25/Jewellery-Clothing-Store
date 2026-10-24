@@ -19,6 +19,7 @@ const normalizeProduct = (row: Partial<ProductRow>): Product => ({
   description: row.description ?? null,
   badge: row.badge,
   isVisible: row.isVisible ?? row.is_visible ?? true,
+  stockQuantity: row.stockQuantity ?? null,
 });
 
 export const postgresProductRepository: ProductRepository = {
@@ -31,7 +32,8 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible AS "isVisible"
+        is_visible AS "isVisible",
+        stock_quantity AS "stockQuantity"
       FROM products
       ORDER BY id;
     `);
@@ -48,7 +50,8 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible AS "isVisible"
+        is_visible AS "isVisible",
+        stock_quantity AS "stockQuantity"
       FROM products
       WHERE is_visible = TRUE
       ORDER BY id;
@@ -66,7 +69,8 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible AS "isVisible"
+        is_visible AS "isVisible",
+        stock_quantity AS "stockQuantity"
       FROM products
       WHERE id = $1
       LIMIT 1;
@@ -85,9 +89,10 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible
+        is_visible,
+        stock_quantity
       )
-      VALUES ($1, $2, $3, $4, $5, $6)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING
         id,
         name,
@@ -95,8 +100,9 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible AS "isVisible";
-    `, [product.name, product.category, product.price, product.image, product.description, isVisible]);
+        is_visible AS "isVisible",
+        stock_quantity AS "stockQuantity";
+    `, [product.name, product.category, product.price, product.image, product.description, isVisible, product.stockQuantity ?? null]);
 
     return normalizeProduct(rows[0]);
   },
@@ -113,8 +119,23 @@ export const postgresProductRepository: ProductRepository = {
         price = $3,
         image = $4,
         description = $5,
-        is_visible = COALESCE($6, is_visible)
+        is_visible = COALESCE($6, is_visible),
+        stock_quantity = CASE
+          WHEN $8::boolean THEN $9::integer
+          ELSE stock_quantity
+        END
       WHERE id = $7
+        AND (
+          NOT ($8::boolean AND $9::integer IS NULL)
+          OR NOT EXISTS (
+            SELECT 1
+            FROM public.order_items oi
+            JOIN public.orders o ON o.id = oi.order_id
+            WHERE oi.product_id = products.id
+              AND oi.stock_reserved_quantity > 0
+              AND o.status = 'Requested'
+          )
+        )
       RETURNING
         id,
         name,
@@ -122,8 +143,9 @@ export const postgresProductRepository: ProductRepository = {
         price,
         image,
         description,
-        is_visible AS "isVisible";
-    `, [product.name, product.category, product.price, product.image, product.description, product.isVisible ?? null, id]);
+        is_visible AS "isVisible",
+        stock_quantity AS "stockQuantity";
+    `, [product.name, product.category, product.price, product.image, product.description, product.isVisible ?? null, id, product.stockQuantity !== undefined, product.stockQuantity ?? null]);
 
     return rows[0] ? normalizeProduct(rows[0]) : null;
   },
@@ -132,6 +154,11 @@ export const postgresProductRepository: ProductRepository = {
     const { rows } = await query<{ id: number }>(`
       DELETE FROM products
       WHERE id = $1
+        AND NOT EXISTS (
+          SELECT 1
+          FROM public.order_items oi
+          WHERE oi.product_id = products.id
+        )
       RETURNING id;
     `, [id]);
 
@@ -142,6 +169,11 @@ export const postgresProductRepository: ProductRepository = {
     const { rows } = await query<{ id: number }>(`
       DELETE FROM products
       WHERE id = ANY($1)
+        AND NOT EXISTS (
+          SELECT 1
+          FROM public.order_items oi
+          WHERE oi.product_id = products.id
+        )
       RETURNING id;
     `, [ids]);
 
