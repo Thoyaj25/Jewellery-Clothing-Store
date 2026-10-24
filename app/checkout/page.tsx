@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
@@ -17,6 +17,60 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
+  const [postalOffices, setPostalOffices] = useState<string[]>([]);
+  const [postalMessage, setPostalMessage] = useState("");
+  const [postalLoading, setPostalLoading] = useState(false);
+
+  useEffect(() => {
+    if (!/^[1-9][0-9]{5}$/.test(pincode)) {
+      setPostalOffices([]);
+      setPostalMessage("");
+      setPostalLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setPostalLoading(true);
+      setPostalMessage("");
+      setPostalOffices([]);
+
+      try {
+        const response = await fetch(
+          `https://api.postalpincode.in/pincode/${pincode}`,
+          { signal: controller.signal }
+        );
+        if (!response.ok) throw new Error("Lookup unavailable");
+
+        const records = await response.json();
+        const offices = records?.[0]?.PostOffice;
+
+        if (!Array.isArray(offices) || offices.length === 0) {
+          setPostalMessage("No postal locations found. Please verify your PIN code.");
+          return;
+        }
+
+        setPostalOffices(
+          [...new Set(offices.map((office: { Name: string }) => office.Name))]
+        );
+        setCity(offices[0].District || "");
+        setState(offices[0].State || "");
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setPostalMessage(
+          "Postal lookup is temporarily unavailable. Please enter your city and state manually."
+        );
+      } finally {
+        if (!controller.signal.aborted) setPostalLoading(false);
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [pincode]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [whatsappRetryUrl, setWhatsappRetryUrl] = useState<string | null>(null);
   const submissionKeyRef = useRef<string | null>(null);
@@ -346,6 +400,41 @@ export default function CheckoutPage() {
                     placeholder="6-digit PIN code"
                     className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white outline-none focus:border-green-500"
                   />
+                  {postalLoading && (
+                    <p className="mt-2 text-xs text-zinc-400" role="status">
+                      Finding postal locations...
+                    </p>
+                  )}
+                  {postalOffices.length > 0 && (
+                    <div className="mt-3 rounded-lg border border-amber-700/30 bg-zinc-950 px-4 py-3">
+                      <p className="text-sm font-medium text-amber-400">
+                        Postal locations found
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-300">
+                        {postalOffices.join(", ")}
+                      </p>
+                      <p className="mt-2 text-xs text-zinc-400">
+                        City/district and state filled automatically. Please verify your address.
+                      </p>
+                    </div>
+                  )}
+                  {postalMessage && (
+                    <p role="status" className="mt-2 text-xs text-amber-300">
+                      {postalMessage}
+                    </p>
+                  )}
+                  {pincode.length === 6 && /^[1-9][0-9]{5}$/.test(pincode) && (
+                    <div role="status" className="mt-3 rounded-lg border border-amber-700/30 bg-amber-950/20 px-4 py-3">
+                      <p className="text-sm font-medium text-amber-400">
+                        Delivery confirmation required
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-zinc-300">
+                        Your PIN code format is valid. Delivery availability and
+                        estimated arrival will be confirmed through WhatsApp
+                        after your order request.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
