@@ -73,6 +73,7 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [whatsappRetryUrl, setWhatsappRetryUrl] = useState<string | null>(null);
+  const [confirmedOrderReference, setConfirmedOrderReference] = useState<string | null>(null);
   const submissionKeyRef = useRef<string | null>(null);
   const submissionFingerprintRef = useRef<string | null>(null);
 
@@ -184,7 +185,7 @@ export default function CheckoutPage() {
       const { orderReference, totalAmount } = result.order;
 
       const lines = [
-        "Hello, I have submitted an order to Ultimate Collections.",
+        "Hello Ultimate Collections! I have submitted an order request through your website.",
         "",
         `Order Reference: ${orderReference}`,
         `Customer Name: ${customerName}`,
@@ -206,20 +207,13 @@ export default function CheckoutPage() {
         "",
         `Order Total: ₹${Number(totalAmount).toLocaleString("en-IN")}`,
         "",
-        "Please confirm product availability with your dealer, then advise on payment and delivery. I understand this is an order request, not a confirmed purchase."
+        "Please confirm product availability, payment options and delivery details. I understand my order is awaiting confirmation and I should not make payment until Ultimate Collections provides instructions."
       );
 
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
 
       setWhatsappRetryUrl(url);
-
-      const popup = window.open(url, "_blank", "noopener,noreferrer");
-
-      if (!popup) {
-        window.alert(
-          `Order ${orderReference} was saved successfully. Use the Continue to WhatsApp link below if WhatsApp did not open.`
-        );
-      }
+      setConfirmedOrderReference(orderReference);
     } catch (error) {
       window.alert(
         error instanceof Error ? error.message : "Unable to submit your order."
@@ -230,6 +224,55 @@ export default function CheckoutPage() {
   };
 
   return (
+    <>
+      {confirmedOrderReference && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-success-heading"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+        >
+          <div className="w-full max-w-md rounded-2xl border border-amber-600/30 bg-zinc-900 p-6 text-center shadow-2xl sm:p-8">
+            <div className="mb-4 text-5xl text-green-400" aria-hidden="true">✓</div>
+            <h2 id="order-success-heading" className="text-2xl font-bold text-white">
+              Order Request Submitted!
+            </h2>
+            <p className="mt-3 text-sm text-zinc-300">
+              Thank you for shopping with Ultimate Collections.
+            </p>
+            <div className="my-5 rounded-xl bg-zinc-800 p-4">
+              <p className="text-xs text-zinc-400">YOUR ORDER REFERENCE</p>
+              <p className="mt-1 text-xl font-semibold text-amber-400">
+                {confirmedOrderReference}
+              </p>
+            </div>
+            <h3 className="mb-2 text-sm font-semibold text-amber-400">
+              What's Next?
+            </h3>
+            <p className="mb-5 text-sm leading-relaxed text-zinc-300">
+              Your order request has been saved successfully. Our team will
+              confirm product availability, payment options and delivery
+              details. Please do not make any payment until we confirm.
+            </p>
+            {whatsappRetryUrl && (
+              <a
+                href={whatsappRetryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full rounded-lg bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-500"
+              >
+                Send Order Details via WhatsApp
+              </a>
+            )}
+            <Link
+              href="/products"
+              className="mt-4 block text-sm text-amber-400 hover:text-amber-300"
+            >
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+      )}
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black px-4 py-10 text-white sm:px-6 lg:py-14">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10">
@@ -525,9 +568,10 @@ export default function CheckoutPage() {
             )}
 
             <p className="mt-4 text-center text-xs leading-relaxed text-zinc-500">
-              This is an order request, not a confirmed purchase.
-              Product availability, payment and delivery will be confirmed
-              by Ultimate Collections through WhatsApp.
+              Thank you for choosing Ultimate Collections! Your order
+              request will be reviewed by our team. We will confirm product
+              availability, payment options and delivery details through
+              WhatsApp. Please wait for confirmation before making payment.
             </p>
 
             <Link
@@ -540,5 +584,6 @@ export default function CheckoutPage() {
         </form>
       </div>
     </div>
+    </>
   );
 }
