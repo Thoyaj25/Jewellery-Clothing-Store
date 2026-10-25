@@ -200,9 +200,9 @@ export default function ProductFormPanel({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-4 bg-zinc-900 rounded space-y-2"
+      className="mx-auto w-full max-w-4xl space-y-6 rounded-2xl border border-amber-600/20 bg-zinc-900/80 p-5 shadow-xl sm:p-8"
     >
-      <h2 className="text-white font-bold">
+      <h2 className="text-2xl font-semibold tracking-tight text-white">
         {editing ? "Edit Product" : "Add Product"}
       </h2>
 
@@ -214,7 +214,7 @@ export default function ProductFormPanel({
         </div>
       )}
 
-              <div className="space-y-2">
+              <div className="space-y-3">
           <label className="block text-sm text-zinc-300">
             Product Title
           </label>
@@ -225,12 +225,12 @@ export default function ProductFormPanel({
             onChange={(e) =>
               setForm({ ...form, name: e.target.value })
             }
-            className="w-full p-2 bg-black text-white"
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
             disabled={busy}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="block text-sm text-zinc-300">
             Available Stock
           </label>
@@ -244,12 +244,12 @@ export default function ProductFormPanel({
             onChange={(e) =>
               setForm({ ...form, stockQuantity: e.target.value })
             }
-            className="w-full p-2 bg-black text-white"
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
             disabled={busy}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="block text-sm text-zinc-300">
             Product Image
           </label>
@@ -288,12 +288,12 @@ export default function ProductFormPanel({
               setForm({ ...form, image: e.target.value });
               setPreview(e.target.value);
             }}
-            className="w-full p-2 bg-black text-white"
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
             disabled={busy}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="block text-sm text-zinc-300">
             Price
           </label>
@@ -307,7 +307,7 @@ export default function ProductFormPanel({
             onChange={(e) =>
               setForm({ ...form, price: e.target.value })
             }
-            className="w-full p-2 bg-black text-white"
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
             disabled={busy}
           />
         </div>
@@ -318,7 +318,7 @@ export default function ProductFormPanel({
           onChange={(e) =>
             setForm({ ...form, category: e.target.value })
           }
-          className="w-full p-2 bg-black text-white"
+          className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
           disabled={busy}
         />
 
@@ -338,15 +338,15 @@ export default function ProductFormPanel({
           onChange={(e) =>
             setForm({ ...form, description: e.target.value })
           }
-          className="w-full p-2 bg-black text-white"
+          className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
           disabled={busy}
         />
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-3 border-t border-zinc-700 pt-5">
         <button
           type="submit"
           disabled={busy}
-          className="px-4 py-2 bg-amber-600 rounded disabled:bg-zinc-600"
+          className="rounded-xl bg-amber-600 px-6 py-3 font-semibold text-black transition hover:bg-amber-500 disabled:bg-zinc-600"
         >
           {uploading
             ? "Uploading..."
@@ -362,7 +362,7 @@ export default function ProductFormPanel({
             type="button"
             onClick={onCancelEdit}
             disabled={busy}
-            className="px-4 py-2 bg-zinc-700 rounded disabled:bg-zinc-600"
+            className="rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-3 font-medium text-white transition hover:bg-zinc-700 disabled:opacity-60"
           >
             Cancel
           </button>

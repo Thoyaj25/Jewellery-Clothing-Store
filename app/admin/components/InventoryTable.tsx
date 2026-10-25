@@ -114,13 +114,13 @@ export default function InventoryTable({
   const SkeletonRow = () => (
     <tr className="border-t border-zinc-800 animate-pulse">
       <td className="p-3"><div className="w-4 h-4 bg-zinc-800 rounded"></div></td>
-      <td className="p-3 flex items-center gap-3">
+      <td className="p-3"><div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded bg-zinc-800"></div>
         <div className="space-y-2">
           <div className="h-3 w-24 bg-zinc-800 rounded"></div>
           <div className="h-2 w-32 bg-zinc-800 rounded"></div>
         </div>
-      </td>
+      </div></td>
       <td className="p-3"><div className="h-3 w-16 bg-zinc-800 rounded"></div></td>
       <td className="p-3 text-right"><div className="h-3 w-12 bg-zinc-800 rounded ml-auto"></div></td>
       <td className="p-3"><div className="h-5 w-24 bg-zinc-800 rounded"></div></td>
@@ -155,15 +155,15 @@ export default function InventoryTable({
         </div>
       </div>
 
-      <table className="w-full text-sm text-left text-zinc-300">
+      <table className="w-full min-w-[1000px] table-fixed text-left text-sm text-zinc-300">
         <thead className="bg-zinc-900 text-zinc-400 uppercase text-xs">
           <tr>
-            <th className="p-3 w-10"></th>
-            <th className="p-3">Product</th>
-            <th className="p-3">Category</th>
-            <th className="p-3 text-right">Price</th>
-            <th className="p-3">Stock Status</th>
-            <th className="p-3 text-right">Actions</th>
+            <th className="w-[5%] p-4"></th>
+            <th className="w-[33%] p-4 text-left">Product</th>
+            <th className="w-[15%] p-4 text-left">Category</th>
+            <th className="w-[12%] p-4 text-right">Price</th>
+            <th className="w-[18%] p-4 text-left">Stock Status</th>
+            <th className="w-[17%] p-4 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -175,7 +175,7 @@ export default function InventoryTable({
                 <td className="p-3">
                   <input type="checkbox" checked={selected.has(product.id)} onChange={() => toggleSelect(product.id)} />
                 </td>
-                <td className="p-3 flex items-center gap-3">
+                <td className="p-3"><div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded overflow-hidden bg-zinc-800">
                     <Image src={product.image} alt={product.name} width={40} height={40} />
                   </div>
@@ -183,7 +183,7 @@ export default function InventoryTable({
                     <div className="font-medium text-white">{product.name}</div>
                     <div className="text-xs text-zinc-500 truncate max-w-[220px]">{product.description ?? "No description"}</div>
                   </div>
-                </td>
+                </div></td>
                 <td className="p-3 text-zinc-400">{product.category}</td>
                 <td className="p-3 text-right text-amber-500 font-medium">₹{product.price}</td>
                 <td className="p-3">
