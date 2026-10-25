@@ -209,7 +209,7 @@ export default function CheckoutPage() {
         "Please confirm product availability with your dealer, then advise on payment and delivery. I understand this is an order request, not a confirmed purchase."
       );
 
-      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\\n"))}`;
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
 
       setWhatsappRetryUrl(url);
 
