@@ -14,6 +14,7 @@ type FormState = {
   name: string;
   category: string;
   price: string;
+  stockQuantity: string;
   image: string;
   description: string;
   isVisible: boolean;
@@ -23,6 +24,7 @@ const getEmptyForm = (): FormState => ({
   name: "",
   category: "",
   price: "",
+  stockQuantity: "",
   image: "",
   description: "",
   isVisible: true,
@@ -37,6 +39,7 @@ const getFormFromProduct = (product: Product | null): FormState => {
     name: product.name,
     category: product.category,
     price: product.price.toString(),
+    stockQuantity: product.stockQuantity?.toString() ?? "",
     image: product.image,
     description: product.description ?? "",
     isVisible: product.isVisible ?? true,
@@ -134,6 +137,20 @@ export default function ProductFormPanel({
       validation.push("Invalid price");
     }
 
+    const stockQuantity =
+      form.stockQuantity.trim() === ""
+        ? null
+        : Number(form.stockQuantity);
+
+    if (
+      stockQuantity !== null &&
+      (!Number.isSafeInteger(stockQuantity) ||
+        stockQuantity < 0 ||
+        stockQuantity > 2147483647)
+    ) {
+      validation.push("Stock must be a non-negative whole number.");
+    }
+
     if (!form.image.trim()) {
       validation.push("Please upload an image or enter an image URL");
     }
@@ -154,6 +171,7 @@ export default function ProductFormPanel({
           body: JSON.stringify({
             ...form,
             price,
+            stockQuantity,
             isVisible: form.isVisible,
           }),
         }
@@ -206,6 +224,25 @@ export default function ProductFormPanel({
             value={form.name}
             onChange={(e) =>
               setForm({ ...form, name: e.target.value })
+            }
+            className="w-full p-2 bg-black text-white"
+            disabled={busy}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm text-zinc-300">
+            Available Stock
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            step="1"
+            placeholder="Blank = not configured"
+            value={form.stockQuantity}
+            onChange={(e) =>
+              setForm({ ...form, stockQuantity: e.target.value })
             }
             className="w-full p-2 bg-black text-white"
             disabled={busy}

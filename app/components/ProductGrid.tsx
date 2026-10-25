@@ -1,7 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Mic } from "lucide-react";
 import ProductCard from "./ProductCard";
+
+type SpeechRecognitionInstance = {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  abort: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
 
 export type Product = {
   id: number;
@@ -18,8 +32,66 @@ export default function ProductGrid({
   products: Product[];
 }) {
   const [search, setSearch] = useState("");
+  const [listening, setListening] = useState(false);
+  const [voiceMessage, setVoiceMessage] = useState("");
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+
+  useEffect(() => {
+    return () => recognitionRef.current?.abort();
+  }, []);
+
+  function startVoiceSearch() {
+    const browser = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+
+    const Recognition =
+      browser.SpeechRecognition ?? browser.webkitSpeechRecognition;
+
+    if (!Recognition) {
+      setVoiceMessage("Voice search is not supported in this browser. Please type your search.");
+      return;
+    }
+
+    if (recognitionRef.current) return;
+
+    const recognition = new Recognition();
+    recognitionRef.current = recognition;
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0]?.[0]?.transcript;
+      if (transcript) {
+        setSearch(transcript);
+        setVoiceMessage("");
+      }
+    };
+
+    recognition.onerror = () => {
+      setVoiceMessage("Could not recognize speech. Please try again or type your search.");
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+
+    try {
+      setVoiceMessage("");
+      recognition.start();
+      setListening(true);
+    } catch {
+      recognitionRef.current = null;
+      setListening(false);
+      setVoiceMessage("Microphone could not start. Please use text search.");
+    }
+  }
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("default");
+
 
 
   const categories = [
@@ -50,6 +122,7 @@ export default function ProductGrid({
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+
     if (sort === "price-low") {
       return a.price - b.price;
     }
@@ -66,56 +139,69 @@ export default function ProductGrid({
     <>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="mb-6 flex flex-col gap-2 sm:max-w-md">
+        <label
+          htmlFor="collection-category"
+          className="text-sm font-medium text-amber-400"
+        >
+          Browse Collections
+        </label>
 
-        {categories.map((cat) => (
-
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`
-              px-4 md:px-6 py-2
-              rounded-full
-              text-sm md:text-base
-              transition-all
-              border
-              ${
-                category === cat
-                  ? "bg-amber-600 text-black border-amber-600"
-                  : "text-white border-amber-600/30 hover:border-amber-600"
-              }
-            `}
-          >
-            {cat}
-          </button>
-
-        ))}
-
+        <select
+          id="collection-category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="
+            w-full rounded-lg
+            border border-amber-600/50
+            bg-zinc-950 px-4 py-3
+            text-white
+            focus:outline-none
+            focus:ring-2 focus:ring-amber-500
+          "
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat === "All" ? "All Collections" : cat}
+            </option>
+          ))}
+        </select>
       </div>
 
 
-
-      {/* Search */}
+      {/* Search and voice recognition */}
       <div className="mb-12">
+        <div className="flex items-center gap-2">
+          <input
+            type="search"
+            aria-label="Search products"
+            placeholder="Search for jewellery, clothing..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="min-w-0 flex-1 rounded-full border border-amber-600/30 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-600 focus:outline-none md:px-6 md:py-4"
+          />
+          <button
+            type="button"
+            onClick={startVoiceSearch}
+            disabled={listening}
+            aria-label={listening ? "Listening for your search" : "Search by voice"}
+            title={listening ? "Listening..." : "Search by voice"}
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-amber-600/50 bg-zinc-950 text-amber-400 transition hover:bg-amber-900/30 disabled:opacity-60"
+          >
+            <Mic size={20} aria-hidden="true" />
+          </button>
+        </div>
+        {listening && (
+          <p role="status" className="mt-2 text-sm text-amber-400">
+            Listening... speak your product name.
+          </p>
+        )}
+        {voiceMessage && (
+          <p role="status" className="mt-2 text-sm text-zinc-400">
+            {voiceMessage}
+          </p>
+        )}
 
-        <input
-          type="text"
-          placeholder="Search for jewellery, clothing..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="
-            w-full
-            px-4 md:px-6
-            py-3 md:py-4
-            bg-black/40
-            border border-amber-600/30
-            rounded-full
-            text-white
-            placeholder-gray-500
-            focus:outline-none
-            focus:border-amber-600
-          "
-        />
 
       </div>
 

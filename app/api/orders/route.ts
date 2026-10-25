@@ -113,10 +113,13 @@ export async function POST(request: Request) {
         id: number;
         name: string;
         price: string;
+        stock_quantity: number | null;
       }>(
-        `SELECT id, name, price
+        `SELECT id, name, price, stock_quantity
          FROM public.products
-         WHERE id = ANY($1::bigint[]) AND is_visible = TRUE`,
+         WHERE id = ANY($1::bigint[]) AND is_visible = TRUE
+         ORDER BY id
+         FOR UPDATE`,
         [ids]
       );
 
@@ -127,6 +130,15 @@ export async function POST(request: Request) {
       const items = products.rows.map((product) => {
         const unitPrice = Number(product.price);
         const quantity = quantities.get(Number(product.id))!;
+
+        if (
+          product.stock_quantity !== null &&
+          quantity > product.stock_quantity
+        ) {
+          throw new OrderValidationError(
+            `Insufficient stock for ${product.name}.`
+          );
+        }
 
         if (!Number.isSafeInteger(unitPrice * 100) || unitPrice < 0) {
           throw new OrderValidationError("Invalid product price.");
@@ -179,15 +191,50 @@ export async function POST(request: Request) {
       const orderId = inserted.rows[0].id;
 
       for (const item of items) {
+        const product = products.rows.find(
+          (row) => Number(row.id) === item.productId
+        );
+
+        const reservedQuantity =
+          product?.stock_quantity == null ? 0 : item.quantity;
+
         await client.query(
           `INSERT INTO public.order_items
-           (order_id, product_id, product_name, unit_price, quantity, line_total)
-           VALUES ($1,$2,$3,$4,$5,$6)`,
+           (order_id, product_id, product_name, unit_price,
+            quantity, line_total, stock_reserved_quantity)
+           VALUES ($1,$2,$3,$4,$5,$6,$7)`,
           [
             orderId, item.productId, item.productName,
             item.unitPrice, item.quantity, item.lineTotal,
+            reservedQuantity,
           ]
         );
+      }
+
+      // Deduct configured inventory inside the order transaction.
+      // NULL stock means inventory tracking has not been configured.
+      for (const item of items) {
+        const stockUpdate = await client.query(
+          `UPDATE public.products
+           SET stock_quantity = stock_quantity - $1
+           WHERE id = $2
+             AND stock_quantity IS NOT NULL
+             AND stock_quantity >= $1`,
+          [item.quantity, item.productId]
+        );
+
+        const product = products.rows.find(
+          (row) => Number(row.id) === item.productId
+        );
+
+        if (
+          product?.stock_quantity !== null &&
+          stockUpdate.rowCount !== 1
+        ) {
+          throw new OrderValidationError(
+            `Unable to reserve stock for ${item.productName}.`
+          );
+        }
       }
 
       await client.query(

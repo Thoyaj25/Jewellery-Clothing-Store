@@ -88,7 +88,7 @@ export default async function AdminOrdersPage() {
           ) : (
             <>
               {/* Mobile and tablet order cards */}
-              <div className="space-y-4 p-3 sm:p-4 lg:hidden">
+              <div className="space-y-4 p-3 sm:p-4">
                 {orders.map((order) => (
                   <article
                     key={order.id}

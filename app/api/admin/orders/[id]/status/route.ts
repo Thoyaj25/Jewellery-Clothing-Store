@@ -91,6 +91,44 @@ export async function PATCH(
         };
       }
 
+      // Restore tracked inventory only when an order is first rejected.
+      // The locked order row and transition validation prevent duplicate restoration.
+      if (order.status === "Requested" && newStatus === "Rejected") {
+        const orderItems = await client.query<{
+          product_id: string | null;
+          stock_reserved_quantity: number;
+        }>(
+          `SELECT product_id, stock_reserved_quantity
+           FROM public.order_items
+           WHERE order_id = $1
+           ORDER BY product_id`,
+          [orderId]
+        );
+
+        for (const item of orderItems.rows) {
+          if (
+            item.product_id === null ||
+            item.stock_reserved_quantity <= 0
+          ) {
+            continue;
+          }
+
+          const restored = await client.query(
+            `UPDATE public.products
+             SET stock_quantity = stock_quantity + $1
+             WHERE id = $2
+               AND stock_quantity IS NOT NULL`,
+            [item.stock_reserved_quantity, item.product_id]
+          );
+
+          if (restored.rowCount !== 1) {
+            throw new Error(
+              "Unable to restore reserved inventory for rejected order."
+            );
+          }
+        }
+      }
+
       await client.query(
         `UPDATE public.orders
          SET status = $1, updated_at = NOW()

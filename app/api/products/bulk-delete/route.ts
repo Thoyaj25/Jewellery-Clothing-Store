@@ -37,11 +37,35 @@ export async function POST(req: Request) {
 
     const deleted = await deleteProducts(ids);
 
+    if (deleted !== new Set(ids).size) {
+      return NextResponse.json({
+        success: false,
+        deleted,
+        message:
+          "Some products could not be deleted because they have order history or no longer exist. Hide products with order history instead.",
+      }, { status: 409 });
+    }
+
     return NextResponse.json({
       success: true,
       deleted,
     });
   } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: unknown }).code === "23503"
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "One or more products are referenced by orders. Hide them instead of deleting them.",
+        },
+        { status: 409 }
+      );
+    }
+
     console.error("Bulk delete failed:", error);
     return NextResponse.json(
       { error: "Bulk delete failed." },

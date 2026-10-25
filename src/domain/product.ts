@@ -7,4 +7,5 @@ export type Product = {
   description: string | null;
   badge?: string;
   isVisible?: boolean;
+  stockQuantity?: number | null;
 };
