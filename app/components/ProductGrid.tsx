@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic } from "lucide-react";
 import ProductCard from "./ProductCard";
+import ImageSearchUpload from "./ImageSearchUpload";
+import type { VisualSearchMatch } from "@/src/lib/findSimilarProducts";
 
 type SpeechRecognitionInstance = {
   lang: string;
@@ -32,6 +34,7 @@ export default function ProductGrid({
   products: Product[];
 }) {
   const [search, setSearch] = useState("");
+  const [visualMatches, setVisualMatches] = useState<VisualSearchMatch[] | null>(null);
   const [listening, setListening] = useState(false);
   const [voiceMessage, setVoiceMessage] = useState("");
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
@@ -117,7 +120,11 @@ export default function ProductGrid({
       product.category === category;
 
 
-    return matchesSearch && matchesCategory;
+    const matchesImage =
+      visualMatches === null ||
+      visualMatches.some((match) => match.productId === product.id);
+
+    return matchesSearch && matchesCategory && matchesImage;
 
   });
 
@@ -168,6 +175,18 @@ export default function ProductGrid({
         </select>
       </div>
 
+
+      {/* AI visual search */}
+      <div className="mb-6">
+        <ImageSearchUpload
+          products={products.map(({ id, name, image }) => ({
+            id,
+            name,
+            image,
+          }))}
+          onResults={setVisualMatches}
+        />
+      </div>
 
       {/* Search and voice recognition */}
       <div className="mb-12">
