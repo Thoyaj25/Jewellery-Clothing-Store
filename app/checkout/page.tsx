@@ -206,7 +206,7 @@ export default function CheckoutPage() {
         "",
         `Order Total: ₹${Number(totalAmount).toLocaleString("en-IN")}`,
         "",
-        "My order is awaiting confirmation. Please advise on payment and delivery."
+        "Please confirm product availability with your dealer, then advise on payment and delivery. I understand this is an order request, not a confirmed purchase."
       );
 
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\\n"))}`;
@@ -525,8 +525,9 @@ export default function CheckoutPage() {
             )}
 
             <p className="mt-4 text-center text-xs leading-relaxed text-zinc-500">
-              Your order details will be sent to Ultimate Collections on
-              WhatsApp for confirmation.
+              This is an order request, not a confirmed purchase.
+              Product availability, payment and delivery will be confirmed
+              by Ultimate Collections through WhatsApp.
             </p>
 
             <Link
