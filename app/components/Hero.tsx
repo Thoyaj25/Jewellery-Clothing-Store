@@ -23,23 +23,23 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[60vh] md:min-h-[75vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-black via-amber-950/5 to-black">
-      {/* Background Image Overlay */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-600/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-green-600/20 rounded-full blur-3xl animate-pulse"></div>
+    <section className="relative flex min-h-[480px] items-center justify-center overflow-hidden py-16 md:min-h-[520px] md:py-20 bg-gradient-to-br from-black via-amber-950/5 to-black">
+      {/* Subtle champagne-gold ambient lighting */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -right-24 top-0 h-80 w-80 rounded-full bg-[#C5A46D]/10 blur-3xl" />
+        <div className="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#C5A46D]/5 blur-3xl" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-7 px-8 text-center sm:px-6 md:gap-9">
         {/* Promotional label */}
-        <p className="mb-6 text-xs font-medium uppercase tracking-[0.2em] text-amber-400 sm:text-sm">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-amber-400 sm:text-sm">
           ✦ Timeless Indian Fashion
         </p>
 
         {/* Main Heading */}
-        <h1 className="mb-6">
-          <span className="block text-5xl md:text-7xl font-light text-white mb-2 tracking-tight">
+        <h1 className="flex flex-col gap-2">
+          <span className="block text-5xl md:text-7xl font-light text-white tracking-tight">
             Festival Ready
           </span>
           <span className="block text-5xl md:text-7xl font-light text-amber-500 tracking-tight">
@@ -48,36 +48,21 @@ export default function Hero() {
         </h1>
 
         {/* Subheading */}
-        <p className="text-gray-300 text-lg md:text-xl font-light mb-8 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-gray-300 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
           Discover our premium collection of handcrafted jewellery and exquisite clothing for every occasion
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-          <button onClick={handleExplore} className="px-8 py-3 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold rounded-full hover:from-amber-500 hover:to-amber-400 transition-all duration-300 shadow-lg hover:shadow-amber-600/50 hover:shadow-2xl">
+        <div className="flex flex-wrap items-center justify-center gap-5">
+          <button onClick={handleExplore} className="min-w-44 px-8 py-4 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold rounded-full hover:from-amber-500 hover:to-amber-400 transition-all duration-300 shadow-lg hover:shadow-amber-600/50 hover:shadow-2xl">
             Explore Collection
           </button>
-          <button onClick={handleLearnMore} className="px-8 py-3 border border-amber-600 text-amber-600 font-semibold rounded-full hover:bg-amber-600/10 transition-all duration-300">
+          <button onClick={handleLearnMore} className="min-w-44 px-8 py-4 border border-amber-600 text-amber-600 font-semibold rounded-full hover:bg-amber-600/10 transition-all duration-300">
             Learn More
           </button>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <svg
-            className="w-6 h-6 text-amber-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
-        </div>
+
       </div>
     </section>
   );
