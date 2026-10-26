@@ -45,23 +45,25 @@ export function CartProvider({
 }) {
   const [mounted, setMounted] = useState(false);
 
-  // Initialize state lazily to avoid hydration mismatch and React 19 ESLint errors
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const raw = localStorage.getItem("cart:v1");
-      try {
-        return raw ? JSON.parse(raw) : [];
-      } catch (error) {
-        console.error("Failed to load cart:", error);
-      }
-    }
-    return [];
-  });
+  // Use the same initial state on the server and first browser render.
+  const [items, setItems] = useState<CartItem[]>([]);
 
-  // Sync mounted state after initial render
+  // Restore the saved cart only after hydration.
   useEffect(() => {
     const timeout = window.setTimeout(() => {
-      setMounted(true);
+      try {
+        const raw = localStorage.getItem("cart:v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            setItems(parsed);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load cart:", error);
+      } finally {
+        setMounted(true);
+      }
     }, 0);
 
     return () => window.clearTimeout(timeout);
