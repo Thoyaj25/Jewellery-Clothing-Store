@@ -6,7 +6,7 @@ let extractorPromise: ReturnType<typeof pipeline<"image-feature-extraction">> | 
 
 async function getExtractor() {
   if (!extractorPromise) {
-    extractorPromise = pipeline("image-feature-extraction", MODEL_ID);
+    extractorPromise = pipeline("image-feature-extraction", MODEL_ID, { dtype: "int8" });
   }
 
   try {

@@ -124,7 +124,9 @@ export default function ProductGrid({
       visualMatches === null ||
       visualMatches.some((match) => match.productId === product.id);
 
-    return matchesSearch && matchesCategory && matchesImage;
+    return visualMatches !== null
+      ? matchesImage
+      : matchesSearch && matchesCategory;
 
   });
 

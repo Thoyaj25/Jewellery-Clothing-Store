@@ -70,7 +70,7 @@ export async function findSimilarProducts(
 
   const availableIds = new Set(products.map((product) => product.id));
 
-  const minimumSimilarity = 0.75;
+  const minimumSimilarity = 0.73;
 
   return index
     .filter((product) => availableIds.has(product.id))
