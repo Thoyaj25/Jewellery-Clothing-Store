@@ -14,55 +14,73 @@ export type VisualSearchMatch = {
   score: number;
 };
 
+type IndexedProduct = {
+  id: number;
+  embedding: number[];
+};
+
+let indexPromise: Promise<IndexedProduct[]> | null = null;
+
+async function loadSearchIndex(): Promise<IndexedProduct[]> {
+  if (!indexPromise) {
+    indexPromise = fetch("/ai-search/search-index.json")
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Image search index unavailable.");
+        }
+
+        const data: unknown = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid image search index.");
+        }
+
+        return data.filter(
+          (item): item is IndexedProduct =>
+            item !== null &&
+            typeof item === "object" &&
+            typeof item.id === "number" &&
+            Array.isArray(item.embedding) &&
+            item.embedding.length === 512 &&
+            item.embedding.every(
+              (value: unknown) =>
+                typeof value === "number" &&
+                Number.isFinite(value)
+            )
+        );
+      })
+      .catch((error) => {
+        indexPromise = null;
+        throw error;
+      });
+  }
+
+  return indexPromise;
+}
+
 export async function findSimilarProducts(
   selectedImage: string,
   products: VisualSearchProduct[],
   limit = 6
 ): Promise<VisualSearchMatch[]> {
-  const uploadedEmbedding = await createImageEmbedding(selectedImage);
-  const results: VisualSearchMatch[] = [];
+  const [uploadedEmbedding, index] = await Promise.all([
+    createImageEmbedding(selectedImage),
+    loadSearchIndex(),
+  ]);
 
-  const batchSize = 3;
-
-  for (let start = 0; start < products.length; start += batchSize) {
-    const batch = products.slice(start, start + batchSize);
-
-    const matches = await Promise.all(
-      batch.map(async (product) => {
-        if (!product.image) return null;
-
-        try {
-          const embedding = await createImageEmbedding(product.image);
-
-          return {
-            productId: product.id,
-            score: cosineSimilarity(uploadedEmbedding, embedding),
-          };
-        } catch {
-          return null;
-        }
-      })
-    );
-
-    for (const match of matches) {
-      if (match) results.push(match);
-    }
-  }
-
-  // Temporary conservative similarity gate.
-  // Must be calibrated using real catalogue examples.
-  console.info("[CLIP MATCHING]", {
-    catalogueProducts: products.length,
-    processedImages: results.length,
-    scores: results.map((match) => ({
-      productId: match.productId,
-      similarity: Number(match.score.toFixed(4)),
-    })),
-  });
+  const availableIds = new Set(products.map((product) => product.id));
 
   const minimumSimilarity = 0.75;
 
-  return results
+  return index
+    .filter((product) => availableIds.has(product.id))
+    .map((product) => ({
+      productId: product.id,
+      score: cosineSimilarity(
+        uploadedEmbedding,
+        Float32Array.from(product.embedding)
+      ),
+    }))
     .filter((match) => match.score >= minimumSimilarity)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
