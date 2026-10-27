@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { withTransaction } from "@/src/lib/db";
+import { getDiwaliDiscount } from "@/src/lib/diwaliOffer";
 
 export const runtime = "nodejs";
 
@@ -155,7 +156,8 @@ export async function POST(request: Request) {
 
       const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0);
       const shippingAmount = subtotal >= 2000 ? 0 : 100;
-      const totalAmount = subtotal + shippingAmount;
+      const diwaliDiscount = getDiwaliDiscount(subtotal);
+      const totalAmount = subtotal + shippingAmount - diwaliDiscount;
 
       const year = new Date().getUTCFullYear();
 

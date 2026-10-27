@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { DIWALI_OFFER } from "@/src/lib/diwaliOffer";
 import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
 import ProductGrid, { type Product } from "./components/ProductGrid";
@@ -31,9 +32,41 @@ function prioritizeProductOrder(products: Product[]) {
 export default async function Home() {
   const products = prioritizeProductOrder(await getProducts());
 
+  const now = Date.now();
+  const showDiwaliBanner =
+    now >= Date.parse(DIWALI_OFFER.startsAt) &&
+    now < Date.parse(DIWALI_OFFER.endsAt);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">
       <Hero />
+
+      {/* Diwali Utsav 2026 — automatically expires */}
+      {showDiwaliBanner && (
+      <section
+        aria-label="Diwali Utsav festive promotion"
+        className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 md:pt-12"
+      >
+        <div className="overflow-hidden rounded-2xl border border-amber-500/30 bg-black shadow-lg">
+          <Image
+            src="/images/promotions/diwali-utsav.png"
+            alt="Ultimate Collections Diwali Utsav — festive jewellery, handbags and fashion"
+            width={2014}
+            height={780}
+            sizes="(max-width: 768px) 100vw, 1280px"
+            className="h-auto w-full"
+          />
+          <div className="flex justify-center bg-black px-4 py-4">
+            <a
+              href="/products"
+              className="rounded-full bg-amber-400 px-8 py-3 text-sm font-semibold text-black transition-colors hover:bg-amber-300"
+            >
+              Shop Festive Collections
+            </a>
+          </div>
+        </div>
+      </section>
+      )}
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-20">
         <section id="collections" className="mb-20">
