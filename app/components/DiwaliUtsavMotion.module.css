@@ -1,0 +1,19 @@
+.section { max-width: 1280px; padding: 32px 16px 0; margin: 0 auto; perspective: 1200px; }
+.banner { --parallax-x: 0px; --parallax-y: 0px; isolation: isolate; position: relative; overflow: hidden; border: 1px solid rgba(240,188,90,.45); border-radius: 20px; background: #090604; box-shadow: 0 12px 55px rgba(120,68,10,.19); }
+.picture { overflow: hidden; }
+.image { display: block; width: 100%; height: auto; transform: translate3d(var(--parallax-x),var(--parallax-y),0) scale(1.02); transition: transform .3s ease-out; }
+.ambient { position: absolute; inset: 0 0 64px; pointer-events: none; background: radial-gradient(ellipse at 50% 20%, transparent 35%, rgba(255,176,55,.035) 80%); animation: ambient 7s ease-in-out infinite alternate; mix-blend-mode: screen; }
+.lampGlowLeft,.lampGlowRight { position: absolute; width: 18%; aspect-ratio: 1; border-radius: 50%; pointer-events: none; filter: blur(19px); opacity: .20; background: radial-gradient(circle,rgba(255,194,84,.8),rgba(246,105,0,.23) 35%,transparent 70%); mix-blend-mode: screen; animation: flame 2.6s ease-in-out infinite alternate; }
+.lampGlowLeft { left: -6%; bottom: 13%; }
+.lampGlowRight { right: 0%; bottom: 15%; animation-delay: -.8s; }
+.sparkles { pointer-events: none; position: absolute; inset: 0 0 64px; overflow: hidden; }
+.spark { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff2c5; box-shadow: 0 0 6px 2px #ffc164,0 0 15px 4px rgba(255,153,51,.52); opacity: 0; animation-name: twinkle; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+.ctaBar { position: relative; z-index: 2; display: flex; justify-content: center; padding: 12px 16px 15px; background: #090604; border-top: 1px solid rgba(237,183,79,.23); }
+.cta { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; background: linear-gradient(110deg,#fbe4a8,#d8a64a); color: #211407; font-size: 14px; font-weight: 700; text-decoration: none; padding: 10px 24px; transition: filter .2s ease; }
+.cta:hover { filter: brightness(1.1); }
+.cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@keyframes twinkle { 0%,100% { opacity: 0; transform: translateY(4px) scale(.3); } 45% { opacity: .75; transform: translateY(-7px) scale(1); } 65% { opacity: .2; transform: translateY(-12px) scale(.6); } }
+@keyframes flame { 0%,100% { opacity: .14; transform: scale(.95); } 55% { opacity: .29; transform: scale(1.06); } }
+@keyframes ambient { from { opacity: .35; } to { opacity: .8; } }
+@media (max-width: 640px) { .section { padding: 20px 12px 0; } .banner { border-radius: 13px; } .sparkles,.ambient { bottom: 62px; } .lampGlowLeft,.lampGlowRight { width: 29%; } .cta { width: 100%; font-size: 13px; } .image { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .section *, .section *::before, .section *::after { animation: none !important; transition: none !important; transform: none !important; } }
