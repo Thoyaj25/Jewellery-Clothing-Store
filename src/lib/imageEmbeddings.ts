@@ -1,12 +1,20 @@
-import { pipeline, RawImage } from "@huggingface/transformers";
+// Load the AI runtime only when image search is requested.
+async function loadExtractor() {
+  const { pipeline } = await import("@huggingface/transformers");
+  return pipeline(
+    "image-feature-extraction",
+    MODEL_ID,
+    { dtype: "int8" }
+  );
+}
 
 const MODEL_ID = "Xenova/clip-vit-base-patch32";
 
-let extractorPromise: ReturnType<typeof pipeline<"image-feature-extraction">> | null = null;
+let extractorPromise: ReturnType<typeof loadExtractor> | null = null;
 
 async function getExtractor() {
   if (!extractorPromise) {
-    extractorPromise = pipeline("image-feature-extraction", MODEL_ID, { dtype: "int8" });
+    extractorPromise = loadExtractor();
   }
 
   try {
@@ -28,6 +36,7 @@ export async function createImageEmbedding(
   }
 
   const buffer = await response.arrayBuffer();
+  const { RawImage } = await import("@huggingface/transformers");
   const image = await RawImage.fromBlob(
     new Blob([buffer], {
       type: response.headers.get("content-type") || "image/jpeg",
