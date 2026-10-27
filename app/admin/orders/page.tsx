@@ -18,6 +18,8 @@ type OrderRow = {
   customer_mobile: string;
   status: string;
   total_amount: string;
+  subtotal: string;
+  shipping_amount: string;
   payment_status: string;
   courier_name: string | null;
   tracking_number: string | null;
@@ -40,6 +42,8 @@ export default async function AdminOrdersPage() {
       o.customer_mobile,
       o.status,
       o.total_amount,
+      o.subtotal,
+      o.shipping_amount,
       o.created_at,
       COALESCE(p.status, 'Pending') AS payment_status,
       s.courier_name,
@@ -107,6 +111,19 @@ export default async function AdminOrdersPage() {
                       <p className="text-lg font-semibold text-amber-400">
                         ₹{Number(order.total_amount).toLocaleString("en-IN")}
                       </p>
+                      {Math.round((
+                        Number(order.subtotal) +
+                        Number(order.shipping_amount) -
+                        Number(order.total_amount)
+                      ) * 100) > 0 && (
+                        <p className="text-xs text-amber-300">
+                          Diwali discount: ₹{(
+                            Number(order.subtotal) +
+                            Number(order.shipping_amount) -
+                            Number(order.total_amount)
+                          ).toFixed(2)}
+                        </p>
+                      )}
                       <p className="text-sm text-zinc-400">
                         {new Date(order.created_at).toLocaleDateString("en-IN", {
                           day: "2-digit",
@@ -197,6 +214,19 @@ export default async function AdminOrdersPage() {
                       <td className="p-4">{order.customer_mobile}</td>
                       <td className="p-4">
                         ₹{Number(order.total_amount).toLocaleString("en-IN")}
+                        {Math.round((
+                          Number(order.subtotal) +
+                          Number(order.shipping_amount) -
+                          Number(order.total_amount)
+                        ) * 100) > 0 && (
+                          <div className="mt-1 text-xs text-amber-300">
+                            Diwali discount: ₹{(
+                              Number(order.subtotal) +
+                              Number(order.shipping_amount) -
+                              Number(order.total_amount)
+                            ).toFixed(2)}
+                          </div>
+                        )}
                       </td>
                       <td className="p-4">
                         <span className="rounded-full border border-amber-600/50 px-3 py-1 text-amber-400">

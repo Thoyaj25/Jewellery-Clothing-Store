@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
+import { getDiwaliDiscount } from "@/src/lib/diwaliOffer";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
 const SHIPPING_COST = 100;
@@ -114,7 +115,8 @@ export default function CheckoutPage() {
 
   const shippingCost =
     totalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-  const total = totalPrice + shippingCost;
+  const diwaliDiscount = getDiwaliDiscount(totalPrice);
+  const total = totalPrice + shippingCost - diwaliDiscount;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -527,6 +529,13 @@ export default function CheckoutPage() {
                 <span>Subtotal</span>
                 <span>₹{totalPrice.toLocaleString("en-IN")}</span>
               </div>
+
+              {diwaliDiscount > 0 && (
+                <div className="flex justify-between text-amber-300">
+                  <span>Diwali Utsav (5% OFF, max ₹30)</span>
+                  <span>-₹{diwaliDiscount.toLocaleString("en-IN")}</span>
+                </div>
+              )}
 
               <div className="flex justify-between text-zinc-300">
                 <span>Shipping</span>
