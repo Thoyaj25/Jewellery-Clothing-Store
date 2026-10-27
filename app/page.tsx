@@ -35,6 +35,47 @@ export default async function Home() {
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">
       <Hero />
 
+      {/* Diwali 2026 festive promotion — no automatic discount */}
+      <section
+        aria-label="Diwali festive collection"
+        className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 md:pt-12"
+      >
+        <div className="relative overflow-hidden rounded-3xl border border-amber-500/40 bg-gradient-to-br from-amber-950 via-black to-amber-950 px-6 py-10 text-center shadow-xl shadow-amber-950/20 sm:px-10 md:py-14">
+          <div className="pointer-events-none absolute -left-12 -top-12 h-44 w-44 rounded-full bg-amber-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -right-12 h-48 w-48 rounded-full bg-amber-500/10 blur-3xl" />
+
+          <div className="relative z-10">
+            <p className="mb-4 text-xs font-medium uppercase tracking-[0.3em] text-amber-300 sm:text-sm">
+              ✦ Ultimate Collections ✦
+            </p>
+
+            <h2 className="mb-4 text-3xl font-light tracking-wide text-amber-200 sm:text-4xl md:text-5xl">
+              Diwali Sparkle Collection
+            </h2>
+
+            <p className="mx-auto mb-3 max-w-xl text-base text-amber-100 sm:text-lg">
+              Celebrate the Festival of Lights with Elegance
+            </p>
+
+            <p className="mx-auto mb-8 max-w-xl text-sm leading-7 text-gray-300 sm:text-base">
+              Discover festive jewellery, stylish handbags and beautiful fashion
+              for your celebrations and gifting.
+            </p>
+
+            <a
+              href="/products"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-amber-400 px-8 py-3 text-sm font-semibold tracking-wide text-black transition-colors hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
+            >
+              Explore Festive Collections
+            </a>
+
+            <p className="mt-6 text-xs tracking-widest text-amber-300/80">
+              STYLE • ELEGANCE • CELEBRATION
+            </p>
+          </div>
+        </div>
+      </section>
+
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-20">
         <section id="collections" className="mb-20">
           <div className="text-center mb-12">
