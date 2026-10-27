@@ -38,3 +38,340 @@
     height: 13%;
   }
 }
+
+
+/* DIWALI_MOTION_V2 — enhanced cinematic motion */
+
+.banner {
+  background: #080401;
+  box-shadow: 0 15px 65px rgba(210, 120, 25, .2);
+}
+
+.image {
+  transform:
+    translate3d(var(--parallax-x), var(--parallax-y), 0)
+    scale(1.035);
+  transition: transform .45s ease-out;
+}
+
+.ambient {
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 80%,
+      rgba(255, 158, 28, .11), transparent 38%),
+    radial-gradient(ellipse at 80% 65%,
+      rgba(255, 183, 65, .12), transparent 37%);
+  animation: festiveGlow 4s ease-in-out infinite alternate;
+}
+
+/* Moving golden cinematic light sweep */
+.ambient::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255, 210, 115, .04) 45%,
+    rgba(255, 228, 155, .26) 50%,
+    rgba(255, 210, 115, .04) 55%,
+    transparent 60%
+  );
+  transform: translateX(-75%) rotate(8deg);
+  animation: goldenSweep 7s ease-in-out infinite;
+}
+
+.lampGlowLeft,
+.lampGlowRight {
+  width: 25%;
+  opacity: .4;
+  filter: blur(25px);
+  animation: strongFlame 1.7s ease-in-out infinite alternate;
+}
+
+/* Larger, brighter floating golden embers */
+.sparkles {
+  inset: 0;
+  overflow: hidden;
+}
+
+.spark {
+  width: 5px;
+  height: 5px;
+  background: #fff5d0;
+  box-shadow:
+    0 0 7px 3px #ffc45b,
+    0 0 20px 6px rgba(255, 151, 24, .75);
+  animation-name: floatingEmber;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes floatingEmber {
+  0%, 100% {
+    opacity: 0;
+    transform: translate3d(0, 25px, 0) scale(.4);
+  }
+  25% {
+    opacity: .85;
+  }
+  60% {
+    opacity: 1;
+    transform: translate3d(14px, -25px, 0) scale(1.4);
+  }
+  85% {
+    opacity: .3;
+    transform: translate3d(-9px, -48px, 0) scale(.7);
+  }
+}
+
+@keyframes goldenSweep {
+  0%, 18% { transform: translateX(-75%) rotate(8deg); }
+  65%, 100% { transform: translateX(75%) rotate(8deg); }
+}
+
+@keyframes strongFlame {
+  from { opacity: .18; transform: scale(.85); }
+  to { opacity: .55; transform: scale(1.2); }
+}
+
+@keyframes festiveGlow {
+  from { opacity: .35; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .image { transform: none; }
+  .ambient::before { opacity: .5; }
+  .spark { width: 3px; height: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section *,
+  .section *::before,
+  .section *::after {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* DIWALI_DIYA_V3 — elegant living flame effects */
+
+.lampGlowLeft,
+.lampGlowRight {
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 250, 207, .95) 0%,
+      rgba(255, 194, 75, .65) 12%,
+      rgba(255, 119, 15, .25) 38%,
+      transparent 72%
+    );
+  mix-blend-mode: screen;
+  filter: blur(17px);
+  animation: diyaLivingFlame 1.35s ease-in-out infinite alternate;
+}
+
+.lampGlowLeft {
+  left: -5%;
+  bottom: 0%;
+}
+
+.lampGlowRight {
+  right: -4%;
+  bottom: 0%;
+  animation-delay: -.65s;
+}
+
+@keyframes diyaLivingFlame {
+  0% {
+    opacity: .18;
+    transform: translateY(3px) scale(.9);
+  }
+  35% {
+    opacity: .55;
+    transform: translateY(-4px) scale(1.07);
+  }
+  70% {
+    opacity: .35;
+    transform: translateY(1px) scale(.96);
+  }
+  100% {
+    opacity: .65;
+    transform: translateY(-6px) scale(1.12);
+  }
+}
+
+@media (max-width: 640px) {
+  .lampGlowLeft,
+  .lampGlowRight {
+    filter: blur(12px);
+    opacity: .25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lampGlowLeft,
+  .lampGlowRight {
+    animation: none !important;
+  }
+}
+
+
+/* DIWALI_FLOATING_DIYAS_V4 */
+
+.floatingDiyas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floatingDiya {
+  position: absolute;
+  width: clamp(38px, 6vw, 78px);
+  aspect-ratio: 10 / 11;
+  filter: drop-shadow(0 0 15px rgba(255, 165, 38, .75));
+  transform-origin: center 75%;
+  will-change: transform;
+  animation: diyaLevitate 5.5s ease-in-out infinite;
+}
+
+.diyaLeft {
+  left: 5%;
+  bottom: 13%;
+}
+
+.diyaRight {
+  right: 5%;
+  bottom: 16%;
+  animation-delay: -2.6s;
+  animation-duration: 6.4s;
+}
+
+.diyaFlame {
+  transform-origin: 50px 48px;
+  animation: independentFlame 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes diyaLevitate {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-6deg) scale(.94);
+  }
+  25% {
+    transform: translate3d(12px, -20px, 35px) rotate(4deg) scale(1.04);
+  }
+  50% {
+    transform: translate3d(-5px, -43px, 60px) rotate(-2deg) scale(1.12);
+  }
+  75% {
+    transform: translate3d(-14px, -19px, 25px) rotate(5deg) scale(1.02);
+  }
+}
+
+@keyframes independentFlame {
+  from { transform: scale(.86, .97) rotate(-4deg); opacity: .8; }
+  to { transform: scale(1.08, 1.12) rotate(5deg); opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .floatingDiya {
+    width: 32px;
+    opacity: .85;
+  }
+  .diyaLeft { left: 3%; bottom: 9%; }
+  .diyaRight { right: 3%; bottom: 11%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floatingDiya, .diyaFlame {
+    animation: none !important;
+    will-change: auto;
+  }
+}
+
+
+/* DIWALI_MOBILE_V5 — mobile-only premium presentation */
+
+.mobileShopButton {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 20px 12px 0;
+  }
+
+  .banner {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .picture {
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .image {
+    position: absolute;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) !important;
+    object-fit: contain;
+  }
+
+  /* Hide the small painted button's click target on mobile */
+  .shopOverlay {
+    display: none;
+  }
+
+  /* Keep motion present but less distracting on mobile */
+  .floatingDiya {
+    width: 30px;
+    opacity: .8;
+  }
+
+  .spark {
+    width: 3px;
+    height: 3px;
+  }
+
+  .mobileShopButton {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    border-radius: 999px;
+    background: linear-gradient(110deg, #fbe4a8, #d8a64a);
+    color: #211407;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mobileShopButton:focus-visible {
+    outline: 2px solid #fbe4a8;
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileShopButton {
+    transition: none;
+  }
+}
+
+/* Mobile composition adjustment — show more of the model */
+@media (max-width: 640px) {
+  .image {
+    left: 59%;
+  }
+}

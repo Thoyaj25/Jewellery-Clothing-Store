@@ -21,8 +21,8 @@ export default function DiwaliUtsavMotion() {
     const rect = element.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
     const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-    element.style.setProperty("--parallax-x", `${(x * -5).toFixed(2)}px`);
-    element.style.setProperty("--parallax-y", `${(y * -4).toFixed(2)}px`);
+    element.style.setProperty("--parallax-x", `${(x * -14).toFixed(2)}px`);
+    element.style.setProperty("--parallax-y", `${(y * -10).toFixed(2)}px`);
   }
 
   function resetParallax() {
@@ -58,6 +58,55 @@ export default function DiwaliUtsavMotion() {
         <div className={styles.ambient} aria-hidden="true" />
         <div className={styles.lampGlowLeft} aria-hidden="true" />
         <div className={styles.lampGlowRight} aria-hidden="true" />
+        {/* Independent moving diya illustrations — not part of the photograph */}
+        <div className={styles.floatingDiyas} aria-hidden="true">
+          {[0, 1].map((index) => (
+            <div
+              key={index}
+              className={`${styles.floatingDiya} ${
+                index === 0 ? styles.diyaLeft : styles.diyaRight
+              }`}
+            >
+              <svg
+                viewBox="0 0 100 110"
+                width="100%"
+                height="100%"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <ellipse cx="50" cy="98" rx="34" ry="5"
+                  fill="#FFA82A" opacity=".25" />
+                <path
+                  d="M50 8 C65 30 60 42 50 49 C39 42 35 29 50 8Z"
+                  fill="#FFD772"
+                  className={styles.diyaFlame}
+                />
+                <path
+                  d="M50 25 C56 36 54 42 50 46 C45 42 44 35 50 25Z"
+                  fill="#FFF8CD"
+                />
+                <path
+                  d="M11 65 Q50 100 89 65 Q81 93 50 96 Q19 93 11 65Z"
+                  fill="#B96D22"
+                  stroke="#F8D080"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M11 65 Q50 83 89 65"
+                  stroke="#FFD78B"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M29 82 Q50 93 71 82"
+                  stroke="#FFDF8F"
+                  strokeWidth="2"
+                  opacity=".7"
+                />
+              </svg>
+            </div>
+          ))}
+        </div>
         <div className={styles.sparkles} aria-hidden="true">
           {sparks.map(([x, y, delay, duration], index) => (
             <span
@@ -73,6 +122,13 @@ export default function DiwaliUtsavMotion() {
           ))}
         </div>
       </div>
+      <a
+        href="/products"
+        className={styles.mobileShopButton}
+      >
+        Shop Festive Collections
+        <span aria-hidden="true"> →</span>
+      </a>
     </section>
   );
 }
