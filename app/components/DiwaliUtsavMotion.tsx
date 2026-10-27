@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useRef } from "react";
 import styles from "./DiwaliUtsavMotion.module.css";
 
@@ -42,15 +41,20 @@ export default function DiwaliUtsavMotion() {
       <div className={styles.banner}>
         <div className={styles.picture}>
           <Image
-            src="/images/promotions/diwali-utsav.png"
+            src="/images/promotions/diwali-utsav-final-2026.png"
             alt="Ultimate Collections Diwali Utsav: festive jewellery, clothing, handbags and 5 percent off, maximum 30 rupees"
-            width={2014}
-            height={780}
+            width={1983}
+            height={793}
             sizes="(max-width: 768px) 100vw, 1280px"
             className={styles.image}
             priority={false}
           />
         </div>
+        <a
+          href="/products"
+          className={styles.shopOverlay}
+          aria-label="Shop Diwali Utsav collections"
+        />
         <div className={styles.ambient} aria-hidden="true" />
         <div className={styles.lampGlowLeft} aria-hidden="true" />
         <div className={styles.lampGlowRight} aria-hidden="true" />
@@ -67,12 +71,6 @@ export default function DiwaliUtsavMotion() {
               }}
             />
           ))}
-        </div>
-        {/* The artwork's painted button is not interactive; this visible link is. */}
-        <div className={styles.ctaBar}>
-          <Link className={styles.cta} href="/products">
-            Shop Festive Collections <span aria-hidden="true">→</span>
-          </Link>
         </div>
       </div>
     </section>
