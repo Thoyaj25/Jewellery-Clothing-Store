@@ -44,23 +44,26 @@ export function WishlistProvider({
 }) {
   const [mounted, setMounted] = useState(false);
 
-  const [items, setItems] = useState<WishlistItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const raw = localStorage.getItem("wishlist:v1");
+  // Ensure server rendering and the first browser render agree.
+  const [items, setItems] = useState<WishlistItem[]>([]);
 
-      try {
-        return raw ? JSON.parse(raw) : [];
-      } catch (error) {
-        console.error("Failed to load wishlist:", error);
-      }
-    }
-
-    return [];
-  });
-
+  // Restore the saved wishlist after hydration.
   useEffect(() => {
     const timeout = window.setTimeout(() => {
-      setMounted(true);
+      try {
+        const raw = localStorage.getItem("wishlist:v1");
+
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            setItems(parsed);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load wishlist:", error);
+      } finally {
+        setMounted(true);
+      }
     }, 0);
 
     return () => window.clearTimeout(timeout);
