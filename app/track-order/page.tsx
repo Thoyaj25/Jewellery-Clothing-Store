@@ -11,6 +11,81 @@ type TrackingResult = {
   trackingNumber: string | null;
 };
 
+const ORDER_STAGES = [
+  "Requested",
+  "Confirmed",
+  "Packed",
+  "Shipped",
+  "Delivered",
+] as const;
+
+function OrderTimeline({ status }: { status: string }) {
+  const currentIndex = ORDER_STAGES.findIndex((stage) => stage === status);
+
+  if (status === "Rejected") {
+    return (
+      <div role="status" className="rounded-xl border border-red-800/50 bg-red-950/30 p-4">
+        <p className="font-semibold text-red-300">Order Rejected</p>
+        <p className="mt-1 text-sm text-zinc-300">
+          Your order was not accepted. Please contact support for assistance.
+        </p>
+      </div>
+    );
+  }
+
+  if (currentIndex === -1) {
+    return (
+      <p className="text-sm text-zinc-400">
+        Current status: {status}. Contact support for more information.
+      </p>
+    );
+  }
+
+  return (
+    <div aria-label="Order progress" className="rounded-xl border border-amber-600/20 p-4">
+      <h3 className="mb-4 font-medium text-amber-300">Order Progress</h3>
+      <ol className="space-y-0">
+        {ORDER_STAGES.map((stage, index) => {
+          const completed = index < currentIndex;
+          const current = index === currentIndex;
+          const reached = index <= currentIndex;
+
+          return (
+            <li key={stage} className="flex gap-3">
+              <div className="flex flex-col items-center">
+                <span
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
+                    reached
+                      ? "border-amber-400 bg-amber-500 text-black"
+                      : "border-zinc-600 bg-zinc-900 text-zinc-400"
+                  }`}
+                  aria-hidden="true"
+                >
+                  {completed ? "✓" : index + 1}
+                </span>
+                {index < ORDER_STAGES.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    className={`h-7 w-0.5 ${completed ? "bg-amber-500" : "bg-zinc-700"}`}
+                  />
+                )}
+              </div>
+              <div className="pb-6 pt-1">
+                <span className={reached ? "font-medium text-white" : "text-zinc-500"}>
+                  {stage}
+                </span>
+                {current && (
+                  <span className="ml-2 text-xs text-amber-400">(Current)</span>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 export default function TrackOrderPage() {
   const [orderReference, setOrderReference] = useState("");
   const [mobile, setMobile] = useState("");
@@ -149,6 +224,8 @@ export default function TrackOrderPage() {
             <h2 className="text-xl font-semibold text-amber-300">
               Order Details
             </h2>
+
+            <OrderTimeline status={order.status} />
 
             <div className="space-y-3 text-sm">
               <p>
