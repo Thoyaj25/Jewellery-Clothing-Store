@@ -92,6 +92,18 @@ export default function TrackOrderPage() {
   const [order, setOrder] = useState<TrackingResult | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function copyTrackingNumber() {
+    if (!order?.trackingNumber) return;
+
+    try {
+      await navigator.clipboard.writeText(order.trackingNumber);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -100,6 +112,7 @@ export default function TrackOrderPage() {
     setLoading(true);
     setError("");
     setOrder(null);
+    setCopied(false);
 
     try {
       const response = await fetch("/api/orders/track", {
@@ -247,10 +260,19 @@ export default function TrackOrderPage() {
                 </p>
               )}
               {order.trackingNumber && (
-                <p>
-                  <span className="text-gray-400">Tracking Number: </span>
-                  {order.trackingNumber}
-                </p>
+                <div className="space-y-2">
+                  <p>
+                    <span className="text-gray-400">Tracking Number: </span>
+                    <span className="break-all">{order.trackingNumber}</span>
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => void copyTrackingNumber()}
+                    className="rounded-lg border border-amber-600/50 px-4 py-2 text-sm text-amber-300 transition hover:bg-amber-900/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+                  >
+                    {copied ? "Copied!" : "Copy Tracking Number"}
+                  </button>
+                </div>
               )}
             </div>
           </section>
