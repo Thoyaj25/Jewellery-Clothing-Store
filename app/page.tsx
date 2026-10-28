@@ -30,13 +30,21 @@ function prioritizeProductOrder(products: Product[]) {
   ];
 }
 
-export default async function Home() {
-  const products = prioritizeProductOrder(await getProducts());
+async function isDiwaliPromotionActive(): Promise<boolean> {
+  const { connection } = await import("next/server");
+  await connection();
 
   const now = Date.now();
-  const showDiwaliBanner =
+
+  return (
     now >= Date.parse(DIWALI_OFFER.startsAt) &&
-    now < Date.parse(DIWALI_OFFER.endsAt);
+    now < Date.parse(DIWALI_OFFER.endsAt)
+  );
+}
+
+export default async function Home() {
+  const products = prioritizeProductOrder(await getProducts());
+  const showDiwaliBanner = await isDiwaliPromotionActive();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">

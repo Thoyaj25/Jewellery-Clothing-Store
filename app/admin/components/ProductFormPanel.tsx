@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import type { Product } from "@/src/types/product";
 
 type Props = {
@@ -57,14 +57,7 @@ export default function ProductFormPanel({
   const [errors, setErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState("");
-
-  useEffect(() => {
-    const nextForm = getFormFromProduct(editing);
-    setForm(nextForm);
-    setPreview(nextForm.image);
-    setErrors([]);
-  }, [editing]);
+  const [preview, setPreview] = useState(() => editing?.image ?? "");
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
