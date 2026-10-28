@@ -37,6 +37,7 @@ export default function ProductGrid({
   const [visualMatches, setVisualMatches] = useState<VisualSearchMatch[] | null>(null);
   const [listening, setListening] = useState(false);
   const [voiceMessage, setVoiceMessage] = useState("");
+  const [imageResetKey, setImageResetKey] = useState(0);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
@@ -94,6 +95,17 @@ export default function ProductGrid({
   }
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("default");
+
+  function clearAllFilters() {
+    recognitionRef.current?.abort();
+    setListening(false);
+    setVoiceMessage("");
+    setSearch("");
+    setCategory("All");
+    setSort("default");
+    setVisualMatches(null);
+    setImageResetKey((key) => key + 1);
+  }
 
 
 
@@ -181,6 +193,7 @@ export default function ProductGrid({
       {/* AI visual search */}
       <div className="mb-6">
         <ImageSearchUpload
+          resetKey={imageResetKey}
           products={products.map(({ id, name, image }) => ({
             id,
             name,
@@ -252,6 +265,17 @@ export default function ProductGrid({
       >
         Showing {sortedProducts.length} of {products.length} products
       </p>
+
+      {/* Reset all shopping filters */}
+      <div className="mb-5 flex justify-end">
+        <button
+          type="button"
+          onClick={clearAllFilters}
+          className="rounded-full border border-amber-600/50 px-4 py-2 text-sm text-amber-400 transition hover:bg-amber-900/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+        >
+          Clear All Filters
+        </button>
+      </div>
 
       {/* Products */}
       {
