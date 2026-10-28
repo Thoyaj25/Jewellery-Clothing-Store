@@ -245,6 +245,14 @@ export default function ProductGrid({
         </div>
 
 
+      {/* Product results summary */}
+      <p
+        role="status"
+        className="mb-5 text-sm text-zinc-400"
+      >
+        Showing {sortedProducts.length} of {products.length} products
+      </p>
+
       {/* Products */}
       {
         sortedProducts.length === 0 ?
