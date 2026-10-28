@@ -57,6 +57,27 @@ export default async function ProductById({ params }: Props) {
             ₹{Number(product.price).toLocaleString("en-IN")}
           </p>
 
+          {/* Product availability */}
+          {product.stockQuantity != null && (
+            <div className="mt-4">
+              <span
+                className={`inline-flex rounded-full border px-3 py-1.5 text-sm font-medium ${
+                  product.stockQuantity === 0
+                    ? "border-red-800/50 bg-red-950 text-red-300"
+                    : product.stockQuantity <= 5
+                      ? "border-amber-700/50 bg-amber-950 text-amber-300"
+                      : "border-emerald-800/50 bg-emerald-950 text-emerald-300"
+                }`}
+              >
+                {product.stockQuantity === 0
+                  ? "Out of Stock"
+                  : product.stockQuantity <= 5
+                    ? `Only ${product.stockQuantity} Left`
+                    : "In Stock"}
+              </span>
+            </div>
+          )}
+
           <p className="mt-6 leading-relaxed text-gray-300">
             {product.description}
           </p>
