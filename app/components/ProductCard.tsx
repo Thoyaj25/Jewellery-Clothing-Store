@@ -23,6 +23,24 @@ export default function ProductCard({
 
   const wishlisted = isWishlisted(product.id);
 
+  const stock = product.stockQuantity;
+
+  const stockLabel =
+    stock == null
+      ? null
+      : stock === 0
+        ? "Out of Stock"
+        : stock <= 5
+          ? `Only ${stock} Left`
+          : "In Stock";
+
+  const stockStyle =
+    stock === 0
+      ? "bg-red-950 text-red-300 border-red-800/50"
+      : stock != null && stock <= 5
+        ? "bg-amber-950 text-amber-300 border-amber-700/50"
+        : "bg-emerald-950 text-emerald-300 border-emerald-800/50";
+
   return (
     <div className="group relative flex flex-col h-full bg-black/40 rounded-lg border border-amber-600/20 overflow-hidden hover:border-amber-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-600/10">
       {/* Product Image */}
@@ -43,6 +61,17 @@ export default function ProductCard({
           </div>
         )}
       </Link>
+
+      {/* Customer-facing stock availability */}
+      {stockLabel && (
+        <div className="px-3 pt-3 md:px-4">
+          <span
+            className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${stockStyle}`}
+          >
+            {stockLabel}
+          </span>
+        </div>
+      )}
 
       {/* Wishlist */}
         <button
@@ -97,9 +126,15 @@ export default function ProductCard({
         <div className="space-y-2 mt-auto">
           <button
             type="button"
-            aria-label={`Add ${product.name} to cart`}
-            title="Add to Cart"
+            aria-label={
+              stock === 0
+                ? `${product.name} is out of stock`
+                : `Add ${product.name} to cart`
+            }
+            title={stock === 0 ? "Out of Stock" : "Add to Cart"}
+            disabled={stock === 0}
             onClick={() => {
+              if (stock === 0) return;
               addItem({
                 id: product.id,
                 name: product.name,
@@ -112,9 +147,13 @@ export default function ProductCard({
                 toastId: `cart-${product.id}`,
               });
             }}
-            className="w-full px-4 py-3 md:py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-amber-600/30 text-sm"
+            className="w-full px-4 py-3 md:py-2 bg-gradient-to-r from-amber-600 to-amber-500 text-black font-semibold rounded-lg hover:from-amber-500 hover:to-amber-400 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-amber-600/30 text-sm disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
           >
-            <ShoppingCart className="mx-auto h-5 w-5" aria-hidden="true" />
+            {stock === 0 ? (
+              <span>Out of Stock</span>
+            ) : (
+              <ShoppingCart className="mx-auto h-5 w-5" aria-hidden="true" />
+            )}
           </button>
           <Link
             href={`/product/${product.id}`}
