@@ -130,7 +130,7 @@ export default function TermsConditionsPage() {
           <p className="text-zinc-300">
             Customers may request order changes or cancellations
             through WhatsApp. Requests will be reviewed according
-            to the order's status and applicable law.
+            to the order&apos;s status and applicable law.
             Where we cannot fulfill an accepted and paid order,
             we will communicate the available remedy,
             including an appropriate refund.

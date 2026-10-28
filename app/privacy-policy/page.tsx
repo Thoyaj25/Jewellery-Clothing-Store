@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
             We use our official business WhatsApp to coordinate orders,
             delivery availability, payment arrangements and customer
             support. WhatsApp communications are also subject to the
-            platform's own privacy practices.
+            platform&apos;s own privacy practices.
           </p>
         </section>
 
@@ -135,13 +135,13 @@ export default function PrivacyPolicyPage() {
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">
-            10. Children's Privacy
+            10. Children&apos;s Privacy
           </h2>
           <p className="text-zinc-300">
             Our store is intended for customers legally able to
             purchase products, or those acting with appropriate
             parent or guardian involvement. We do not intentionally
-            use children's information for targeted advertising.
+            use children&apos;s information for targeted advertising.
           </p>
         </section>
 
