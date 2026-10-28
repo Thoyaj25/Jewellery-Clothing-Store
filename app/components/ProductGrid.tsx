@@ -258,6 +258,18 @@ export default function ProductGrid({
         </div>
 
 
+      {/* Active AI image search mode */}
+      {visualMatches !== null && (
+        <p
+          role="status"
+          className="mb-4 rounded-lg border border-amber-600/30 bg-amber-950/20 px-4 py-3 text-sm text-amber-200"
+        >
+          Showing AI image matches. Text and category filters are
+          temporarily inactive. Use Clear All Filters to return to
+          normal browsing.
+        </p>
+      )}
+
       {/* Product results summary */}
       <p
         role="status"
