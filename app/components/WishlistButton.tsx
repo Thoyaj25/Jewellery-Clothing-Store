@@ -25,7 +25,7 @@ export default function WishlistButton({
         disabled
         className="mt-4 flex h-12 w-12 items-center justify-center rounded-lg border-0 bg-zinc-800 text-gray-400"
       >
-        ♡ Wishlist
+        <span aria-label="Loading wishlist">♡</span>
       </button>
     );
   }
