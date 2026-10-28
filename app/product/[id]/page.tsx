@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getProducts } from "@/src/lib/getProducts";
@@ -112,6 +113,46 @@ export default async function ProductById({ params }: Props) {
               instagramHandle={process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE}
             />
           </div>
+          {/* Customer shopping information */}
+          <section
+            aria-label="Shopping information"
+            className="mt-8 border-t border-zinc-800 pt-6"
+          >
+            <h2 className="text-lg font-semibold text-white">
+              Shopping Information
+            </h2>
+
+            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              Shipping charges, delivery availability and return
+              eligibility are subject to our store policies.
+            </p>
+
+            <nav
+              aria-label="Shopping policies and support"
+              className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm"
+            >
+              <Link
+                href="/shipping-policy"
+                className="text-amber-400 underline-offset-4 hover:underline"
+              >
+                Shipping & Delivery
+              </Link>
+
+              <Link
+                href="/returns-refunds"
+                className="text-amber-400 underline-offset-4 hover:underline"
+              >
+                Returns & Refunds
+              </Link>
+
+              <Link
+                href="/contact"
+                className="text-amber-400 underline-offset-4 hover:underline"
+              >
+                Contact Support
+              </Link>
+            </nav>
+          </section>
         </div>
       </div>
     </div>
