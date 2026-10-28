@@ -84,7 +84,7 @@ export default function ShoppingAssistant() {
           <div className="space-y-4 overflow-y-auto bg-gradient-to-b from-zinc-950 to-stone-950 p-4">
             <div className="max-w-[95%] rounded-2xl rounded-tl-sm border border-amber-500/20 bg-zinc-800/80 p-3 shadow-sm">
               <p className="text-sm leading-relaxed text-amber-50">
-                Namaste! 👋 I'm ULTIMA, your shopping companion.
+                Namaste! 👋 I&apos;m ULTIMA, your shopping companion.
                 How may I help you today?
               </p>
             </div>
