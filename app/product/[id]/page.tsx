@@ -83,7 +83,7 @@ export default async function ProductById({ params }: Props) {
             {product.description}
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 [&>div]:mt-0 [&>button]:mt-0">
             <AddToCart
               product={{
                 id: product.id,
