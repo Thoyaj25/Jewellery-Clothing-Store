@@ -11,8 +11,10 @@ import {
 export default function ImageSearchUpload({
   products,
   onResults,
+  resetKey,
 }: {
   products: VisualSearchProduct[];
+  resetKey: number;
   onResults: (matches: VisualSearchMatch[] | null) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +83,18 @@ export default function ImageSearchUpload({
     onResults(null);
     if (inputRef.current) inputRef.current.value = "";
   }
+
+  const previousResetKey = useRef(resetKey);
+
+  useEffect(() => {
+    if (previousResetKey.current === resetKey) return;
+    previousResetKey.current = resetKey;
+    searchIdRef.current++;
+    setSearching(false);
+    setPreview(null);
+    setError("");
+    if (inputRef.current) inputRef.current.value = "";
+  }, [resetKey]);
 
   return (
     <div className="space-y-3">
