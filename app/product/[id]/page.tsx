@@ -68,6 +68,7 @@ export default async function ProductById({ params }: Props) {
                 name: product.name,
                 price: Number(product.price),
                 image: product.image,
+                stockQuantity: product.stockQuantity,
               }}
             />
 

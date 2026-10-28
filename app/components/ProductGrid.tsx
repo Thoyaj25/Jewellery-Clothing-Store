@@ -26,6 +26,7 @@ export type Product = {
   price: number;
   image: string;
   description: string | null;
+  stockQuantity?: number | null;
 };
 
 export default function ProductGrid({

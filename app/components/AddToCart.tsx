@@ -9,12 +9,17 @@ type Product = {
   name: string;
   price: number;
   image?: string;
+  stockQuantity?: number | null;
 };
 
 export default function AddToCart({ product }: { product: Product }) {
   const { addItem } = useCart();
 
+  const outOfStock = product.stockQuantity === 0;
+
   const handleAddToCart = () => {
+    if (outOfStock) return;
+
     addItem({
       id: product.id,
       name: product.name,
@@ -32,11 +37,16 @@ export default function AddToCart({ product }: { product: Product }) {
     <button
       type="button"
       onClick={handleAddToCart}
-      aria-label={`Add ${product.name} to cart`}
-      title="Add to Cart"
-      className="mt-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-black shadow-md transition-colors hover:from-amber-500 hover:to-amber-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+      disabled={outOfStock}
+      aria-label={outOfStock ? `${product.name} is out of stock` : `Add ${product.name} to cart`}
+      title={outOfStock ? "Out of Stock" : "Add to Cart"}
+      className="mt-4 flex h-12 min-w-12 px-2 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 text-black shadow-md transition-colors hover:from-amber-500 hover:to-amber-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
     >
-      <ShoppingCart className="h-6 w-6" aria-hidden="true" />
+      {outOfStock ? (
+        <span className="text-xs font-semibold">Out of Stock</span>
+      ) : (
+        <ShoppingCart className="h-6 w-6" aria-hidden="true" />
+      )}
     </button>
   );
 }

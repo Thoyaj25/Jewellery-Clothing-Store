@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartProvider";
 import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
@@ -13,6 +14,54 @@ export default function CartView() {
     totalCount,
     mounted,
   } = useCart();
+
+  const [availableStock, setAvailableStock] = useState<
+    Record<number, number | null>
+  >({});
+
+  useEffect(() => {
+    if (!mounted || items.length === 0) return;
+
+    const controller = new AbortController();
+
+    async function loadAvailability() {
+      try {
+        const response = await fetch("/api/products/availability", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (!Array.isArray(data.products)) return;
+
+        const stock: Record<number, number | null> = {};
+
+        for (const product of data.products) {
+          if (
+            Number.isSafeInteger(product.id) &&
+            (product.stockQuantity === null ||
+              (Number.isSafeInteger(product.stockQuantity) &&
+                product.stockQuantity >= 0))
+          ) {
+            stock[product.id] = product.stockQuantity;
+          }
+        }
+
+        if (!controller.signal.aborted) {
+          setAvailableStock(stock);
+        }
+      } catch {
+        // Retain existing cart behavior if availability cannot load.
+      }
+    }
+
+    void loadAvailability();
+
+    return () => controller.abort();
+  }, [mounted, items.length]);
 
   // Prevent hydration mismatch while loading localStorage
   if (!mounted) {
@@ -80,6 +129,7 @@ export default function CartView() {
                   price={item.price}
                   image={item.image}
                   quantity={item.quantity}
+                  availableQuantity={availableStock[Number(item.id)]}
                 />
               ))}
             </div>

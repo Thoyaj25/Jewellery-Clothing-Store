@@ -9,6 +9,7 @@ interface CartItemProps {
   price: number;
   image?: string;
   quantity: number;
+  availableQuantity?: number | null;
 }
 
 export default function CartItem({
@@ -17,11 +18,16 @@ export default function CartItem({
   price,
   image,
   quantity,
+  availableQuantity,
 }: CartItemProps) {
   const { removeItem, updateQuantity } = useCart();
 
   const handleQuantityChange = (newQty: number) => {
-    if (newQty > 0) {
+    if (
+      newQty > 0 &&
+      newQty <= 99 &&
+      (availableQuantity == null || newQty <= availableQuantity)
+    ) {
       updateQuantity(id, newQty);
     }
   };
@@ -67,7 +73,11 @@ export default function CartItem({
 
           <button
             onClick={() => handleQuantityChange(quantity + 1)}
-            className="p-1.5 hover:bg-zinc-700 rounded transition-colors text-white"
+            disabled={
+              quantity >= 99 ||
+              (availableQuantity != null && quantity >= availableQuantity)
+            }
+            className="p-1.5 hover:bg-zinc-700 rounded transition-colors text-white disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Increase quantity"
           >
             +
