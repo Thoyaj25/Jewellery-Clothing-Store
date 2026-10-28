@@ -24,9 +24,6 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!/^[1-9][0-9]{5}$/.test(pincode)) {
-      setPostalOffices([]);
-      setPostalMessage("");
-      setPostalLoading(false);
       return;
     }
 
@@ -56,7 +53,7 @@ export default function CheckoutPage() {
         );
         setCity(offices[0].District || "");
         setState(offices[0].State || "");
-      } catch (error) {
+      } catch {
         if (controller.signal.aborted) return;
         setPostalMessage(
           "Postal lookup is temporarily unavailable. Please enter your city and state manually."
@@ -249,7 +246,7 @@ export default function CheckoutPage() {
               </p>
             </div>
             <h3 className="mb-2 text-sm font-semibold text-amber-400">
-              What's Next?
+              What&apos;s Next?
             </h3>
             <p className="mb-5 text-sm leading-relaxed text-zinc-300">
               Your order request has been saved successfully. Our team will
@@ -434,9 +431,13 @@ export default function CheckoutPage() {
                     type="text"
                     inputMode="numeric"
                     value={pincode}
-                    onChange={(event) =>
-                      setPincode(event.target.value.replace(/\\D/g, "").slice(0, 6))
-                    }
+                    onChange={(event) => {
+                      const nextPincode = event.target.value.replace(/\\D/g, "").slice(0, 6);
+                      setPincode(nextPincode);
+                      setPostalOffices([]);
+                      setPostalMessage("");
+                      setPostalLoading(false);
+                    }}
                     required
                     maxLength={6}
                     pattern="[1-9][0-9]{5}"
