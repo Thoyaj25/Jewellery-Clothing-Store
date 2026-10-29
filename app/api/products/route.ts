@@ -85,13 +85,26 @@ export async function POST(req: NextRequest) {
 
     const price = Number(body.price);
 
-    let stockQuantity: number | null = null;
+    if (body.stockQuantity == null) {
+      return NextResponse.json(
+        { error: "Stock quantity is required for new products." },
+        { status: 400 }
+      );
+    }
+
+    let stockQuantity: number;
 
     try {
-      stockQuantity = validateStockQuantity(body.stockQuantity ?? null);
+      const validatedStock = validateStockQuantity(body.stockQuantity);
+
+      if (validatedStock === null) {
+        throw new Error("Missing stock quantity");
+      }
+
+      stockQuantity = validatedStock;
     } catch {
       return NextResponse.json(
-        { error: "Stock quantity must be null or a non-negative whole number." },
+        { error: "Stock quantity must be a non-negative whole number." },
         { status: 400 }
       );
     }

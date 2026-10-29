@@ -135,6 +135,10 @@ export default function ProductFormPanel({
         ? null
         : Number(form.stockQuantity);
 
+    if (!editing && stockQuantity === null) {
+      validation.push("Stock quantity is required for new products.");
+    }
+
     if (
       stockQuantity !== null &&
       (!Number.isSafeInteger(stockQuantity) ||
@@ -232,7 +236,8 @@ export default function ProductFormPanel({
             type="number"
             min="0"
             step="1"
-            placeholder="Blank = not configured"
+            required={!editing}
+            placeholder={editing ? "Blank = not configured" : "Enter actual stock quantity"}
             value={form.stockQuantity}
             onChange={(e) =>
               setForm({ ...form, stockQuantity: e.target.value })
