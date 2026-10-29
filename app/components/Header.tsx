@@ -40,7 +40,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="uc-desktop-nav hidden items-center gap-8">
             <Link
               href="/"
               className="text-white hover:text-amber-600 transition text-sm font-light"
@@ -53,6 +53,13 @@ export default function Header() {
               className="text-white hover:text-amber-600 transition text-sm font-light"
             >
               Jewellery
+            </Link>
+
+            <Link
+              href="/products"
+              className="text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              Collections
             </Link>
 
             <Link
@@ -98,7 +105,7 @@ export default function Header() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-amber-600/10 transition"
+              className="uc-mobile-toggle flex w-10 h-10 items-center justify-center rounded-full hover:bg-amber-600/10 transition"
             >
               <span className="text-xl">☰</span>
             </button>
@@ -107,7 +114,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4 flex flex-col gap-3 border-t border-amber-600/20 pt-4">
+          <nav className="uc-mobile-nav mt-4 pb-4 flex flex-col gap-3 border-t border-amber-600/20 pt-4">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
@@ -168,6 +175,28 @@ export default function Header() {
           </nav>
         )}
       </div>
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .uc-desktop-nav {
+            display: flex;
+          }
+
+          .uc-mobile-toggle,
+          .uc-mobile-nav {
+            display: none;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .uc-desktop-nav {
+            display: none;
+          }
+
+          .uc-mobile-toggle {
+            display: flex;
+          }
+        }
+      `}</style>
     </header>
   );
 }
