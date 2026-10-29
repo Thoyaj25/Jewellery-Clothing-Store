@@ -50,7 +50,7 @@ export default async function ProductById({ params }: Props) {
             {product.category}
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold text-white">
+          <h1 className="mt-2 font-serif text-3xl font-normal leading-tight tracking-tight text-white md:text-4xl">
             {product.name}
           </h1>
 

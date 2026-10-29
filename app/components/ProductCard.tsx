@@ -42,7 +42,7 @@ export default function ProductCard({
         : "bg-emerald-950 text-emerald-300 border-emerald-800/50";
 
   return (
-    <div className="group relative flex flex-col h-full bg-black/40 rounded-lg border border-amber-600/20 overflow-hidden hover:border-amber-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-600/10">
+    <div className="group relative flex flex-col h-full bg-zinc-950/70 rounded-xl border border-amber-600/15 overflow-hidden hover:border-amber-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-amber-600/10">
       {/* Product Image */}
       <Link href={`/product/${product.id}`} className="block w-full aspect-square overflow-hidden bg-gradient-to-br from-amber-950/20 to-black relative">
        <Image
@@ -50,7 +50,7 @@ export default function ProductCard({
   alt={product.name}
   width={500}
   height={500}
-  className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-300"
+  className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
 />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         
