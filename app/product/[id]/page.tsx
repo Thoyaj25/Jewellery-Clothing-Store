@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { getProducts } from "@/src/lib/getProducts";
 import AddToCart from "@/app/components/AddToCart";
+import ProductImageViewer from "@/app/components/ProductImageViewer";
 import OrderButtons from "@/app/components/OrderButtons";
 import WishlistButton from "@/app/components/WishlistButton";
 
@@ -42,6 +43,10 @@ export default async function ProductById({ params }: Props) {
             height={600}
             priority
             className="h-[300px] w-full rounded-lg object-cover sm:h-[420px]"
+          />
+          <ProductImageViewer
+            src={product.image}
+            alt={product.name}
           />
         </div>
 
