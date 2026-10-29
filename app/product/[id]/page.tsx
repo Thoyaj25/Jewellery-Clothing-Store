@@ -65,14 +65,14 @@ export default async function ProductById({ params }: Props) {
                 className={`inline-flex rounded-full border px-3 py-1.5 text-sm font-medium ${
                   product.stockQuantity === 0
                     ? "border-red-800/50 bg-red-950 text-red-300"
-                    : product.stockQuantity <= 5
+                    : product.stockQuantity === 1
                       ? "border-amber-700/50 bg-amber-950 text-amber-300"
                       : "border-emerald-800/50 bg-emerald-950 text-emerald-300"
                 }`}
               >
                 {product.stockQuantity === 0
                   ? "Out of Stock"
-                  : product.stockQuantity <= 5
+                  : product.stockQuantity === 1
                     ? `Only ${product.stockQuantity} Left`
                     : "In Stock"}
               </span>
