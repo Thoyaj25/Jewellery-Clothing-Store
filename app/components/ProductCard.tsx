@@ -30,14 +30,14 @@ export default function ProductCard({
       ? null
       : stock === 0
         ? "Out of Stock"
-        : stock <= 5
-          ? `Only ${stock} Left`
+        : stock === 1
+          ? "Only 1 Left"
           : "In Stock";
 
   const stockStyle =
     stock === 0
       ? "bg-red-950 text-red-300 border-red-800/50"
-      : stock != null && stock <= 5
+      : stock === 1
         ? "bg-amber-950 text-amber-300 border-amber-700/50"
         : "bg-emerald-950 text-emerald-300 border-emerald-800/50";
 
