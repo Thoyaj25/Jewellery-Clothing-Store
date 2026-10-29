@@ -31,8 +31,10 @@ export type Product = {
 
 export default function ProductGrid({
   products,
+  initialCategory,
 }: {
   products: Product[];
+  initialCategory?: string;
 }) {
   const [search, setSearch] = useState("");
   const [visualMatches, setVisualMatches] = useState<VisualSearchMatch[] | null>(null);
@@ -94,7 +96,12 @@ export default function ProductGrid({
       setVoiceMessage("Microphone could not start. Please use text search.");
     }
   }
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState(() =>
+    initialCategory &&
+    products.some((product) => product.category === initialCategory)
+      ? initialCategory
+      : "All"
+  );
   const [sort, setSort] = useState("default");
 
   function clearAllFilters() {

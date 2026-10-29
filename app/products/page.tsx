@@ -21,7 +21,15 @@ function prioritizeProductOrder(products: Awaited<ReturnType<typeof getProducts>
   ];
 }
 
-export default async function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string | string[] }>;
+}) {
+  const params = await searchParams;
+  const initialCategory =
+    typeof params.category === "string" ? params.category : undefined;
+
   const products = await getProducts();
 
   const mapped = prioritizeProductOrder(products).map((p) => ({
@@ -35,7 +43,7 @@ export default async function ProductsPage() {
         Products
       </h1>
 
-      <ProductGrid products={mapped} />
+      <ProductGrid products={mapped} initialCategory={initialCategory} />
     </main>
   );
 }
