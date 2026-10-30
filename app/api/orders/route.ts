@@ -109,15 +109,15 @@ export async function POST(request: Request) {
           order_reference, submission_key,
           customer_name, customer_mobile, customer_email,
           delivery_address, delivery_city, delivery_state, delivery_pincode,
-          subtotal, shipping_amount, total_amount
+          subtotal, shipping_amount, discount_amount, total_amount
         )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
         RETURNING id`,
         [
           orderReference, submissionKey,
           customerName, customerMobile, customerEmail || null,
           deliveryAddress, deliveryCity, deliveryState, deliveryPincode,
-          subtotal, shippingAmount, totalAmount,
+          subtotal, shippingAmount, diwaliDiscount, totalAmount,
         ]
       );
 
