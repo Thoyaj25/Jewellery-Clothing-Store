@@ -70,8 +70,9 @@ export async function PATCH(
         id: string;
         order_reference: string;
         status: string;
+        dealer_availability: string;
       }>(
-        `SELECT id, order_reference, status
+        `SELECT id, order_reference, status, dealer_availability
          FROM public.orders
          WHERE id = $1
          FOR UPDATE`,
@@ -88,6 +89,17 @@ export async function PATCH(
         return {
           outcome: "conflict" as const,
           currentStatus: order.status,
+        };
+      }
+
+      // Require recorded dealer availability before confirming an order.
+      if (
+        order.status === "Requested" &&
+        newStatus === "Confirmed" &&
+        order.dealer_availability !== "Available"
+      ) {
+        return {
+          outcome: "dealer_not_verified" as const,
         };
       }
 
@@ -160,6 +172,13 @@ export async function PATCH(
       return NextResponse.json(
         { error: "Order not found." },
         { status: 404 }
+      );
+    }
+
+    if (result.outcome === "dealer_not_verified") {
+      return NextResponse.json(
+        { error: "Verify dealer availability before confirming this order." },
+        { status: 409 }
       );
     }
 
