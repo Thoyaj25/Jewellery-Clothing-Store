@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/lib/auth";
 import { query } from "@/src/lib/db";
 import OrderActions from "./OrderActions";
+import DealerAvailabilityActions from "./DealerAvailabilityActions";
 import PaymentActions from "./PaymentActions";
 import ShipmentActions from "./ShipmentActions";
 import NotificationActions from "./NotificationActions";
@@ -20,6 +21,7 @@ type OrderRow = {
   total_amount: string;
   subtotal: string;
   shipping_amount: string;
+  dealer_availability: "Pending" | "Available" | "Unavailable";
   payment_status: string;
   courier_name: string | null;
   tracking_number: string | null;
@@ -44,6 +46,7 @@ export default async function AdminOrdersPage() {
       o.total_amount,
       o.subtotal,
       o.shipping_amount,
+      o.dealer_availability,
       o.created_at,
       COALESCE(p.status, 'Pending') AS payment_status,
       s.courier_name,
@@ -146,6 +149,11 @@ export default async function AdminOrdersPage() {
                     <div className="min-w-0 space-y-4 border-t border-zinc-800 pt-4">
                       <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-zinc-300">Order Actions</h3>
+                        <DealerAvailabilityActions
+                          orderId={order.id}
+                          orderStatus={order.status}
+                          availability={order.dealer_availability}
+                        />
                         <OrderActions orderId={order.id} status={order.status} />
                       </div>
 
@@ -247,6 +255,11 @@ export default async function AdminOrdersPage() {
                         })}
                       </td>
                       <td className="p-4">
+                        <DealerAvailabilityActions
+                          orderId={order.id}
+                          orderStatus={order.status}
+                          availability={order.dealer_availability}
+                        />
                         <OrderActions
                           orderId={order.id}
                           status={order.status}
