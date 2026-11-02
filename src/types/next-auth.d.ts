@@ -18,3 +18,10 @@ declare module "next-auth/jwt" {
     name?: string | null;
   }
 }
+
+
+declare module "next-auth" {
+  interface User {
+    role?: "admin" | "customer";
+  }
+}

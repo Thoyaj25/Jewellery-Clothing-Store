@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/src/lib/requireAdmin";
 
 export async function GET(req: Request) {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth.response;
+
   const url = new URL(req.url);
 
   const page = Math.max(1, Number(url.searchParams.get("page") || "1"));
