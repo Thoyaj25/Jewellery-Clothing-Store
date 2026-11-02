@@ -272,6 +272,30 @@ export default function TrackOrderPage() {
                   >
                     {copied ? "Copied!" : "Copy Tracking Number"}
                   </button>
+                  {order.courierName && (() => {
+                    const courier = order.courierName
+                      .toLowerCase()
+                      .replace(/[^a-z]/g, "");
+
+                    const trackingSites: Record<string, string> = {
+                      bluedart: "https://www.bluedart.com/",
+                      indiapost: "https://www.indiapost.gov.in/",
+                      speedpost: "https://www.indiapost.gov.in/",
+                    };
+
+                    const trackingUrl = trackingSites[courier];
+
+                    return trackingUrl ? (
+                      <a
+                        href={trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 inline-block rounded-lg border border-amber-600/50 px-4 py-2 text-sm text-amber-300 transition hover:bg-amber-900/20"
+                      >
+                        Track Shipment ↗
+                      </a>
+                    ) : null;
+                  })()}
                 </div>
               )}
             </div>
