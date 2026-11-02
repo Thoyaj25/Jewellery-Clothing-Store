@@ -1,10 +1,13 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { compare } from "bcryptjs";
+import { query } from "@/src/lib/db";
 
 interface AdminUser {
   id: string;
   name: string;
   username: string;
+  role: "admin";
 }
 
 declare module "next-auth" {
@@ -67,11 +70,76 @@ export const authOptions: NextAuthOptions = {
           id: "1",
           name: adminUser,
           username,
+          role: "admin",
         };
 
         return user;
       },
     }),
+    CredentialsProvider({
+      id: "customer",
+      name: "Customer Login",
+
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+
+      async authorize(credentials) {
+        // Keep customer authentication disabled until V2.0 is launched.
+        if (
+          process.env.NODE_ENV === "production" &&
+          process.env.CUSTOMER_REGISTRATION_ENABLED !== "true"
+        ) {
+          return null;
+        }
+
+        const email = credentials?.email?.trim().toLowerCase();
+        const password = credentials?.password;
+
+        if (!email || !password) {
+          return null;
+        }
+
+        const result = await query<{
+          id: string;
+          full_name: string;
+          email: string;
+          password_hash: string;
+          email_verified_at: Date | null;
+        }>(
+          `SELECT id::text AS id, full_name, email,
+                  password_hash, email_verified_at
+           FROM public.customers
+           WHERE lower(email) = $1
+           LIMIT 1`,
+          [email]
+        );
+
+        const customer = result.rows[0];
+
+        if (!customer) {
+          return null;
+        }
+
+        const validPassword = await compare(
+          password,
+          customer.password_hash
+        );
+
+        if (!validPassword || !customer.email_verified_at) {
+          return null;
+        }
+
+        return {
+          id: `customer:${customer.id}`,
+          name: customer.full_name,
+          email: customer.email,
+          role: "customer",
+        };
+      },
+    }),
+
   ],
 
   session: {
@@ -81,7 +149,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.isAdmin = true;
+        // Only the existing admin credentials provider grants admin access.
+        token.isAdmin = user.role === "admin";
         token.name = user.name;
       }
 
