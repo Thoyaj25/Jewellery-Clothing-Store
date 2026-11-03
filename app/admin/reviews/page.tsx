@@ -6,6 +6,7 @@ import Link from "next/link";
 type Review = {
   id: string;
   customer_name: string;
+  city: string | null;
   product_name: string;
   rating: number;
   review_text: string;
@@ -136,7 +137,14 @@ export default function AdminReviewsPage() {
                 className="rounded-xl border border-amber-600/30 bg-zinc-950 p-6"
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="font-semibold">{review.customer_name}</h2>
+                  <div>
+                    <h2 className="font-semibold">{review.customer_name}</h2>
+                    {review.city && (
+                      <p className="mt-1 text-sm text-amber-300">
+                        📍 {review.city}
+                      </p>
+                    )}
+                  </div>
                   <span className="text-sm text-amber-300">
                     {review.status.toUpperCase()}
                   </span>

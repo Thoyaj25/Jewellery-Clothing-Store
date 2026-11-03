@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function CustomerReviewsPage() {
   const [name, setName] = useState("");
+  const [city, setCity] = useState("");
   const [productName, setProductName] = useState("");
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
@@ -26,6 +27,7 @@ export default function CustomerReviewsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          city,
           productName,
           rating,
           review,
@@ -99,6 +101,22 @@ export default function CustomerReviewsPage() {
               </div>
 
               <div>
+                <label htmlFor="customerCity" className="mb-2 block">
+                  City / Town (Optional)
+                </label>
+                <input
+                  id="customerCity"
+                  type="text"
+                  maxLength={100}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="e.g. Hyderabad"
+                  autoComplete="address-level2"
+                  className="w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3"
+                />
+              </div>
+
+              <div>
                 <label htmlFor="productName" className="mb-2 block">
                   Product Purchased
                 </label>
@@ -166,7 +184,8 @@ export default function CustomerReviewsPage() {
                   className="mt-1"
                 />
                 I agree that Ultimate Collections may display my
-                name, product name, rating and feedback publicly.
+                name, city (if provided), product name, rating
+                and feedback publicly.
               </label>
 
               {error && (
