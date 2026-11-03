@@ -65,6 +65,9 @@ export async function POST(request: NextRequest) {
     const name =
       typeof body.name === "string" ? body.name.trim() : "";
 
+    const city =
+      typeof body.city === "string" ? body.city.trim() : "";
+
     const productName =
       typeof body.productName === "string"
         ? body.productName.trim()
@@ -78,6 +81,7 @@ export async function POST(request: NextRequest) {
     if (
       name.length < 2 ||
       name.length > 100 ||
+      city.length > 100 ||
       productName.length < 2 ||
       productName.length > 200 ||
       review.length < 10 ||
@@ -95,10 +99,10 @@ export async function POST(request: NextRequest) {
 
     await query(
       `INSERT INTO public.customer_reviews
-         (customer_name, product_name, rating,
+         (customer_name, city, product_name, rating,
           review_text, status, source, consent_to_publish)
-       VALUES ($1, $2, $3, $4, 'pending', 'website', TRUE)`,
-      [name, productName, rating, review]
+       VALUES ($1, $2, $3, $4, $5, 'pending', 'website', TRUE)`,
+      [name, city || null, productName, rating, review]
     );
 
     // A notification failure must never invalidate a saved review.

@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 type Review = {
   id: string;
   customer_name: string;
+  city: string | null;
   product_name: string;
   rating: number;
   review_text: string;
@@ -25,7 +26,7 @@ export async function GET() {
 
   try {
     const result = await query<Review>(
-      `SELECT id::text, customer_name, product_name,
+      `SELECT id::text, customer_name, city, product_name,
               rating, review_text, status, source,
               consent_to_publish, created_at
        FROM public.customer_reviews

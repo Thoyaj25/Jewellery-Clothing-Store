@@ -4,6 +4,7 @@ import { query } from "@/src/lib/db";
 type Review = {
   id: string;
   customer_name: string;
+  city: string | null;
   product_name: string;
   rating: number;
   review_text: string;
@@ -33,7 +34,7 @@ export default async function Testimonials() {
 
   try {
     const result = await query<Review>(
-      `SELECT id::text, customer_name, product_name,
+      `SELECT id::text, customer_name, city, product_name,
               rating, review_text
        FROM public.customer_reviews
        WHERE status = 'approved'
@@ -81,6 +82,12 @@ export default async function Testimonials() {
                 <p className="text-sm text-white">
                   {review.customer_name}
                 </p>
+
+                {review.city && (
+                  <p className="mt-1 text-xs text-amber-400">
+                    📍 {review.city}
+                  </p>
+                )}
 
                 <p className="mt-1 text-xs text-gray-500">
                   {review.product_name}
