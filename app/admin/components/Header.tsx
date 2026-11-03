@@ -45,6 +45,12 @@ export default function Header() {
         >
           Orders
         </Link>
+        <Link
+          href="/admin/reviews"
+          className="rounded-lg border border-amber-600/40 px-4 py-2 text-sm text-amber-400"
+        >
+          Reviews
+        </Link>
       </nav>
     </header>
   );

@@ -17,6 +17,12 @@ const menuItems = [
     enabled: true,
   },
   {
+    name: "Manage Reviews",
+    href: "/admin/reviews",
+    icon: "⭐",
+    enabled: true,
+  },
+  {
     name: "Analytics",
     href: "",
     icon: "📊",

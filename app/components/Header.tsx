@@ -63,6 +63,13 @@ export default function Header() {
             </Link>
 
             <Link
+              href="/reviews"
+              className="text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              Reviews
+            </Link>
+
+            <Link
               href="/contact"
               className="text-white hover:text-amber-600 transition text-sm font-light"
             >
@@ -163,6 +170,14 @@ export default function Header() {
                   {totalCount}
                 </span>
               )}
+            </Link>
+
+            <Link
+              href="/reviews"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-white hover:text-amber-600 transition text-sm font-light"
+            >
+              Reviews
             </Link>
 
             <Link
