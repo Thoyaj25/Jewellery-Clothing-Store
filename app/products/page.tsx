@@ -43,7 +43,7 @@ export default async function ProductsPage({
         Products
       </h1>
 
-      <ProductGrid products={mapped} initialCategory={initialCategory} />
+      <ProductGrid key={initialCategory ?? "All"} products={mapped} initialCategory={initialCategory} />
     </main>
   );
 }

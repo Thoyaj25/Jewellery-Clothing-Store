@@ -21,7 +21,7 @@ const stories = [
   },
   {
     city: "Visakhapatnam",
-    category: "Sarees",
+    category: "Fashion Jewels",
     title: "Coastal Elegance",
     description: "Graceful festive looks with a refreshing modern touch.",
   },

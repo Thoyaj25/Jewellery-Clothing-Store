@@ -96,11 +96,8 @@ export default function ProductGrid({
       setVoiceMessage("Microphone could not start. Please use text search.");
     }
   }
-  const [category, setCategory] = useState(() =>
-    initialCategory &&
-    products.some((product) => product.category === initialCategory)
-      ? initialCategory
-      : "All"
+  const [category, setCategory] = useState(
+    initialCategory ?? "All"
   );
   const [sort, setSort] = useState("default");
 
@@ -189,6 +186,11 @@ export default function ProductGrid({
             focus:ring-2 focus:ring-amber-500
           "
         >
+          {!categories.includes(category) && (
+            <option value={category}>
+              Unavailable: {category}
+            </option>
+          )}
           {categories.map((cat) => (
             <option key={cat} value={cat}>
               {cat === "All" ? "All Collections" : cat}
