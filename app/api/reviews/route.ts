@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
        VALUES ($1, date_trunc('hour', NOW()), 1)
        ON CONFLICT (identifier_hash, window_start)
        DO UPDATE SET attempt_count =
-         LEAST(registration_rate_limits.attempt_count + 1, 6)
+         LEAST(review_rate_limits.attempt_count + 1, 6)
        RETURNING attempt_count`,
       [identifierHash]
     );
