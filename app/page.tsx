@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import DiwaliUtsavMotion from "./components/DiwaliUtsavMotion";
 import ProductGrid, { type Product } from "./components/ProductGrid";
 import Testimonials from "./components/Testimonials";
+import StyleStoriesIndia from "./components/StyleStoriesIndia";
 import SpotifySection from "./components/SpotifySection";
 import ShopByCategory from "./components/ShopByCategory";
 import WhyChooseUs from "./components/WhyChooseUs";
@@ -145,6 +146,8 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        <StyleStoriesIndia />
 
         <Testimonials />
 
