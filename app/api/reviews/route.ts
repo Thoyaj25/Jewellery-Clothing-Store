@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
+import { Resend } from "resend";
+import { escapeHtml } from "@/src/lib/escapeHtml";
 import { query } from "@/src/lib/db";
 
 export const runtime = "nodejs";
@@ -98,6 +100,42 @@ export async function POST(request: NextRequest) {
        VALUES ($1, $2, $3, $4, 'pending', 'website', TRUE)`,
       [name, productName, rating, review]
     );
+
+    // A notification failure must never invalidate a saved review.
+    try {
+      const apiKey = process.env.RESEND_API_KEY;
+      const notificationEmail = process.env.ENQUIRY_NOTIFICATION_EMAIL;
+      const from = process.env.EMAIL_FROM;
+
+      if (!apiKey || !notificationEmail || !from) {
+        console.warn("Review saved, but email notification is not configured.");
+      } else {
+        const resend = new Resend(apiKey);
+
+        const { error } = await resend.emails.send({
+          from,
+          to: [notificationEmail],
+          subject: "New Customer Review - Ultimate Collections",
+          html: `
+            <h2>New Customer Review</h2>
+            <p><strong>Customer:</strong> ${escapeHtml(name)}</p>
+            <p><strong>Product:</strong> ${escapeHtml(productName)}</p>
+            <p><strong>Rating:</strong> ${rating}/5</p>
+            <p><strong>Feedback:</strong></p>
+            <p>${escapeHtml(review).replace(/\n/g, "<br>")}</p>
+            <p><strong>Status:</strong> Pending Approval</p>
+            <hr />
+            <p><a href="https://ultimate-collections-store.vercel.app/admin/reviews">Open Admin Reviews Dashboard</a></p>
+          `,
+        });
+
+        if (error) {
+          console.error("Review saved, but email notification failed:", error);
+        }
+      }
+    } catch (emailError) {
+      console.error("Review saved, but email notification failed:", emailError);
+    }
 
     return NextResponse.json(
       {
