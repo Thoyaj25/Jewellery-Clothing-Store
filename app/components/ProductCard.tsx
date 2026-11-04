@@ -152,7 +152,10 @@ export default function ProductCard({
             {stock === 0 ? (
               <span>Out of Stock</span>
             ) : (
-              <ShoppingCart className="mx-auto h-5 w-5" aria-hidden="true" />
+              <span className="flex items-center justify-center gap-2">
+                <ShoppingCart className="h-5 w-5" aria-hidden="true" />
+                <span>Add to Cart</span>
+              </span>
             )}
           </button>
           <Link
