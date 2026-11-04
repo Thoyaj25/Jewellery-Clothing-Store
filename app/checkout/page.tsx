@@ -229,9 +229,9 @@ export default function CheckoutPage() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="order-success-heading"
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/80 p-4"
         >
-          <div className="w-full max-w-md rounded-2xl border border-amber-600/30 bg-zinc-900 p-6 text-center shadow-2xl sm:p-8">
+          <div className="my-auto max-h-full w-full max-w-md overflow-y-auto rounded-2xl border border-amber-600/30 bg-zinc-900 p-6 text-center shadow-2xl sm:p-8">
             <div className="mb-4 text-5xl text-green-400" aria-hidden="true">✓</div>
             <h2 id="order-success-heading" className="text-2xl font-bold text-white">
               Order Request Submitted!
