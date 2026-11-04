@@ -1,10 +1,46 @@
 import { NextResponse } from "next/server";
+import { createHmac } from "node:crypto";
 import { query } from "@/src/lib/db";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const ip = request.headers.get("x-vercel-forwarded-for")?.trim();
+    const secret = process.env.NEXTAUTH_SECRET;
+
+    if (!ip || !secret || ip.includes(",")) {
+      return NextResponse.json(
+        { error: "Order tracking is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
+
+    const identifierHash = createHmac("sha256", secret)
+      .update(`order-tracking:${ip}`)
+      .digest("hex");
+
+    const attempt = await query<{ attempt_count: number }>(
+      `INSERT INTO public.order_tracking_rate_limits
+         (identifier_hash, window_start, attempt_count)
+       VALUES ($1, date_trunc('hour', NOW()), 1)
+       ON CONFLICT (identifier_hash, window_start)
+       DO UPDATE SET attempt_count =
+         LEAST(order_tracking_rate_limits.attempt_count + 1, 6)
+       RETURNING attempt_count`,
+      [identifierHash]
+    );
+
+    if (attempt.rows[0].attempt_count > 5) {
+      return NextResponse.json(
+        { error: "Too many tracking attempts. Please try later." },
+        {
+          status: 429,
+          headers: { "Retry-After": "3600" },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const orderReference =
