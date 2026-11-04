@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { withTransaction } from "@/src/lib/db";
+import { createHmac } from "node:crypto";
+import { query, withTransaction } from "@/src/lib/db";
 import { getDiwaliDiscount } from "@/src/lib/diwaliOffer";
 import { validateOrderInput, OrderValidationError, type OrderRequest } from "@/src/lib/validateOrderInput";
 
@@ -14,6 +15,66 @@ export async function POST(request: Request) {
       deliveryAddress, deliveryCity, deliveryState,
       deliveryPincode, quantities,
     } = validateOrderInput(body);
+
+    // Return an already saved order without counting a checkout retry.
+    // Concurrent first-time submissions remain protected by the
+    // existing advisory transaction lock below.
+    const previousOrder = await query<{
+      order_reference: string;
+      total_amount: string;
+    }>(
+      `SELECT order_reference, total_amount
+       FROM public.orders
+       WHERE submission_key = $1`,
+      [submissionKey]
+    );
+
+    if (previousOrder.rows.length) {
+      return NextResponse.json({
+        success: true,
+        order: {
+          orderReference: previousOrder.rows[0].order_reference,
+          totalAmount: Number(previousOrder.rows[0].total_amount),
+          existing: true,
+        },
+      }, { status: 200 });
+    }
+
+    // Limit valid guest order submissions without storing raw IP addresses.
+    const ip = request.headers.get("x-vercel-forwarded-for")?.trim();
+    const secret = process.env.NEXTAUTH_SECRET;
+
+    if (!ip || !secret || ip.includes(",")) {
+      return NextResponse.json(
+        { success: false, error: "Order submission is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
+
+    const identifierHash = createHmac("sha256", secret)
+      .update(`order-submission:${ip}`)
+      .digest("hex");
+
+    const attempt = await query<{ attempt_count: number }>(
+      `INSERT INTO public.order_submission_rate_limits
+         (identifier_hash, window_start, attempt_count)
+       VALUES ($1, date_trunc('hour', NOW()), 1)
+       ON CONFLICT (identifier_hash, window_start)
+       DO UPDATE SET attempt_count =
+         LEAST(order_submission_rate_limits.attempt_count + 1, 11)
+       RETURNING attempt_count`,
+      [identifierHash]
+    );
+
+    if (attempt.rows[0].attempt_count > 10) {
+      return NextResponse.json(
+        { success: false, error: "Too many order attempts. Please try later." },
+        {
+          status: 429,
+          headers: { "Retry-After": "3600" },
+        }
+      );
+    }
 
     const order = await withTransaction(async (client) => {
       // Serialize requests with the same submission key, including concurrent retries.
