@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import type { Product } from "@/src/types/product";
+import { PRODUCT_CATEGORIES } from "@/src/lib/productCategories";
 
 type Props = {
   editing: Product | null;
@@ -310,15 +311,39 @@ export default function ProductFormPanel({
           />
         </div>
 
-        <input
-          placeholder="Category"
-          value={form.category}
-          onChange={(e) =>
-            setForm({ ...form, category: e.target.value })
-          }
-          className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
-          disabled={busy}
-        />
+        <div className="space-y-3">
+          <label
+            htmlFor="product-category"
+            className="block text-sm text-zinc-300"
+          >
+            Product Category
+          </label>
+          <select
+            id="product-category"
+            required
+            value={form.category}
+            onChange={(e) =>
+              setForm({ ...form, category: e.target.value })
+            }
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none transition-colors focus:border-amber-500 disabled:opacity-60"
+            disabled={busy}
+          >
+            <option value="" disabled>
+              Select a category
+            </option>
+            {form.category &&
+              !PRODUCT_CATEGORIES.some((item) => item === form.category) && (
+                <option value={form.category}>
+                  {form.category} (Existing category)
+                </option>
+              )}
+            {PRODUCT_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <label className="flex items-center gap-2 text-sm text-zinc-300">
           <input
