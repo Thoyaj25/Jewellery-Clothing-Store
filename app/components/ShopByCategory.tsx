@@ -3,7 +3,6 @@ import Link from "next/link";
 
 export default function ShopByCategory() {
   const categories = [
-    { name: "Jewellery", image: "/products/jewellery/gold-necklace.jpeg" },
     { name: "Handbags", image: "/products/handbags/designer-clutch.jpeg" },
     { name: "Sarees", image: "/products/sarees/red-saree.jpeg" },
     { name: "Kurtis", image: "/products/kurtis/cotton-kurti3.jpeg" },
@@ -20,6 +19,30 @@ export default function ShopByCategory() {
           <p className="text-gray-400">
             Discover our premium collections for every occasion
           </p>
+        </div>
+
+        {/* Organized jewellery collections */}
+        <div className="mb-8">
+          <h3 className="mb-4 text-center font-serif text-xl text-amber-400">
+            Explore Jewellery Collections
+          </h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {[
+              "Bridal Sets",
+              "Long Harams",
+              "Handmade Bangles",
+              "Bangles & Kadas",
+              "Necklace Sets",
+            ].map((name) => (
+              <Link
+                key={name}
+                href={`/jewellery?collection=${encodeURIComponent(name)}`}
+                className="flex min-h-24 items-center justify-center rounded-xl border border-amber-600/30 bg-zinc-950 px-3 py-4 text-center font-serif text-sm text-amber-200 transition hover:border-amber-400 hover:bg-amber-950/30 sm:text-base"
+              >
+                {name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
