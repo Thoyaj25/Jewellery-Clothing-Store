@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic } from "lucide-react";
 import ProductCard from "./ProductCard";
+import { PRODUCT_CATEGORIES } from "@/src/lib/productCategories";
+import { getStorefrontCategory } from "@/src/lib/storefrontCategory";
 import ImageSearchUpload from "./ImageSearchUpload";
 import type { VisualSearchMatch } from "@/src/lib/findSimilarProducts";
 
@@ -96,8 +98,33 @@ export default function ProductGrid({
       setVoiceMessage("Microphone could not start. Please use text search.");
     }
   }
+  // Resolve old category links without showing legacy names.
+  const normalizedInitialCategory = (() => {
+    if (!initialCategory) return "All";
+
+    if (
+      PRODUCT_CATEGORIES.some(
+        (item) => item === initialCategory
+      )
+    ) {
+      return initialCategory;
+    }
+
+    const matchingProducts = products.filter(
+      (product) => product.category === initialCategory
+    );
+
+    const matchingCategories = Array.from(
+      new Set(matchingProducts.map(getStorefrontCategory))
+    );
+
+    return matchingCategories.length === 1
+      ? matchingCategories[0]
+      : "All";
+  })();
+
   const [category, setCategory] = useState(
-    initialCategory ?? "All"
+    normalizedInitialCategory
   );
   const [sort, setSort] = useState("default");
 
@@ -116,9 +143,7 @@ export default function ProductGrid({
 
   const categories = [
     "All",
-    ...Array.from(
-      new Set(products.map((product) => product.category))
-    ).sort(),
+    ...PRODUCT_CATEGORIES,
   ];
 
 
@@ -134,7 +159,7 @@ export default function ProductGrid({
 
     const matchesCategory =
       category === "All" ||
-      product.category === category;
+      getStorefrontCategory(product) === category;
 
 
     const matchesImage =
