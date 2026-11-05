@@ -17,7 +17,7 @@ const COLLECTIONS = [
 // New Earrings and Other Jewellery products are included automatically.
 const OTHER_JEWELLERY_IDS = new Set([
   10, 14, 15, 16, 17, 18,
-  35, 40, 47, 48, 56, 72,
+  35, 40, 47, 48, 72,
 ]);
 
 export default async function JewelleryPage({
