@@ -2,6 +2,7 @@ import Image from "next/image";
 import { DIWALI_OFFER } from "@/src/lib/diwaliOffer";
 import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
+import PremiumShowcase from "./components/PremiumShowcase";
 import DiwaliUtsavMotion from "./components/DiwaliUtsavMotion";
 import ProductGrid, { type Product } from "./components/ProductGrid";
 import Testimonials from "./components/Testimonials";
@@ -53,6 +54,9 @@ export default async function Home() {
 
       {/* Diwali Utsav 2026 — animated festive promotion */}
       {showDiwaliBanner && <DiwaliUtsavMotion />}
+
+      {/* Premium product showcase — uses existing visible catalogue */}
+      <PremiumShowcase products={products} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-20">
         <section id="collections" className="mb-20">
