@@ -1,4 +1,4 @@
-import { query } from "@/src/lib/db";
+import { query, withTransaction } from "@/src/lib/db";
 import type { Product } from "@/src/domain/product";
 import type { ProductRepository } from "./productRepository";
 
@@ -166,17 +166,56 @@ export const postgresProductRepository: ProductRepository = {
   },
 
   async deleteProducts(ids: number[]): Promise<number> {
-    const { rows } = await query<{ id: number }>(`
-      DELETE FROM products
-      WHERE id = ANY($1)
-        AND NOT EXISTS (
-          SELECT 1
-          FROM public.order_items oi
-          WHERE oi.product_id = products.id
-        )
-      RETURNING id;
-    `, [ids]);
+    const uniqueIds = [...new Set(ids)];
 
-    return rows.length;
+    if (uniqueIds.length === 0) {
+      return 0;
+    }
+
+    return withTransaction(async (client) => {
+      // Lock all requested products before checking eligibility.
+      const existing = await client.query<{ id: number }>(
+        `SELECT id
+         FROM public.products
+         WHERE id = ANY($1::bigint[])
+         ORDER BY id
+         FOR UPDATE`,
+        [uniqueIds]
+      );
+
+      // Missing products make the entire selection ineligible.
+      if (existing.rows.length !== uniqueIds.length) {
+        return 0;
+      }
+
+      // Never delete any selection containing order history.
+      const referenced = await client.query(
+        `SELECT 1
+         FROM public.order_items
+         WHERE product_id = ANY($1::bigint[])
+         LIMIT 1`,
+        [uniqueIds]
+      );
+
+      if (referenced.rows.length > 0) {
+        return 0;
+      }
+
+      const deleted = await client.query<{ id: number }>(
+        `DELETE FROM public.products
+         WHERE id = ANY($1::bigint[])
+         RETURNING id`,
+        [uniqueIds]
+      );
+
+      // Throwing here rolls back all deletions.
+      if (deleted.rows.length !== uniqueIds.length) {
+        throw new Error(
+          "Bulk product deletion was incomplete."
+        );
+      }
+
+      return deleted.rows.length;
+    });
   },
 };

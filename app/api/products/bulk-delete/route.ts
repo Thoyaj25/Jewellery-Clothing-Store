@@ -24,16 +24,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const ids = body.ids.filter(
-      (id): id is number => typeof id === "number" && Number.isInteger(id) && id > 0
-    );
-
-    if (ids.length === 0) {
+    // Reject the entire request if any product ID is invalid.
+    // Never silently remove IDs from a destructive operation.
+    if (
+      body.ids.length > 100 ||
+      !body.ids.every(
+        (id) =>
+          typeof id === "number" &&
+          Number.isSafeInteger(id) &&
+          id > 0
+      )
+    ) {
       return NextResponse.json(
-        { error: "Invalid product ids." },
+        { error: "Provide 1 to 100 valid numeric product IDs." },
         { status: 400 }
       );
     }
+
+    const ids = [...new Set(body.ids as number[])];
 
     const deleted = await deleteProducts(ids);
 
