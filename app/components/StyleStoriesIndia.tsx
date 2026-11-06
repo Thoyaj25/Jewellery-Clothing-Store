@@ -54,7 +54,13 @@ export default function StyleStoriesIndia() {
           {stories.map((story) => (
             <Link
               key={story.city}
-              href={`/products?category=${encodeURIComponent(story.category)}`}
+              href={
+                story.category === "Jewellery"
+                  ? "/jewellery"
+                  : story.category === "Fashion Jewels"
+                    ? "/jewellery?collection=Other%20Jewellery"
+                    : `/products?category=${encodeURIComponent(story.category)}`
+              }
               aria-label={`Explore ${story.category} inspired by ${story.city}`}
               className="block rounded-2xl border border-amber-600/20 bg-gradient-to-b from-amber-950/20 to-black p-6 text-center transition-colors hover:border-amber-500/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
             >
