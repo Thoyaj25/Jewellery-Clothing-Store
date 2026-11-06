@@ -49,6 +49,45 @@ test("accepts valid order details", () => {
   assert.equal(result.quantities.get(1), 2);
 });
 
+
+test("rejects mobile numbers outside Indian format", () => {
+  for (const mobile of [
+    "5876543210",
+    "987654321",
+    "98765432101",
+    "+919876543210",
+  ]) {
+    assert.throws(
+      () => validateOrderInput({
+        ...validOrder(),
+        customerMobile: mobile,
+      }),
+      OrderValidationError
+    );
+  }
+});
+
+test("rejects customer fields exceeding checkout limits", () => {
+  const invalidFields = {
+    customerName: "A".repeat(41),
+    deliveryAddress: "A".repeat(201),
+    deliveryCity: "A".repeat(101),
+    deliveryState: "A".repeat(101),
+    customerEmail: "a".repeat(250) + "@example.com",
+  };
+
+  for (const [field, value] of Object.entries(invalidFields)) {
+    assert.throws(
+      () => validateOrderInput({
+        ...validOrder(),
+        [field]: value,
+      }),
+      OrderValidationError,
+      `Expected rejection for ${field}`
+    );
+  }
+});
+
 test("rejects invalid customer mobile", () => {
   assert.throws(
     () => validateOrderInput({
