@@ -37,16 +37,23 @@ export function validateOrderInput(body: OrderRequest) {
 
     if (
       !customerName ||
-      !/^[0-9+()\s-]{10,20}$/.test(customerMobile) ||
+      customerName.length > 40 ||
+      !/^[6-9][0-9]{9}$/.test(customerMobile) ||
       !deliveryAddress ||
+      deliveryAddress.length > 200 ||
       !deliveryCity ||
+      deliveryCity.length > 100 ||
       !deliveryState ||
+      deliveryState.length > 100 ||
       !/^[1-9][0-9]{5}$/.test(deliveryPincode)
     ) {
       throw new OrderValidationError("Please provide valid customer and delivery details.");
     }
 
-    if (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+    if (customerEmail && (
+      customerEmail.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)
+    )) {
       throw new OrderValidationError("Invalid email address.");
     }
 
