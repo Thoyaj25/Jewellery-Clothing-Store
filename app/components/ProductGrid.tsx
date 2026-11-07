@@ -357,11 +357,12 @@ export default function ProductGrid({
           ">
 
             {
-              sortedProducts.map((product) => (
+              sortedProducts.map((product, index) => (
 
                 <ProductCard
                   key={product.id}
                   product={product}
+                  priorityImage={index === 0}
                 />
 
               ))
