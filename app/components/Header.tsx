@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,31 +27,21 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-amber-600/20">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Official Royal UC luxury branding */}
+          {/* Royal Ultimate Collections generated logo */}
           <Link
             href="/"
             aria-label="Ultimate Collections homepage"
-            className="group flex min-w-0 items-center gap-2 sm:gap-3"
+            className="flex min-w-0 shrink-0 items-center"
           >
-            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-amber-500/20 bg-black sm:h-14 sm:w-14">
-              <img
-                src="/images/branding/royal-uc-monogram.png"
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </span>
-
-            <span className="flex min-w-0 flex-col">
-              <span className="font-serif text-[15px] font-medium tracking-[0.08em] text-[#E8C583] sm:text-xl">
-                ULTIMATE
-              </span>
-              <span className="text-[8px] font-medium tracking-[0.18em] text-[#D6AB63] sm:text-[10px]">
-                COLLECTIONS
-              </span>
-              <span className="hidden text-[8px] tracking-[0.08em] text-amber-200/70 sm:block">
-                STYLE • ELEGANCE • TRUST
-              </span>
-            </span>
+            <Image
+              src="/images/ultimate-collections-logo-transparent.png"
+              alt="Ultimate Collections — Style, Elegance, Trust"
+              width={1672}
+              height={941}
+              priority
+              sizes="(max-width: 640px) 176px, 260px"
+              className="block h-auto w-[176px] max-w-[42vw] object-contain sm:w-[220px] md:w-[260px]"
+            />
           </Link>
 
           {/* Desktop Navigation */}
