@@ -50,38 +50,9 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">
+
       <Hero />
 
-      {/* Royal Luxury Brand Signature */}
-      <section
-        aria-label="Ultimate Collections luxury brand signature"
-        className="relative isolate overflow-hidden border-y border-amber-500/20 bg-[#050403] py-8 sm:py-10"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(194,145,62,0.10),transparent_68%)]" />
-
-        <div className="relative mx-auto flex max-w-5xl flex-col items-center px-6 text-center">
-          <p className="mb-3 text-[9px] font-medium uppercase tracking-[0.38em] text-[#CDA96A] sm:text-[10px]">
-            A Signature of Timeless Elegance
-          </p>
-
-          <h2 className="font-serif text-2xl font-medium tracking-[0.12em] text-[#E8C583] sm:text-4xl sm:tracking-[0.18em]">
-            ULTIMATE COLLECTIONS
-          </h2>
-
-          <div
-            aria-hidden="true"
-            className="mt-4 flex w-full max-w-sm items-center gap-3"
-          >
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/70 to-amber-500/70" />
-            <span className="text-sm text-amber-300">◇</span>
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent via-amber-500/70 to-amber-500/70" />
-          </div>
-
-          <p className="mt-3 text-[9px] tracking-[0.24em] text-amber-100/65 sm:text-[10px]">
-            JEWELLERY <span>•</span> FASHION <span>•</span> ACCESSORIES
-          </p>
-        </div>
-      </section>
 
       {/* Diwali Utsav 2026 — animated festive promotion */}
       {showDiwaliBanner && <DiwaliUtsavMotion />}
