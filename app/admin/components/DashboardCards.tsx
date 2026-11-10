@@ -1,4 +1,6 @@
+
 import type { Product } from "@/src/types/product";
+import { PRODUCT_CATEGORIES } from "@/src/lib/productCategories";
 
 interface DashboardCardsProps {
   products: Product[];
@@ -9,9 +11,8 @@ export default function DashboardCards({
 }: DashboardCardsProps) {
   const totalProducts = products.length;
 
-  const categories = new Set(
-    products.map((product) => product.category)
-  ).size;
+  // Display all configured store categories, including empty categories.
+  const categories = PRODUCT_CATEGORIES.length;
 
   const inventoryValue = products.reduce(
     (sum, product) => sum + product.price,

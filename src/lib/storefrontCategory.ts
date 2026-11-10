@@ -20,6 +20,12 @@ export function getStorefrontCategory(
   }
 
   const category = product.category.trim();
+  const label = `${product.name} ${category}`.toLowerCase();
+
+  if (/saree|sari/.test(label)) {
+    return "Sarees";
+  }
+
 
   // Explicitly standardized categories, including new uploads.
   if (
@@ -38,14 +44,8 @@ export function getStorefrontCategory(
     return "Home & Puja Accessories";
   }
 
-  const label = `${product.name} ${category}`.toLowerCase();
-
   if (/handbag|clutch|purse|bag/.test(label)) {
     return "Handbags";
-  }
-
-  if (/saree|sari/.test(label)) {
-    return "Sarees";
   }
 
   if (/kurti|kurta|salwar|dupatta/.test(label)) {
