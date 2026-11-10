@@ -58,7 +58,7 @@ export default function ShopByCategory() {
                 alt={category.name}
                 width={400}
                 height={400}
-                className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/55 to-transparent px-3 pb-4 pt-12 text-center">
                 <span className="font-serif text-lg font-medium text-white sm:text-xl">
