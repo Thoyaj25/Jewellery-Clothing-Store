@@ -23,7 +23,7 @@ function createRepository({ existing, referenced = false, deleted }) {
   let rolledBack = false;
 
   const client = {
-    async query(sql, params) {
+    async query(sql) {
       calls.push(sql.trim());
 
       if (sql.includes("SELECT id") && sql.includes("FOR UPDATE")) {
@@ -56,11 +56,11 @@ function createRepository({ existing, referenced = false, deleted }) {
     },
   };
 
-  const module = { exports: {} };
+  const testModule = { exports: {} };
 
   new Function("module", "exports", "require", compiled)(
-    module,
-    module.exports,
+    testModule,
+    testModule.exports,
     (name) => {
       if (name === "@/src/lib/db") return db;
       return nodeRequire(name);
@@ -68,7 +68,7 @@ function createRepository({ existing, referenced = false, deleted }) {
   );
 
   return {
-    repository: module.exports.postgresProductRepository,
+    repository: testModule.exports.postgresProductRepository,
     calls,
     get rolledBack() {
       return rolledBack;
