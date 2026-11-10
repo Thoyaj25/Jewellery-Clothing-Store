@@ -39,10 +39,10 @@ export default function Hero() {
 
         {/* Main Heading */}
         <h1 className="flex flex-col gap-2 font-serif">
-          <span className="block text-5xl md:text-7xl font-light text-white tracking-tight">
+          <span className="block text-4xl min-[390px]:text-5xl md:text-7xl font-light text-white tracking-tight">
             Timeless Style
           </span>
-          <span className="block text-5xl md:text-7xl font-light text-amber-500 tracking-tight">
+          <span className="block text-4xl min-[390px]:text-5xl md:text-7xl font-light text-amber-500 tracking-tight">
             Beautifully Yours
           </span>
         </h1>
