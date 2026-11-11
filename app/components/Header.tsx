@@ -116,7 +116,11 @@ export default function Header() {
 
             {/* Mobile Menu Toggle */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
               className="uc-mobile-toggle flex w-10 h-10 items-center justify-center rounded-full hover:bg-amber-600/10 transition"
             >
               <span className="text-xl">☰</span>
@@ -126,7 +130,10 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="uc-mobile-nav mt-4 pb-4 flex flex-col gap-3 border-t border-amber-600/20 pt-4">
+          <nav
+            id="mobile-navigation"
+            className="uc-mobile-nav mt-4 pb-4 flex flex-col gap-3 border-t border-amber-600/20 pt-4"
+          >
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
