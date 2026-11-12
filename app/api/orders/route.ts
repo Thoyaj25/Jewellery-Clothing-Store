@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
 import { query, withTransaction } from "@/src/lib/db";
-import { getDiwaliDiscount } from "@/src/lib/diwaliOffer";
 import { validateOrderInput, OrderValidationError, type OrderRequest } from "@/src/lib/validateOrderInput";
 
 export const runtime = "nodejs";
@@ -148,8 +147,7 @@ export async function POST(request: Request) {
 
       const subtotal = items.reduce((sum, item) => sum + item.lineTotal, 0);
       const shippingAmount = subtotal >= 2000 ? 0 : 100;
-      const diwaliDiscount = getDiwaliDiscount(subtotal);
-      const totalAmount = subtotal + shippingAmount - diwaliDiscount;
+      const totalAmount = subtotal + shippingAmount;
 
       const year = new Date().getUTCFullYear();
 
@@ -178,7 +176,7 @@ export async function POST(request: Request) {
           orderReference, submissionKey,
           customerName, customerMobile, customerEmail || null,
           deliveryAddress, deliveryCity, deliveryState, deliveryPincode,
-          subtotal, shippingAmount, diwaliDiscount, totalAmount,
+          subtotal, shippingAmount, 0, totalAmount,
         ]
       );
 
