@@ -1,4 +1,7 @@
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: *
 Allow: /
 
-Sitemap: https://jewellery-clothing-store.vercel.app/sitemap.xml
+Sitemap: https://ultimate-collections-store.vercel.app/sitemap.xml
