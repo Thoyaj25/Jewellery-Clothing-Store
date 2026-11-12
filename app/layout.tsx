@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./tailwind.css";
@@ -44,6 +45,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     "https://ultimate-collections-store.vercel.app"
   ),
+
+  verification: {
+    google: "3LUM-LYgfrBVAWpxzEAuqpT4dGxO8-alfGPcXksrZIU",
+  },
 
   icons: {
     icon: "/icon.svg",
