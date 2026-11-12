@@ -118,11 +118,10 @@ export default function ProductCard({
           </h3>
         </Link>
 
-        <div className="flex items-center justify-between mb-4">
+                <div className="mb-4">
           <span className="text-xl md:text-2xl font-light text-amber-600">
             ₹{product.price.toLocaleString("en-IN")}
           </span>
-          <span className="text-xs text-gray-400 font-light">Premium</span>
         </div>
 
         {/* Action Buttons */}

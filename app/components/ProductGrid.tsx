@@ -127,6 +127,7 @@ export default function ProductGrid({
     normalizedInitialCategory
   );
   const [sort, setSort] = useState("default");
+  const [visibleCount, setVisibleCount] = useState(24);
 
   function clearAllFilters() {
     recognitionRef.current?.abort();
@@ -137,6 +138,7 @@ export default function ProductGrid({
     setSort("default");
     setVisualMatches(null);
     setImageResetKey((key) => key + 1);
+    setVisibleCount(24);
   }
 
 
@@ -184,6 +186,8 @@ export default function ProductGrid({
 
     return 0;
   });
+  const visibleProducts = sortedProducts.slice(0, visibleCount);
+  const hasMoreProducts = visibleCount < sortedProducts.length;
 
 
   return (
@@ -347,7 +351,7 @@ export default function ProductGrid({
         :
 
         (
-
+          <>
           <div className="
             grid
             grid-cols-1
@@ -357,7 +361,7 @@ export default function ProductGrid({
           ">
 
             {
-              sortedProducts.map((product, index) => (
+              visibleProducts.map((product, index) => (
 
                 <ProductCard
                   key={product.id}
@@ -370,6 +374,19 @@ export default function ProductGrid({
 
           </div>
 
+          {hasMoreProducts && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => count + 24)}
+                className="rounded-full border border-amber-600/60 px-8 py-3 text-sm font-medium text-amber-400 transition hover:bg-amber-900/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+              >
+                Load More Products
+              </button>
+            </div>
+          )}
+
+          </>
         )
       }
 

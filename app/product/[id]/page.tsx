@@ -42,7 +42,7 @@ export default async function ProductById({ params }: Props) {
             width={600}
             height={600}
             priority
-            className="h-[300px] w-full rounded-lg object-cover sm:h-[420px]"
+            className="h-[300px] w-full rounded-lg bg-zinc-950 object-contain p-3 sm:h-[420px]"
           />
           <ProductImageViewer
             src={product.image}

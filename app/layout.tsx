@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Premium handcrafted jewellery, handbags, sarees, kurtis and fashion wear for every occasion.",
+    "Shop elegant imitation jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections.",
 
   keywords: [
     "handcrafted jewellery",

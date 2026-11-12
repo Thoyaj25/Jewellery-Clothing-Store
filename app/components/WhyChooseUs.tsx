@@ -3,32 +3,32 @@ export default function WhyChooseUs() {
     {
       icon: "✨",
       title: "Premium Quality",
-      description: "Handcrafted collections designed with attention to detail",
+      description: "Carefully selected jewellery, clothing and accessories",
     },
     {
       icon: "🚀",
       title: "Fast Delivery",
-      description: "Quick shipping across India with real-time tracking",
+      description: "Delivery availability and estimated timelines confirmed for your PIN code",
     },
     {
       icon: "🛡️",
-      title: "Secure Payments",
-      description: "Safe and encrypted payment gateway with multiple options",
+      title: "WhatsApp Order Assistance",
+      description: "Our team confirms payment arrangements directly with you",
     },
     {
       icon: "👥",
-      title: "Trusted by Thousands",
-      description: "Thousands of satisfied customers across the country",
+      title: "Customer-Focused Service",
+      description: "Personal assistance from enquiry to order confirmation",
     },
     {
       icon: "🎁",
-      title: "Handmade Collections",
-      description: "Exclusive designs crafted by skilled artisans",
+      title: "Curated Fashion Collections",
+      description: "Jewellery, clothing and accessories selected for your style",
     },
     {
       icon: "💬",
-      title: "24/7 Support",
-      description: "Quick response on WhatsApp and email support",
+      title: "Daily Customer Support",
+      description: "WhatsApp and phone support, 9 AM–9 PM IST",
     },
   ];
 

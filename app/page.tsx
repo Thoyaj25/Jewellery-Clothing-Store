@@ -75,34 +75,6 @@ export default async function Home() {
           <ProductGrid products={products} />
         </section>
 
-        <section className="border-t border-amber-600/20 pt-12 md:pt-20 mt-12 md:mt-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-            <div className="text-center">
-              <div className="text-4xl mb-4">✦</div>
-              <h3 className="text-xl font-light mb-2">Premium Quality</h3>
-              <p className="text-gray-400">
-                Handcrafted jewellery with authentic materials
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="text-4xl mb-4">✦</div>
-              <h3 className="text-xl font-light mb-2">Fast Delivery</h3>
-              <p className="text-gray-400">
-                Quick shipping to your doorstep
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="text-4xl mb-4">✦</div>
-              <h3 className="text-xl font-light mb-2">24/7 Support</h3>
-              <p className="text-gray-400">
-                Customer support via WhatsApp & calls
-              </p>
-            </div>
-          </div>
-        </section>
-
         <WhyChooseUs />
 
         <section

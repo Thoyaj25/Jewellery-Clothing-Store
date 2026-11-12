@@ -432,7 +432,7 @@ export default function CheckoutPage() {
                     inputMode="numeric"
                     value={pincode}
                     onChange={(event) => {
-                      const nextPincode = event.target.value.replace(/\\D/g, "").slice(0, 6);
+                      const nextPincode = event.target.value.replace(/\D/g, "").slice(0, 6);
                       setPincode(nextPincode);
                       setPostalOffices([]);
                       setPostalMessage("");
