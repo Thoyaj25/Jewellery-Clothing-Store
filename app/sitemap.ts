@@ -1,8 +1,9 @@
+
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
-  "https://jewellery-clothing-store.vercel.app";
+    "https://ultimate-collections-store.vercel.app";
 
   return [
     {
@@ -11,14 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/cart`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/checkout`,
       lastModified: new Date(),
     },
     {
