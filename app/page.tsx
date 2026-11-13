@@ -146,6 +146,7 @@ export default async function Home() {
                   alt="Durga Prasad - Founder and Creator of Ultimate Collections"
                   width={1024}
                   height={1536}
+                  sizes="(max-width: 448px) 100vw, 448px"
                   className="h-auto w-full object-cover"
                 />
               </div>
