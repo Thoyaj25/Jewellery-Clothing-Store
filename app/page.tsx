@@ -52,7 +52,7 @@ const homepageStructuredData = {
       "@id": `${SITE_URL}/#organization`,
       name: "Ultimate Collections",
       url: SITE_URL,
-      logo: `${SITE_URL}/images/ultimate-collections-logo-transparent.png`,
+      logo: `${SITE_URL}/images/ultimate-collections-logo-transparent.webp`,
       email: "prasadpj509@gmail.com",
       telephone: "+91 9490731606",
       address: {
