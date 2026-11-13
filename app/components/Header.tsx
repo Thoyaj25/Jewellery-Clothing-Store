@@ -34,7 +34,7 @@ export default function Header() {
             className="flex min-w-0 shrink-0 items-center"
           >
             <Image
-              src="/images/ultimate-collections-logo-transparent.png"
+              src="/images/ultimate-collections-logo-transparent.webp"
               alt="Ultimate Collections — Style, Elegance, Trust"
               width={1672}
               height={941}
