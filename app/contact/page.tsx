@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import ContactEnquiryForm from "@/app/components/ContactEnquiryForm";
 
+export const metadata: Metadata = {
+  title: "Contact Ultimate Collections | Customer Support",
+  description:
+    "Contact Ultimate Collections for order assistance, product enquiries and customer support through WhatsApp, phone or email.",
+  alternates: {
+    canonical: "/contact",
+  },
+};
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-950 to-black py-16 px-6">

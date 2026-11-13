@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Terms & Conditions",
   description:
     "Terms of shopping, ordering, payments and customer support at Ultimate Collections.",
+  alternates: {
+    canonical: "/terms-conditions",
+  },
 };
 
 export default function TermsConditionsPage() {

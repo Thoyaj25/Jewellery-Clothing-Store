@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Shipping & Delivery Policy",
   description:
     "Shipping charges, delivery availability and order confirmation information for Ultimate Collections.",
+  alternates: {
+    canonical: "/shipping-policy",
+  },
 };
 
 export default function ShippingPolicyPage() {

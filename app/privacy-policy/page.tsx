@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "Learn how Ultimate Collections collects, uses and protects customer information.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 export default function PrivacyPolicyPage() {

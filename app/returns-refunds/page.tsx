@@ -4,6 +4,9 @@ export const metadata: Metadata = {
   title: "Returns, Exchanges & Refunds Policy",
   description:
     "Information about returns, clothing exchanges and refunds at Ultimate Collections.",
+  alternates: {
+    canonical: "/returns-refunds",
+  },
 };
 
 export default function ReturnsRefundsPage() {

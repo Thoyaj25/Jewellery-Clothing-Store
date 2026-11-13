@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import CustomerReviewForm from "./CustomerReviewForm";
 
+export const metadata: Metadata = {
+  title: "Customer Feedback | Ultimate Collections",
+  description:
+    "Get in touch with Ultimate Collections to share feedback about your shopping experience and help us improve our service.",
+  alternates: {
+    canonical: "/reviews",
+  },
+};
 export default function ReviewsPage() {
   const enabled =
     process.env.NODE_ENV !== "production" ||
