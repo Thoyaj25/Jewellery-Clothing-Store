@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getProducts } from "@/src/lib/getProducts";
 import ProductCard from "../components/ProductCard";
@@ -5,6 +6,37 @@ import {
   JEWELLERY_COLLECTIONS,
   getJewelleryCollection,
 } from "@/src/lib/jewelleryCollections";
+
+export const metadata: Metadata = {
+  title: "Imitation Jewellery Collections Online",
+  description:
+    "Discover imitation jewellery collections at Ultimate Collections, including bridal sets, harams, bangles, kadas, necklace sets and earrings.",
+  alternates: {
+    canonical: "/jewellery",
+  },
+  openGraph: {
+    title: "Imitation Jewellery Collections | Ultimate Collections",
+    description:
+      "Discover bridal sets, harams, bangles, kadas, necklace sets and earrings at Ultimate Collections.",
+    url: "https://ultimate-collections-store.vercel.app/jewellery",
+    siteName: "Ultimate Collections",
+    locale: "en_IN",
+    type: "website",
+    images: [{
+      url: "/og-image.jpeg",
+      width: 1200,
+      height: 1600,
+      alt: "Ultimate Collections - Jewellery and Fashion",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.jpeg"],
+    title: "Imitation Jewellery Collections | Ultimate Collections",
+    description:
+      "Discover bridal sets, harams, bangles, kadas, necklace sets and earrings at Ultimate Collections.",
+  },
+};
 
 export const dynamic = "force-dynamic";
 

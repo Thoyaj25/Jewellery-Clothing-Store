@@ -1,5 +1,37 @@
+import type { Metadata } from "next";
 import ProductGrid from "@/app/components/ProductGrid";
 import { getProducts } from "@/src/lib/getProducts";
+
+export const metadata: Metadata = {
+  title: "Shop All Products Online in India",
+  description:
+    "Explore imitation jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections. Find elegant styles for every occasion.",
+  alternates: {
+    canonical: "/products",
+  },
+  openGraph: {
+    title: "Shop All Products | Ultimate Collections",
+    description:
+      "Explore jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections.",
+    url: "https://ultimate-collections-store.vercel.app/products",
+    siteName: "Ultimate Collections",
+    locale: "en_IN",
+    type: "website",
+    images: [{
+      url: "/og-image.jpeg",
+      width: 1200,
+      height: 1600,
+      alt: "Ultimate Collections - Jewellery and Fashion",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.jpeg"],
+    title: "Shop All Products | Ultimate Collections",
+    description:
+      "Explore jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections.",
+  },
+};
 
 export const dynamic = "force-dynamic";
 const PRIORITY_PRODUCT_NAME = "Designer Clutch";
