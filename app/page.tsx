@@ -1,10 +1,8 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { DIWALI_OFFER } from "@/src/lib/diwaliOffer";
 import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
 import PremiumShowcase from "./components/PremiumShowcase";
-import DiwaliUtsavMotion from "./components/DiwaliUtsavMotion";
 import ProductGrid, { type Product } from "./components/ProductGrid";
 import Testimonials from "./components/Testimonials";
 import StyleStoriesIndia from "./components/StyleStoriesIndia";
@@ -98,21 +96,8 @@ function prioritizeProductOrder(products: Product[]) {
   ];
 }
 
-async function isDiwaliPromotionActive(): Promise<boolean> {
-  const { connection } = await import("next/server");
-  await connection();
-
-  const now = Date.now();
-
-  return (
-    now >= Date.parse(DIWALI_OFFER.startsAt) &&
-    now < Date.parse(DIWALI_OFFER.endsAt)
-  );
-}
-
 export default async function Home() {
   const products = prioritizeProductOrder(await getProducts());
-  const showDiwaliBanner = await isDiwaliPromotionActive();
 
   return (
     <>
@@ -126,9 +111,6 @@ export default async function Home() {
 
       <Hero />
 
-
-      {/* Diwali Utsav 2026 — animated festive promotion */}
-      {showDiwaliBanner && <DiwaliUtsavMotion />}
 
       {/* Premium product showcase — uses existing visible catalogue */}
       <PremiumShowcase products={products} />
