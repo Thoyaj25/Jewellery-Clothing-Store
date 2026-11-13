@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { DIWALI_OFFER } from "@/src/lib/diwaliOffer";
 import { getProducts } from "@/src/lib/getProducts";
 import Hero from "./components/Hero";
@@ -13,6 +14,71 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import WebsiteQRCode from "./components/WebsiteQRCode";
 
 export const dynamic = "force-dynamic";
+
+const SITE_URL = "https://ultimate-collections-store.vercel.app";
+
+export const metadata: Metadata = {
+  title: "Indian Imitation Jewellery, Sarees & Fashion",
+  description:
+    "Shop imitation jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections. Discover elegant styles for every occasion.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Indian Imitation Jewellery, Sarees & Fashion",
+    description:
+      "Shop imitation jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections. Discover elegant styles for every occasion.",
+    url: "/",
+    siteName: "Ultimate Collections",
+    locale: "en_IN",
+    type: "website",
+    images: [{
+      url: "/og-image.jpeg",
+      width: 1200,
+      height: 1600,
+      alt: "Ultimate Collections — Indian jewellery and fashion",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Indian Imitation Jewellery, Sarees & Fashion",
+    description:
+      "Shop imitation jewellery, designer clutches, sarees, kurtis and fashion accessories at Ultimate Collections. Discover elegant styles for every occasion.",
+    images: ["/og-image.jpeg"],
+  },
+};
+
+const homepageStructuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "Ultimate Collections",
+      url: SITE_URL,
+      logo: `${SITE_URL}/images/ultimate-collections-logo-transparent.png`,
+      email: "prasadpj509@gmail.com",
+      telephone: "+91 9490731606",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "5/200, KPT Street",
+        addressLocality: "Venkatagirikota",
+        addressRegion: "Andhra Pradesh",
+        postalCode: "517424",
+        addressCountry: "IN",
+      },
+      sameAs: [
+        "https://instagram.com/durgapj.badri",
+        "https://www.facebook.com/durgapj.badri9974",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: "Ultimate Collections",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
+};
 const PRIORITY_PRODUCT_NAME = "Designer Clutch";
 
 function prioritizeProductOrder(products: Product[]) {
@@ -49,6 +115,13 @@ export default async function Home() {
   const showDiwaliBanner = await isDiwaliPromotionActive();
 
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homepageStructuredData).replace(/</g, "\\u003c"),
+        }}
+      />
     <div className="min-h-screen bg-gradient-to-b from-black via-amber-950/5 to-black text-white">
 
       <Hero />
@@ -138,5 +211,6 @@ export default async function Home() {
 
 
     </div>
+    </>
   );
 }
