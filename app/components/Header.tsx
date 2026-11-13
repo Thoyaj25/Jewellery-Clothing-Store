@@ -39,8 +39,8 @@ export default function Header() {
               width={1672}
               height={941}
               priority
-              sizes="(max-width: 640px) 176px, 260px"
-              className="block h-auto w-[176px] max-w-[42vw] object-contain sm:w-[220px] md:w-[260px]"
+              sizes="(max-width: 639px) 42vw, (max-width: 767px) 220px, 260px"
+              className="block h-auto w-[42vw] max-w-[294px] object-contain sm:w-[220px] md:w-[260px]"
             />
           </Link>
 
