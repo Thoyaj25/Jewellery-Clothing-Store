@@ -40,7 +40,7 @@ export default function Header() {
               height={941}
               priority
               sizes="(max-width: 639px) 42vw, (max-width: 767px) 220px, 260px"
-              className="block h-auto w-[42vw] max-w-[294px] object-contain sm:w-[220px] md:w-[260px]"
+              className="block h-auto w-[42vw] max-w-[294px] object-contain sm:!w-[220px] md:!w-[260px]"
             />
           </Link>
 
