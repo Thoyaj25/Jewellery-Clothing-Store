@@ -12,6 +12,7 @@ export default function SpotifySection() {
         </p>
 
         <iframe
+          title="Ultimate Collections curated Spotify playlist"
           style={{ borderRadius: "12px" }}
           src="https://open.spotify.com/embed/playlist/14wKPkpftkc2jAnR4cODQl"
           width="100%"

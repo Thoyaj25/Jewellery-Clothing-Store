@@ -107,6 +107,7 @@ export default function PremiumShowcase({ products }: Props) {
                 src={card.product?.image ?? card.fallbackImage}
                 alt={card.product?.name ?? card.fallbackName}
                 fill
+                priority={index === 0}
                 sizes={
                   index === 0
                     ? "(max-width: 768px) 100vw, 1200px"
