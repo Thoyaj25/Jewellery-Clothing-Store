@@ -131,6 +131,33 @@ export default async function ProductById({ params }: Props) {
 
   const safeJsonLd = JSON.stringify(productJsonLd).replace(/</g, "\\u003c");
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${SITE_URL}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: productUrl,
+      },
+    ],
+  };
+
+  const safeBreadcrumbJsonLd = JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c");
+
   return (
     <>
       <script
@@ -138,7 +165,26 @@ export default async function ProductById({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: safeJsonLd }}
       />
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeBreadcrumbJsonLd }}
+      />
+
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-12">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-zinc-400">
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link href="/" className="hover:text-amber-400">Home</Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link href="/products" className="hover:text-amber-400">Products</Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="text-white">{product.name}</li>
+          </ol>
+        </nav>
+
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
             <Image
