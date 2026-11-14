@@ -52,7 +52,6 @@ export default function ProductCard({
   alt={product.name}
   width={500}
   height={500}
-  quality={70}
   sizes="(max-width: 639px) calc(100vw - 34px), (max-width: 1023px) calc((100vw - 64px) / 2), 33vw"
   loading={priorityImage ? "eager" : "lazy"}
   className="w-full h-full object-contain p-3 md:group-hover:scale-105 transition-transform duration-300"
