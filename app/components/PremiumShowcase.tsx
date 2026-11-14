@@ -110,8 +110,8 @@ export default function PremiumShowcase({ products }: Props) {
                 priority={index === 0}
                 sizes={
                   index === 0
-                    ? "(max-width: 768px) 100vw, 1200px"
-                    : "(max-width: 768px) 100vw, 600px"
+                    ? "(max-width: 639px) calc(100vw - 32px), (max-width: 1279px) calc(100vw - 48px), 1184px"
+                    : "(max-width: 639px) calc(100vw - 32px), (max-width: 767px) calc(100vw - 48px), (max-width: 1279px) calc((100vw - 68px) / 2), 582px"
                 }
                 className={`transition-transform duration-500 group-hover:scale-105 ${
                   index === 2 ? "object-contain" : "object-cover"
