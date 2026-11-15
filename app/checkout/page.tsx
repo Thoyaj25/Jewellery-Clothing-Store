@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useCart } from "../context/CartProvider";
+import { trackCustomEvent, trackEcommerceEvent } from "@/src/lib/analytics";
 
 const FREE_SHIPPING_THRESHOLD = 2000;
 const SHIPPING_COST = 100;
@@ -73,6 +74,21 @@ export default function CheckoutPage() {
   const [confirmedOrderReference, setConfirmedOrderReference] = useState<string | null>(null);
   const submissionKeyRef = useRef<string | null>(null);
   const submissionFingerprintRef = useRef<string | null>(null);
+  const checkoutEventSentRef = useRef(false);
+
+  useEffect(() => {
+    if (!mounted || items.length === 0 || checkoutEventSentRef.current) return;
+
+    checkoutEventSentRef.current = true;
+    const checkoutItems = items.map((item) => ({
+      item_id: String(item.id),
+      item_name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    trackEcommerceEvent("begin_checkout", checkoutItems, totalPrice);
+  }, [items, mounted, totalPrice]);
 
   if (!mounted) {
     return (
@@ -180,6 +196,17 @@ export default function CheckoutPage() {
       }
 
       const { orderReference, totalAmount } = result.order;
+
+      trackEcommerceEvent(
+        "whatsapp_order_request_submitted",
+        items.map((item) => ({
+          item_id: String(item.id),
+          item_name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        totalPrice,
+      );
 
       const lines = [
         "Hello Ultimate Collections! I have submitted an order request through your website.",
@@ -563,6 +590,10 @@ export default function CheckoutPage() {
                 href={whatsappRetryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackCustomEvent("whatsapp_order_click", {
+                  method: "WhatsApp",
+                  placement: "checkout",
+                })}
                 className="mt-3 block rounded-lg border border-green-500 px-4 py-3 text-center font-semibold text-green-400 hover:bg-green-950"
               >
                 Continue to WhatsApp

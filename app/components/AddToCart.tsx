@@ -2,6 +2,7 @@
 
 import { ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
+import { trackEcommerceEvent } from "@/src/lib/analytics";
 import { useCart } from "../context/CartProvider";
 
 type Product = {
@@ -26,6 +27,13 @@ export default function AddToCart({ product }: { product: Product }) {
       price: product.price,
       image: product.image,
     });
+
+    trackEcommerceEvent("add_to_cart", [{
+      item_id: String(product.id),
+      item_name: product.name,
+      price: product.price,
+      quantity: 1,
+    }], product.price);
 
     toast.success(`${product.name} added to cart!`, {
       containerId: "store",

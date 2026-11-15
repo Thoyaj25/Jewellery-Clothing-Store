@@ -3,6 +3,7 @@
 import React from "react";
 import { useCart } from "@/app/context/CartProvider";
 import { FacebookIcon, InstagramIcon, WhatsAppIcon } from "@/app/components/SocialIcons";
+import { trackCustomEvent } from "@/src/lib/analytics";
 
 export default function OrderButtons({
   product,
@@ -43,6 +44,12 @@ export default function OrderButtons({
 
   const openWhatsApp = () => {
     if (!whatsappNumber) return;
+    trackCustomEvent("whatsapp_order_click", {
+      method: "WhatsApp",
+      placement: "product_detail",
+      product_id: String(product.id),
+      product_name: product.name,
+    });
     const msg = buildMessage();
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank");

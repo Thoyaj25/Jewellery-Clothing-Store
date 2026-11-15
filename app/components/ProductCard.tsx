@@ -6,6 +6,7 @@ import { useWishlist } from "../context/WishlistProvider";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
+import { trackCustomEvent, trackEcommerceEvent } from "@/src/lib/analytics";
 
 import type { Product } from "@/src/types/product";
 
@@ -145,6 +146,13 @@ export default function ProductCard({
                 image: product.image,
               });
 
+              trackEcommerceEvent("add_to_cart", [{
+                item_id: String(product.id),
+                item_name: product.name,
+                price: product.price,
+                quantity: 1,
+              }], product.price);
+
               toast.success(`${product.name} added to cart!`, {
                 containerId: "store",
                 toastId: `cart-${product.id}`,
@@ -175,6 +183,12 @@ export default function ProductCard({
               )}`}
               target="_blank"
               rel="noreferrer"
+              onClick={() => trackCustomEvent("whatsapp_order_click", {
+                method: "WhatsApp",
+                placement: "product_card",
+                product_id: String(product.id),
+                product_name: product.name,
+              })}
               className="block w-full text-center px-4 py-3 md:py-2 border border-amber-600/30 text-black bg-amber-100 rounded-lg hover:bg-amber-200 transition-colors text-sm"
             >
               Order via WhatsApp
