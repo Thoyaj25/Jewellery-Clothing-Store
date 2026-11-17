@@ -97,7 +97,7 @@ export default async function JewelleryPage({
             Explore Our Jewellery Collections
           </h1>
           <p className="mt-3 text-zinc-400">
-            Discover beautiful designs for every occasion.
+            Explore imitation jewellery online at Ultimate Collections. Discover elegant bridal sets, traditional harams, gold-tone necklaces, bangles, kadas and earrings for weddings, festive celebrations and everyday style. Find beautiful designs to complement every occasion.
           </p>
         </header>
 
