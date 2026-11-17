@@ -283,6 +283,10 @@ export default function CheckoutPage() {
                 href={whatsappRetryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackCustomEvent("whatsapp_order_click", {
+                  method: "WhatsApp",
+                  placement: "order_confirmation",
+                })}
                 className="block w-full rounded-lg bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-500"
               >
                 Send Order Details via WhatsApp
