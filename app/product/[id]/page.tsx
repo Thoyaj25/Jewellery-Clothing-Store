@@ -56,7 +56,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = product.name;
+  const title = `${product.name} | Ultimate Collections`;
   const description = getProductDescription(
     product.description,
     product.name
