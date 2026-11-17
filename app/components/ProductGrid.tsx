@@ -127,7 +127,7 @@ export default function ProductGrid({
     normalizedInitialCategory
   );
   const [sort, setSort] = useState("default");
-  const [visibleCount, setVisibleCount] = useState(24);
+  const [visibleCount, setVisibleCount] = useState(products.length);
 
   function clearAllFilters() {
     recognitionRef.current?.abort();
@@ -138,7 +138,7 @@ export default function ProductGrid({
     setSort("default");
     setVisualMatches(null);
     setImageResetKey((key) => key + 1);
-    setVisibleCount(24);
+    setVisibleCount(products.length);
   }
 
 
