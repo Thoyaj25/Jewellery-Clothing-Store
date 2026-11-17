@@ -228,6 +228,13 @@ export default function ProductGrid({
         </select>
       </div>
 
+      {/* SEO introduction */}
+      <p className="mb-6 max-w-4xl text-sm leading-7 text-zinc-400">
+        Explore fashion and accessories online at Ultimate Collections. Discover
+        elegant imitation jewellery, bridal sets, traditional harams, bangles,
+        designer handbags, sarees, kurtis, kids wear and more. Find stylish
+        collections for weddings, festive celebrations and everyday occasions.
+      </p>
 
       {/* AI visual search */}
       <div className="mb-6">
