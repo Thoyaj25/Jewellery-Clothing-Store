@@ -56,7 +56,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${product.name} | Ultimate Collections`;
+  const title = product.name;
   const description = getProductDescription(
     product.description,
     product.name
@@ -74,7 +74,7 @@ export async function generateMetadata({
     },
     openGraph: {
       type: "website",
-      title,
+      title: `${product.name} | Ultimate Collections`,
       description,
       url: productUrl,
       siteName: "Ultimate Collections",
@@ -88,7 +88,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: `${product.name} | Ultimate Collections`,
       description,
       images: [imageUrl],
     },
