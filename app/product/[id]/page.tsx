@@ -193,6 +193,8 @@ export default async function ProductById({ params }: Props) {
               width={600}
               height={600}
               priority
+              quality={75}
+              sizes="(max-width: 639px) calc(100vw - 32px), (max-width: 767px) calc(100vw - 48px), (max-width: 1199px) calc((100vw - 80px) / 2), 536px"
               className="h-[300px] w-full rounded-lg bg-zinc-950 object-contain p-3 sm:h-[420px]"
             />
             <ProductImageViewer
