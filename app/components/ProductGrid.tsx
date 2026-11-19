@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Mic } from "lucide-react";
 import ProductCard from "./ProductCard";
 import { PRODUCT_CATEGORIES } from "@/src/lib/productCategories";
 import { getStorefrontCategory } from "@/src/lib/storefrontCategory";
-import ImageSearchUpload from "./ImageSearchUpload";
+const ImageSearchUpload = lazy(() => import("./ImageSearchUpload"));
 import type { VisualSearchMatch } from "@/src/lib/findSimilarProducts";
 
 type SpeechRecognitionInstance = {
@@ -43,7 +43,25 @@ export default function ProductGrid({
   const [listening, setListening] = useState(false);
   const [voiceMessage, setVoiceMessage] = useState("");
   const [imageResetKey, setImageResetKey] = useState(0);
+  const [shouldLoadImageSearch, setShouldLoadImageSearch] = useState(false);
+
+  useEffect(() => {
+    const element = imageSearchRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setShouldLoadImageSearch(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "300px 0px" });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const imageSearchRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return () => recognitionRef.current?.abort();
@@ -226,16 +244,20 @@ export default function ProductGrid({
 
 
       {/* AI visual search */}
-      <div className="mb-6">
-        <ImageSearchUpload
-          resetKey={imageResetKey}
-          products={products.map(({ id, name, image }) => ({
-            id,
-            name,
-            image,
-          }))}
-          onResults={setVisualMatches}
-        />
+      <div ref={imageSearchRef} className="mb-6 min-h-px">
+        {shouldLoadImageSearch && (
+          <Suspense fallback={null}>
+            <ImageSearchUpload
+              resetKey={imageResetKey}
+              products={products.map(({ id, name, image }) => ({
+                id,
+                name,
+                image,
+              }))}
+              onResults={setVisualMatches}
+            />
+          </Suspense>
+        )}
       </div>
 
       {/* Search and voice recognition */}
