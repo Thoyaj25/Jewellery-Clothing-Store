@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { getProducts } from "@/src/lib/getProducts";
 import AddToCart from "@/app/components/AddToCart";
@@ -10,6 +11,7 @@ import WishlistButton from "@/app/components/WishlistButton";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = "https://ultimate-collections-store.vercel.app";
 
 type Props = {
   params: Promise<{
@@ -17,23 +19,130 @@ type Props = {
   }>;
 };
 
-export default async function ProductById({ params }: Props) {
-  const { id } = await params;
+async function findProduct(id: string) {
   const productId = Number(id);
 
-  if (Number.isNaN(productId)) {
-    notFound();
+  if (!Number.isSafeInteger(productId) || productId <= 0) {
+    return null;
   }
 
   const products = await getProducts();
-  const product = products.find((p) => p.id === productId);
+  return products.find((product) => product.id === productId) ?? null;
+}
+
+function getProductDescription(product: {
+  name: string;
+  category: string;
+  description: string | null;
+}) {
+  const description =
+    product.description?.trim() ||
+    `${product.name} from our ${product.category} collection at Ultimate Collections. Discover elegant Indian fashion and accessories.`;
+
+  return description.length > 160
+    ? `${description.slice(0, 157).trimEnd()}...`
+    : description;
+}
+
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { id } = await params;
+  const product = await findProduct(id);
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const title = `${product.name} | ${product.category}`;
+  const description = getProductDescription(product);
+  const canonical = `/product/${product.id}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "Ultimate Collections",
+      locale: "en_IN",
+      type: "website",
+      images: [
+        {
+          url: product.image,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [product.image],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+export default async function ProductById({ params }: Props) {
+  const { id } = await params;
+  const product = await findProduct(id);
 
   if (!product) {
     notFound();
   }
 
+  const description = getProductDescription(product);
+  const productUrl = `${BASE_URL}/product/${product.id}`;
+  const imageUrl = new URL(product.image, BASE_URL).toString();
+  const price = Number(product.price);
+
+  const availability =
+    product.stockQuantity == null
+      ? undefined
+      : product.stockQuantity > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock";
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description,
+    image: [imageUrl],
+    category: product.category,
+    url: productUrl,
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "INR",
+      price: price.toString(),
+      ...(availability ? { availability } : {}),
+    },
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div>
           <Image
@@ -44,6 +153,7 @@ export default async function ProductById({ params }: Props) {
             priority
             className="h-[300px] w-full rounded-lg object-cover sm:h-[420px]"
           />
+
           <ProductImageViewer
             src={product.image}
             alt={product.name}
@@ -60,10 +170,9 @@ export default async function ProductById({ params }: Props) {
           </h1>
 
           <p className="mt-4 text-3xl font-semibold text-amber-500">
-            ₹{Number(product.price).toLocaleString("en-IN")}
+            ₹{price.toLocaleString("en-IN")}
           </p>
 
-          {/* Product availability */}
           {product.stockQuantity != null && (
             <div className="mt-4">
               <span
@@ -93,7 +202,7 @@ export default async function ProductById({ params }: Props) {
               product={{
                 id: product.id,
                 name: product.name,
-                price: Number(product.price),
+                price,
                 image: product.image,
                 stockQuantity: product.stockQuantity,
               }}
@@ -103,7 +212,7 @@ export default async function ProductById({ params }: Props) {
               product={{
                 id: product.id,
                 name: product.name,
-                price: Number(product.price),
+                price,
                 image: product.image,
               }}
             />
@@ -112,13 +221,13 @@ export default async function ProductById({ params }: Props) {
               product={{
                 id: product.id,
                 name: product.name,
-                price: Number(product.price),
+                price,
               }}
               whatsappNumber={process.env.NEXT_PUBLIC_CONTACT_WHATSAPP}
               instagramHandle={process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE}
             />
           </div>
-          {/* Customer shopping information */}
+
           <section
             aria-label="Shopping information"
             className="mt-8 border-t border-zinc-800 pt-6"
@@ -136,24 +245,15 @@ export default async function ProductById({ params }: Props) {
               aria-label="Shopping policies and support"
               className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm"
             >
-              <Link
-                href="/shipping-policy"
-                className="text-amber-400 underline-offset-4 hover:underline"
-              >
+              <Link href="/shipping-policy" className="text-amber-400 underline-offset-4 hover:underline">
                 Shipping & Delivery
               </Link>
 
-              <Link
-                href="/returns-refunds"
-                className="text-amber-400 underline-offset-4 hover:underline"
-              >
+              <Link href="/returns-refunds" className="text-amber-400 underline-offset-4 hover:underline">
                 Returns & Refunds
               </Link>
 
-              <Link
-                href="/contact"
-                className="text-amber-400 underline-offset-4 hover:underline"
-              >
+              <Link href="/contact" className="text-amber-400 underline-offset-4 hover:underline">
                 Contact Support
               </Link>
             </nav>

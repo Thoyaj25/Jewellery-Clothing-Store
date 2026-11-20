@@ -1,7 +1,27 @@
+import type { Metadata } from "next";
 import ProductGrid from "@/app/components/ProductGrid";
 import { getProducts } from "@/src/lib/getProducts";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Shop All Products",
+  description:
+    "Browse the full range at Ultimate Collections, including jewellery, handbags, sarees, kurtis, kids wear and accessories.",
+  alternates: {
+    canonical: "/products",
+  },
+  openGraph: {
+    title: "Shop All Products | Ultimate Collections",
+    description:
+      "Browse jewellery, handbags, sarees, kurtis, kids wear and accessories at Ultimate Collections.",
+    url: "/products",
+    siteName: "Ultimate Collections",
+    locale: "en_IN",
+    type: "website",
+  },
+};
+
 const PRIORITY_PRODUCT_NAME = "Designer Clutch";
 
 function prioritizeProductOrder(products: Awaited<ReturnType<typeof getProducts>>) {

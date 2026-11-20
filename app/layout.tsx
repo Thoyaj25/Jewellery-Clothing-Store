@@ -23,12 +23,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Ultimate Collections",
+    default: "Premium Jewellery, Handbags & Indian Fashion | Ultimate Collections",
     template: "%s | Ultimate Collections",
   },
 
   description:
-    "Premium handcrafted jewellery, handbags, sarees, kurtis and fashion wear for every occasion.",
+    "Explore elegant handcrafted jewellery, designer handbags, sarees, kurtis and Indian fashion at Ultimate Collections. Discover beautiful styles for every occasion.",
 
   keywords: [
     "handcrafted jewellery",
@@ -45,14 +45,18 @@ export const metadata: Metadata = {
     "https://ultimate-collections-store.vercel.app"
   ),
 
+  alternates: {
+    canonical: "/",
+  },
+
   icons: {
     icon: "/icon.svg",
   },
 
   openGraph: {
-    title: "Ultimate Collections - Premium Jewellery & Fashion",
+    title: "Premium Jewellery & Handbags | Ultimate Collections",
     description:
-      "Discover premium jewellery, sarees, handbags, kurtis and fashion collections for every occasion.",
+      "Shop elegant jewellery, designer handbags, sarees and kurtis at Ultimate Collections. Discover fashion for every occasion.",
     url: "https://ultimate-collections-store.vercel.app",
     siteName: "Ultimate Collections",
     locale: "en_IN",
@@ -63,7 +67,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpeg",
         width: 1200,
         height: 630,
-        alt: "Ultimate Collections - Premium Jewellery & Fashion",
+        alt: "Premium Jewellery & Handbags | Ultimate Collections",
       },
     ],
   },
@@ -72,7 +76,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ultimate Collections",
     description:
-      "Premium handcrafted jewellery, sarees, handbags, kurtis and fashion wear.",
+      "Shop elegant jewellery, designer handbags, sarees and kurtis at Ultimate Collections. Discover fashion for every occasion.",
     images: ["/og-image.jpeg"],
   },
 

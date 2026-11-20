@@ -57,6 +57,23 @@ export default async function Home() {
       {/* Diwali Utsav 2026 — animated festive promotion */}
       {showDiwaliBanner && <DiwaliUtsavMotion />}
 
+      {/* Royal Diwali 2026 — customer appreciation greeting */}
+      <section
+        aria-label="Ultimate Collections Diwali customer greeting"
+        className="mx-auto max-w-7xl px-4 pt-6 sm:px-6"
+      >
+        <div className="overflow-hidden rounded-xl border border-amber-500/25 bg-[#090604]">
+          <Image
+            src="/images/promotions/diwali-customer-greeting-2026.jpg"
+            alt="Happy Deepavali 2026 from Ultimate Collections. May happiness, prosperity and beautiful moments illuminate your life. Thank you for being part of our family."
+            width={2048}
+            height={1451}
+            sizes="(max-width: 768px) 100vw, 900px"
+            className="mx-auto block h-auto max-h-[420px] w-full object-contain"
+          />
+        </div>
+      </section>
+
       {/* Premium product showcase — uses existing visible catalogue */}
       <PremiumShowcase products={products} />
 

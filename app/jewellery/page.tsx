@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getProducts } from "@/src/lib/getProducts";
 import ProductCard from "../components/ProductCard";
@@ -7,6 +8,73 @@ import {
 } from "@/src/lib/jewelleryCollections";
 
 export const dynamic = "force-dynamic";
+
+const COLLECTION_SEO: Record<string, { title: string; description: string }> = {
+  "Bridal Sets": {
+    title: "Bridal Jewellery Sets",
+    description: "Explore elegant bridal jewellery sets at Ultimate Collections. Discover traditional designs for weddings, celebrations and special occasions.",
+  },
+  "Long Harams": {
+    title: "Long Haram Jewellery",
+    description: "Discover beautiful long haram jewellery designs at Ultimate Collections, with traditional styles for weddings and festive occasions.",
+  },
+  "Handmade Bangles": {
+    title: "Handmade Bangles",
+    description: "Shop beautiful handmade bangles at Ultimate Collections. Explore distinctive designs for traditional and festive outfits.",
+  },
+  "Bangles & Kadas": {
+    title: "Bangles & Kadas",
+    description: "Explore bangles and kada designs at Ultimate Collections for everyday wear and special occasions.",
+  },
+  "Necklace Sets": {
+    title: "Necklace Sets",
+    description: "Discover elegant necklace sets at Ultimate Collections for celebrations, weddings and gifting.",
+  },
+  "Other Jewellery": {
+    title: "Other Jewellery",
+    description: "Explore more jewellery designs at Ultimate Collections for everyday styling and special occasions.",
+  },
+};
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ collection?: string | string[] }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const requested =
+    typeof params.collection === "string" ? params.collection : undefined;
+
+  const selected = COLLECTIONS.includes(
+    requested as (typeof COLLECTIONS)[number]
+  ) ? requested! : COLLECTIONS[0];
+
+  const seo = COLLECTION_SEO[selected];
+  const canonical =
+    selected === COLLECTIONS[0]
+      ? "/jewellery"
+      : `/jewellery?collection=${encodeURIComponent(selected)}`;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical },
+    openGraph: {
+      title: `${seo.title} | Ultimate Collections`,
+      description: seo.description,
+      url: canonical,
+      siteName: "Ultimate Collections",
+      locale: "en_IN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: `${seo.title} | Ultimate Collections`,
+      description: seo.description,
+    },
+    robots: { index: true, follow: true },
+  };
+}
 
 const COLLECTIONS = [
   ...JEWELLERY_COLLECTIONS,
