@@ -56,11 +56,11 @@ function createRepository({ existing, referenced = false, deleted }) {
     },
   };
 
-  const testModule = { exports: {} };
+  const repositoryModule = { exports: {} };
 
   new Function("module", "exports", "require", compiled)(
-    testModule,
-    testModule.exports,
+    repositoryModule,
+    repositoryModule.exports,
     (name) => {
       if (name === "@/src/lib/db") return db;
       return nodeRequire(name);
@@ -68,7 +68,7 @@ function createRepository({ existing, referenced = false, deleted }) {
   );
 
   return {
-    repository: testModule.exports.postgresProductRepository,
+    repository: repositoryModule.exports.postgresProductRepository,
     calls,
     get rolledBack() {
       return rolledBack;
